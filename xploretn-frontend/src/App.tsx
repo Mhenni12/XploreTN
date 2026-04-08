@@ -21,8 +21,8 @@ function App() {
           <Route path="host" element={<HostExperience />} />
           <Route path="profile" element={<UserProfile />} />
           <Route path="dashboard" element={<CuratorDashboard />} />
-          <Route path="messages" element={<MessagingInterface />} />
         </Route>
+        <Route path="messages" element={<MessagingInterface />} />
       </Routes>
     </BrowserRouter>
   );

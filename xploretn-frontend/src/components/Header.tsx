@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom';
 export default function Header() {
   return (
     <nav className="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-md shadow-sm shadow-[#1b1c1a]/5 flex justify-between items-center px-8 h-20 max-w-full mx-auto">
-      <div className="text-2xl font-black text-[#1D4F91] tracking-tight font-headline">XploreTN</div>
+      <div className="text-2xl font-black text-[#1D4F91] tracking-tight font-headline">
+        <Link to="/">XploreTN</Link>
+      </div>
       <div className="hidden md:flex items-center gap-8">
-        <Link to="/explore" className="text-slate-600 hover:text-[#1D4F91] font-headline font-bold text-lg transition-all duration-300">Explore</Link>
         <Link to="/" className="text-slate-600 hover:text-[#1D4F91] font-headline font-bold text-lg transition-all duration-300">Home</Link>
+        <Link to="/explore" className="text-slate-600 hover:text-[#1D4F91] font-headline font-bold text-lg transition-all duration-300">Explore</Link>
         <Link to="/dashboard" className="text-slate-600 hover:text-[#1D4F91] font-headline font-bold text-lg transition-all duration-300">Dashboard</Link>
         <Link to="/messages" className="text-slate-600 hover:text-[#1D4F91] font-headline font-bold text-lg transition-all duration-300">Messaging</Link>
       </div>

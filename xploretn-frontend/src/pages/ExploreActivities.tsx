@@ -158,7 +158,7 @@ export default function ExploreActivities() {
           <article className="lg:col-span-2 group relative bg-surface-container-lowest rounded-[2.5rem] overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 flex flex-col md:flex-row">
             <Link to="/experience/3" className="w-full flex flex-col md:flex-row">
               <div className="w-full md:w-2/5 relative overflow-hidden">
-                <img alt="El Jem Amphitheatre" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_DZh-CYxCz4kboYVziI8H47U5SN1NGEQRla0itisPO7Hsu8kTdgTS06tIV1hQNnFJgVrDMMTJhjukyq_cVpcnmcWbZrD2-MhI2d6miIpW9GKV555Fnxyr45G2FieT3KNNPNK3NmQGRyaTKlHs-8wK8-R3i6jitCbuSkPysSFDVVGsD6FX6Mu88DBoF-B8du42I3GG9Ok0vGdFoSIM5h_UkoOCDh0EVkcGI5bsHIDcbNFJ6-1gXhublr0Ejyx85BCzJ6FEtFoadkI" />
+                <img alt="El Jem Amphitheatre" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://i0.wp.com/unusualplaces.org/wp-content/uploads/2023/04/Depositphotos_323674984_S-jpg.webp?ssl=1" />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent md:block hidden"></div>
                 <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full flex items-center gap-1 shadow-sm">
                   <span className="text-xs font-bold text-on-surface-variant uppercase tracking-tighter">Full Day</span>
