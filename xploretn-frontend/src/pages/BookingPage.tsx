@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 export default function BookingPage() {
   const { id } = useParams();
+
+  const [guests, setGuests] = useState(2);
 
   return (
     <>
@@ -62,16 +65,30 @@ export default function BookingPage() {
                     <h3 className="font-headline text-xl text-primary">Number of Explorers</h3>
                     <p className="text-xs text-on-surface-variant font-medium">Limited to small private groups</p>
                   </div>
-                  <div className="flex items-center gap-4 bg-surface-container-low p-2 rounded-full border border-surface-variant/50 w-fit">
-                    <button className="w-10 h-10 rounded-full flex items-center justify-center text-primary bg-white hover:bg-primary hover:text-white transition-all shadow-sm">
-                      <span className="material-symbols-outlined text-sm">remove</span>
-                    </button>
-                    <div className="px-2 text-center min-w-[3rem]">
-                      <span className="block text-2xl font-headline text-primary leading-none">02</span>
+
+                  <div className="flex items-center justify-between bg-surface-container-low rounded-2xl p-3">
+                    <div className="flex items-center gap-3 ml-1 text-primary">
+                      <span className="material-symbols-outlined">group</span>
                     </div>
-                    <button className="w-10 h-10 rounded-full flex items-center justify-center text-primary bg-white hover:bg-primary hover:text-white transition-all shadow-sm">
-                      <span className="material-symbols-outlined text-sm">add</span>
-                    </button>
+                    <div className="flex items-center gap-3 border border-outline/20 rounded-full px-2 py-1 bg-surface">
+                      <button 
+                        type="button"
+                        onClick={() => setGuests(Math.max(1, guests - 1))}
+                        className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors text-primary shadow-sm disabled:opacity-50"
+                        disabled={guests <= 1}
+                      >
+                        <span className="material-symbols-outlined text-[1rem]">remove</span>
+                      </button>
+                      <span className="font-bold w-4 text-center">{guests}</span>
+                      <button 
+                        type="button"
+                        onClick={() => setGuests(Math.min(6, guests + 1))}
+                        className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors text-primary shadow-sm disabled:opacity-50"
+                        disabled={guests >= 6}
+                      >
+                        <span className="material-symbols-outlined text-[1rem]">add</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
