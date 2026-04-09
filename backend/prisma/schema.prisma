@@ -24,4 +24,5 @@ model User {
   createdAt DateTime @default(now())
   image     String
   role      Role     @default(TOURISTE)
+  bio       String?
 }

@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
 import path from "path";
 import authRoutes from "./routes/auth";
+import profileRouter from "./routes/profile";
 
 const PORT = 5000;
 
@@ -21,3 +22,4 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.use("/api/auth", authRoutes);
+app.use("/api/profile", profileRouter);
