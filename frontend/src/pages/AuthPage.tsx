@@ -37,7 +37,7 @@ export default function AuthPage() {
   const handleLogin = async () => {
     setError("");
     if (!loginData.email || !loginData.password) {
-      setError("Veuillez remplir tous les champs.");
+      setError("Please fill in all fields.");
       return;
     }
     setLoading(true);
@@ -53,7 +53,7 @@ export default function AuthPage() {
       localStorage.setItem("user", JSON.stringify(res.data.user));
       navigate("/profile");
     } catch (err: any) {
-      setError(err.response?.data?.message || "Erreur de connexion.");
+      setError(err.response?.data?.message || "Connection error.");
     } finally {
       setLoading(false);
     }
@@ -62,15 +62,15 @@ export default function AuthPage() {
   const handleSignup = async () => {
     setError("");
     if (!signupData.email || !signupData.password || !signupData.fullName) {
-      setError("Veuillez remplir tous les champs obligatoires.");
+      setError("Please fill in all required fields.");
       return;
     }
     if (signupData.password !== signupData.confirmPassword) {
-      setError("Les mots de passe ne correspondent pas.");
+      setError("Passwords do not match.");
       return;
     }
     if (signupData.password.length < 6) {
-      setError("Le mot de passe doit contenir au moins 6 caractères.");
+      setError("Password must be at least 6 characters long.");
       return;
     }
     setLoading(true);
@@ -88,9 +88,7 @@ export default function AuthPage() {
       localStorage.setItem("user", JSON.stringify(res.data.user));
       navigate("/profile");
     } catch (err: any) {
-      setError(
-        err.response?.data?.message || "Erreur lors de la création du compte.",
-      );
+      setError(err.response?.data?.message || "Error creating account.");
     } finally {
       setLoading(false);
     }
@@ -105,7 +103,7 @@ export default function AuthPage() {
             Wandara
           </h1>
           <p className="text-slate-400 mt-2 text-sm">
-            Explorez. Découvrez. Partagez.
+            Explore. Discover. Share.
           </p>
         </div>
 
@@ -124,7 +122,7 @@ export default function AuthPage() {
                   : "text-slate-400 hover:text-slate-600"
               }`}
             >
-              Connexion
+              Login
             </button>
             <button
               onClick={() => {
@@ -137,7 +135,7 @@ export default function AuthPage() {
                   : "text-slate-400 hover:text-slate-600"
               }`}
             >
-              Inscription
+              Sign Up
             </button>
           </div>
 
@@ -161,7 +159,7 @@ export default function AuthPage() {
                   </label>
                   <input
                     type="email"
-                    placeholder="votre@email.com"
+                    placeholder="your@email.com"
                     value={loginData.email}
                     onChange={(e) =>
                       setLoginData({ ...loginData, email: e.target.value })
@@ -171,7 +169,7 @@ export default function AuthPage() {
                 </div>
                 <div className="space-y-1">
                   <label className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
-                    Mot de passe
+                    Password
                   </label>
                   <input
                     type="password"
@@ -194,14 +192,14 @@ export default function AuthPage() {
                       <span className="material-symbols-outlined text-base animate-spin">
                         refresh
                       </span>
-                      Connexion…
+                      Logging in…
                     </>
                   ) : (
                     <>
                       <span className="material-symbols-outlined text-base">
                         login
                       </span>
-                      Se connecter
+                      Log in
                     </>
                   )}
                 </button>
@@ -211,7 +209,7 @@ export default function AuthPage() {
                 {/* Signup Form */}
                 <div className="space-y-1">
                   <label className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
-                    Nom complet <span className="text-primary">*</span>
+                    Full name <span className="text-primary">*</span>
                   </label>
                   <input
                     type="text"
@@ -229,7 +227,7 @@ export default function AuthPage() {
                   </label>
                   <input
                     type="email"
-                    placeholder="votre@email.com"
+                    placeholder="your@email.com"
                     value={signupData.email}
                     onChange={(e) =>
                       setSignupData({ ...signupData, email: e.target.value })
@@ -239,11 +237,11 @@ export default function AuthPage() {
                 </div>
                 <div className="space-y-1">
                   <label className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
-                    Mot de passe <span className="text-primary">*</span>
+                    Password <span className="text-primary">*</span>
                   </label>
                   <input
                     type="password"
-                    placeholder="Min. 6 caractères"
+                    placeholder="Min. 6 characters"
                     value={signupData.password}
                     onChange={(e) =>
                       setSignupData({ ...signupData, password: e.target.value })
@@ -253,8 +251,7 @@ export default function AuthPage() {
                 </div>
                 <div className="space-y-1">
                   <label className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
-                    Confirmer le mot de passe{" "}
-                    <span className="text-primary">*</span>
+                    Confirm password <span className="text-primary">*</span>
                   </label>
                   <input
                     type="password"
@@ -273,7 +270,7 @@ export default function AuthPage() {
                 {/* Role selector */}
                 <div className="space-y-2">
                   <label className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
-                    Je suis
+                    I am a
                   </label>
                   <div className="grid grid-cols-2 gap-3">
                     {(["TOURISTE", "CITOYEN"] as Role[]).map((r) => (
@@ -291,7 +288,7 @@ export default function AuthPage() {
                         <span className="material-symbols-outlined text-xl">
                           {r === "TOURISTE" ? "luggage" : "person_pin"}
                         </span>
-                        {r === "TOURISTE" ? "Touriste" : "Citoyen"}
+                        {r === "TOURISTE" ? "Tourist" : "Citizen"}
                       </button>
                     ))}
                   </div>
@@ -307,14 +304,14 @@ export default function AuthPage() {
                       <span className="material-symbols-outlined text-base animate-spin">
                         refresh
                       </span>
-                      Création…
+                      Creating…
                     </>
                   ) : (
                     <>
                       <span className="material-symbols-outlined text-base">
                         person_add
                       </span>
-                      Créer mon compte
+                      Create my account
                     </>
                   )}
                 </button>
@@ -327,7 +324,7 @@ export default function AuthPage() {
         <p className="text-center text-xs text-slate-400 mt-6">
           {mode === "login" ? (
             <>
-              Pas encore de compte ?{" "}
+              Don't have an account yet?{" "}
               <button
                 onClick={() => {
                   setMode("signup");
@@ -335,12 +332,12 @@ export default function AuthPage() {
                 }}
                 className="text-primary font-bold hover:underline"
               >
-                S'inscrire
+                Sign up
               </button>
             </>
           ) : (
             <>
-              Déjà inscrit ?{" "}
+              Already have an account?{" "}
               <button
                 onClick={() => {
                   setMode("login");
@@ -348,7 +345,7 @@ export default function AuthPage() {
                 }}
                 className="text-primary font-bold hover:underline"
               >
-                Se connecter
+                Log in
               </button>
             </>
           )}

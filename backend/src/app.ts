@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import path from "path";
 import authRoutes from "./routes/auth";
+import profileRouter from "./routes/profile";
 
 const app = express();
 
@@ -18,5 +19,6 @@ app.get("/", (req, res) => {
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.use("/api/auth", authRoutes);
+app.use("/api/profile", profileRouter);
 
 export default app;

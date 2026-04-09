@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 export default function Header() {
   return (
@@ -7,10 +7,30 @@ export default function Header() {
         <Link to="/">XploreTN</Link>
       </div>
       <div className="hidden md:flex items-center gap-8">
-        <Link to="/" className="text-slate-600 hover:text-[#1D4F91] font-headline font-bold text-lg transition-all duration-300">Home</Link>
-        <Link to="/explore" className="text-slate-600 hover:text-[#1D4F91] font-headline font-bold text-lg transition-all duration-300">Explore</Link>
-        <Link to="/dashboard" className="text-slate-600 hover:text-[#1D4F91] font-headline font-bold text-lg transition-all duration-300">Dashboard</Link>
-        <Link to="/messages" className="text-slate-600 hover:text-[#1D4F91] font-headline font-bold text-lg transition-all duration-300">Messaging</Link>
+        <Link
+          to="/"
+          className="text-slate-600 hover:text-[#1D4F91] font-headline font-bold text-lg transition-all duration-300"
+        >
+          Home
+        </Link>
+        <Link
+          to="/explore"
+          className="text-slate-600 hover:text-[#1D4F91] font-headline font-bold text-lg transition-all duration-300"
+        >
+          Explore
+        </Link>
+        <Link
+          to="/dashboard"
+          className="text-slate-600 hover:text-[#1D4F91] font-headline font-bold text-lg transition-all duration-300"
+        >
+          Dashboard
+        </Link>
+        <Link
+          to="/messages"
+          className="text-slate-600 hover:text-[#1D4F91] font-headline font-bold text-lg transition-all duration-300"
+        >
+          Messaging
+        </Link>
       </div>
       <div className="flex items-center gap-4">
         <button className="p-2 hover:bg-slate-100/50 rounded-full transition-all duration-300">
@@ -19,9 +39,13 @@ export default function Header() {
         <button className="p-2 hover:bg-slate-100/50 rounded-full transition-all duration-300">
           <span className="material-symbols-outlined">notifications</span>
         </button>
-        <Link to="/profile">
+        <Link to="/auth">
           <div className="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden cursor-pointer">
-            <img alt="User profile avatar" className="w-full h-full object-cover" src="https://media.istockphoto.com/id/2171382633/vector/user-profile-icon-anonymous-person-symbol-blank-avatar-graphic-vector-illustration.jpg?s=612x612&w=0&k=20&c=ZwOF6NfOR0zhYC44xOX06ryIPAUhDvAajrPsaZ6v1-w=" />
+            <img
+              alt="User profile avatar"
+              className="w-full h-full object-cover"
+              src="https://media.istockphoto.com/id/2171382633/vector/user-profile-icon-anonymous-person-symbol-blank-avatar-graphic-vector-illustration.jpg?s=612x612&w=0&k=20&c=ZwOF6NfOR0zhYC44xOX06ryIPAUhDvAajrPsaZ6v1-w="
+            />
           </div>
         </Link>
       </div>
