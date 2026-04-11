@@ -6,6 +6,7 @@ import { PrismaClient } from "@prisma/client";
 import path from "path";
 import authRoutes from "./routes/auth";
 import profileRouter from "./routes/profile";
+import housingRouter from "./routes/housing";
 
 const PORT = 5000;
 
@@ -23,3 +24,4 @@ app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRouter);
+app.use("/api/housings", housingRouter);

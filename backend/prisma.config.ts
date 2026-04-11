@@ -1,4 +1,5 @@
 ///////// pour que le code marche utiliser cette partie
+
 import { defineConfig } from "prisma/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import dotenv from "dotenv";
