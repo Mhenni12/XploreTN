@@ -1,7 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
   provider = "prisma-client"
@@ -12,18 +8,70 @@ datasource db {
   provider = "postgresql"
 }
 
+// ─── Enums ──────────────────────────────────────────────────────────────────────
+
 enum Role {
   CITOYEN
   TOURISTE
 }
 
+enum ActivityStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ActivityCategory {
+  ART_HERITAGE
+  GASTRONOMY
+  COASTAL_ESCAPE
+  HISTORICAL_TOUR
+  ARTISAN_WORKSHOP
+  DESERT_EXPEDITION
+  NATURE_ADVENTURE
+  CULTURAL_EVENT
+  WELLNESS
+  OTHER
+}
+
+// ─── Models ─────────────────────────────────────────────────────────────────────
+
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  fullName  String
-  createdAt DateTime @default(now())
-  image     String
-  role      Role     @default(TOURISTE)
-  bio       String?
+  id         Int        @id @default(autoincrement())
+  email      String     @unique
+  password   String
+  fullName   String
+  createdAt  DateTime   @default(now())
+  image      String
+  role       Role       @default(TOURISTE)
+  bio        String?
+  activities Activity[] // One-to-many: a user can have many activities
+}
+
+model Activity {
+  id          Int              @id @default(autoincrement())
+  title       String
+  description String
+  price       Float
+  date        DateTime
+  location    String
+  latitude    Float
+  longitude   Float
+  images      String[]         // Array of image URLs (Cloudinary, etc.)
+  status      ActivityStatus   @default(APPROVED)
+  capacity    Int
+  category    ActivityCategory
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  // Relation to creator
+  creatorId Int
+  creator   User @relation(fields: [creatorId], references: [id])
+
+  // Indexes for common queries
+  @@index([location])
+  @@index([date])
+  @@index([category])
+  @@index([status])
+  @@index([creatorId])
 }
