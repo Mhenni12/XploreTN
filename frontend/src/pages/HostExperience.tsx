@@ -26,9 +26,6 @@ export default function HostExperience() {
                 </div>
               </div>
             </div>
-            <div className="absolute -top-4 -right-4 w-12 h-12 bg-tertiary text-on-tertiary rounded-full flex items-center justify-center shadow-lg transform rotate-12">
-              <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>colors_spark</span>
-            </div>
           </section>
           
           {/* Experience Details */}
@@ -71,7 +68,15 @@ export default function HostExperience() {
               </span>
             </div>
             <div className="aspect-square w-full rounded-2xl overflow-hidden relative">
-              <img className="w-full h-full object-cover" src="https://www.seatemperature.org/public/map/sidi-bou-said-tn.png" alt="Map" />
+              <iframe 
+                title="Tunisia Interactive Map"
+                className="w-full h-full object-cover rounded-[2rem] opacity-70 grayscale transition-opacity duration-300 hover:opacity-100 hover:grayscale-0"
+                src="https://maps.google.com/maps?q=Tunis,Tunisia&t=&z=6&ie=UTF8&iwloc=&output=embed"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
               <div className="absolute inset-0 bg-primary/10 backdrop-blur-[2px] flex items-center justify-center pointer-events-none">
                 <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-xl animate-pulse">
                   <div className="w-4 h-4 bg-primary rounded-full"></div>
