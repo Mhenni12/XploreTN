@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import axios from "axios";
 import { LocationAutocomplete } from "./LocationAutocomplete";
+import messageImg from "../assets/housing1.jpg";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -1030,6 +1031,86 @@ function ErrorBanner({
   );
 }
 
+// ─── Guest Banner ─────────────────────────────────────────────────────────────
+
+function GuestBanner() {
+  return (
+    <main className="pt-20 min-h-screen w-full bg-surface-container-low">
+      <div className="w-full min-h-[calc(100vh-80px)] flex flex-col">
+        {/* Hero Image */}
+        <div className="w-full h-[45vh] relative overflow-hidden">
+          <img
+            src={messageImg}
+            alt="Housing Hero"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+
+          {/* Optional dark overlay */}
+          <div className="absolute inset-0 bg-black/30" />
+        </div>
+
+        {/* Content Section */}
+        <div className="flex-1 w-full bg-surface px-6 md:px-20 py-12 flex flex-col items-center justify-center gap-6">
+          {/* Badge */}
+          <div className="flex items-center gap-1.5 bg-amber-50 rounded-full px-4 py-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-600 inline-block" />
+            <span className="text-[11px] font-semibold text-amber-800 uppercase tracking-wide">
+              Authentic Tunisian Hospitality
+            </span>
+          </div>
+
+          {/* Title */}
+          <div className="text-center max-w-2xl">
+            <h1 className="font-headline text-4xl md:text-5xl italic text-primary leading-tight mb-4">
+              Stay With Locals,
+              <br />
+              Experience Tunisia Authentically
+            </h1>
+
+            <p className="text-lg text-on-surface-variant leading-relaxed">
+              Discover welcoming Tunisian families opening their homes to
+              travellers. Enjoy authentic stays, cultural exchange, and
+              unforgettable memories beyond traditional hotels.
+            </p>
+          </div>
+
+          {/* Tags */}
+          <div className="flex flex-wrap justify-center gap-3">
+            {[
+              "Authentic local hosting",
+              "Family-friendly stays",
+              "Cultural immersion",
+              "Trusted community",
+            ].map((tag) => (
+              <span
+                key={tag}
+                className="text-sm px-4 py-2 rounded-full border border-outline-variant/30 text-on-surface-variant bg-surface-container-low"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <a
+            href="/auth"
+            className="px-10 py-4 bg-primary text-on-primary rounded-xl text-sm font-bold uppercase tracking-wider shadow-md hover:scale-[1.02] active:scale-95 transition-transform"
+          >
+            Sign in to Explore Homes
+          </a>
+
+          <p className="text-sm text-outline text-center">
+            New here?{" "}
+            <a href="/auth" className="text-primary font-bold underline">
+              Create a free account
+            </a>
+          </p>
+        </div>
+      </div>
+    </main>
+  );
+}
+
 // ─── Main Page ─────────────────────────────────────────────────────────────────
 export default function HousingPage() {
   const [housings, setHousings] = useState<Housing[]>([]);
@@ -1045,6 +1126,9 @@ export default function HousingPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const BACKEND_URL = "http://localhost:5000";
+  const [currentUser, setCurrentUser] = useState<LocalUser | null | undefined>(
+    undefined,
+  );
 
   const toImageUrl = (p?: string) => {
     if (!p) return "/../assets/profile.jpg";
@@ -1055,6 +1139,16 @@ export default function HousingPage() {
     message: string;
     variant: ToastVariant;
   } | null>(null);
+
+  // ── Read auth from localStorage ──
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("user");
+      setCurrentUser(raw ? (JSON.parse(raw) as LocalUser) : null);
+    } catch {
+      setCurrentUser(null);
+    }
+  }, []);
 
   // ── Load ──────────────────────────────────────────────────────────────────
   const load = async () => {
@@ -1067,6 +1161,8 @@ export default function HousingPage() {
   };
 
   useEffect(() => {
+    if (currentUser === undefined) return; // wait until auth is known
+    if (!currentUser) return; // don't fetch when not logged in
     load();
   }, []);
 
@@ -1159,6 +1255,10 @@ export default function HousingPage() {
       icon: "bed",
     },
   ];
+
+  // ── Auth guards (after all hooks) ──
+  if (currentUser === undefined) return null; // reading localStorage, avoid any flash
+  if (!currentUser) return <GuestBanner />;
 
   return (
     <>

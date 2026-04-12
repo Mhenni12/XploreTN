@@ -13,6 +13,7 @@ import type { TypingUser } from "../types/useSocket";
 import { searchUsers } from "../types/messages";
 import type { UserResult } from "../types/messages";
 import { toImageUrl } from "../utils/imageUrl";
+import messageImg from "../assets/message2.jpg";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface LocalUser {
@@ -568,22 +569,73 @@ export default function MessagingPage() {
     return (
       <>
         <Header />
-        <main className="pt-20 h-screen flex items-center justify-center">
-          <div className="text-center space-y-4">
-            <div className="w-16 h-16 rounded-full bg-surface-container-high mx-auto flex items-center justify-center">
-              <span className="material-symbols-outlined text-3xl text-outline-variant">
-                lock
-              </span>
+
+        <main className="pt-20 min-h-screen w-full bg-surface-container-low">
+          <div className="w-full min-h-[calc(100vh-80px)] flex flex-col">
+            {/* Hero Section */}
+            <div className="w-full h-[45vh]  relative">
+              <img
+                src={messageImg}
+                alt="Messaging Hero"
+                className="absolute inset-0 w-full h-full object-cover opacity"
+              ></img>
             </div>
-            <p className="font-headline text-xl italic text-primary">
-              Sign in to message
-            </p>
-            <a
-              href="/login"
-              className="inline-block px-6 py-2.5 bg-primary text-on-primary text-sm font-bold rounded-full uppercase tracking-wider shadow-md"
-            >
-              Sign In
-            </a>
+
+            {/* Content Section */}
+            <div className="flex-1 w-full bg-surface px-6 md:px-20 py-12 flex flex-col items-center justify-center gap-6">
+              {/* Badge */}
+              <div className="flex items-center gap-1.5 bg-amber-50 rounded-full px-4 py-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-600 inline-block" />
+                <span className="text-[11px] font-semibold text-amber-800 uppercase tracking-wide">
+                  Locals · Travellers · Stories
+                </span>
+              </div>
+
+              {/* Title */}
+              <div className="text-center max-w-2xl">
+                <h1 className="font-headline text-4xl md:text-5xl italic text-primary leading-tight mb-4">
+                  Discover Tunisia through its people
+                </h1>
+
+                <p className="text-lg text-on-surface-variant leading-relaxed">
+                  Chat directly with locals who share their favourite stays,
+                  hidden restaurants, and authentic experiences — or connect
+                  with fellow travellers on the same journey.
+                </p>
+              </div>
+
+              {/* Tags */}
+              <div className="flex flex-wrap justify-center gap-3">
+                {[
+                  "Medinas & riads",
+                  "Local cuisine",
+                  "Day trips",
+                  "Trusted hosts",
+                ].map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-sm px-4 py-2 rounded-full border border-outline-variant/30 text-on-surface-variant bg-surface-container-low"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              {/* CTA */}
+              <a
+                href="/auth"
+                className="px-10 py-4 bg-primary text-on-primary rounded-xl text-sm font-bold uppercase tracking-wider shadow-md hover:scale-[1.02] active:scale-95 transition-transform"
+              >
+                Sign in to start chatting
+              </a>
+
+              <p className="text-sm text-outline text-center">
+                New here?{" "}
+                <a href="/auth" className="text-primary font-bold underline">
+                  Create a free account
+                </a>
+              </p>
+            </div>
           </div>
         </main>
       </>
