@@ -2,6 +2,12 @@ import { Router, Request, Response } from "express";
 
 const router = Router();
 
+// ─── Config ────────────────────────────────────────────────────────────────────
+
+const MAPILLARY_CLIENT_TOKEN =
+  process.env.MAPILLARY_CLIENT_TOKEN ??
+  "MLY|26657365737250821|4b47e766b8036d791b04899ae6b6ec07";
+
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
 type PlaceCategory =
@@ -115,6 +121,105 @@ async function geocodeWithNominatim(
   }
 }
 
+// ─── Mapillary photo resolver ──────────────────────────────────────────────────
+
+/**
+ * Cherche la photo Mapillary la plus proche des coordonnées du lieu.
+ * Stratégie : rayon 50m d'abord, puis 150m si rien trouvé.
+ * Retourne l'URL thumb_1024 ou null.
+ */
+async function fetchMapillaryPhoto(
+  lat: number,
+  lng: number,
+): Promise<string | null> {
+  const radii = [50, 150];
+
+  for (const radius of radii) {
+    try {
+      const params = new URLSearchParams({
+        fields: "id,thumb_1024_url",
+        limit: "5",
+        closeto: `${lng},${lat}`, // Mapillary attend lon,lat
+        radius: String(radius),
+        sort_by: "closest",
+      });
+
+      const res = await fetch(`https://graph.mapillary.com/images?${params}`, {
+        headers: { Authorization: `OAuth ${MAPILLARY_CLIENT_TOKEN}` },
+      });
+
+      if (!res.ok) {
+        console.warn(`[mapillary] HTTP ${res.status} pour (${lat}, ${lng})`);
+        continue;
+      }
+
+      const json = (await res.json()) as {
+        data?: Array<{ id: string; thumb_1024_url?: string }>;
+      };
+
+      const images = json.data ?? [];
+      if (!images.length) continue;
+
+      const withThumb = images.find((img) => img.thumb_1024_url);
+      if (withThumb?.thumb_1024_url) return withThumb.thumb_1024_url;
+    } catch (err) {
+      console.error(
+        `[mapillary] Erreur (${lat}, ${lng}) rayon ${radius}m:`,
+        err,
+      );
+    }
+  }
+
+  return null;
+}
+
+// ─── Wikimedia Commons fallback ────────────────────────────────────────────────
+
+async function resolveWikimediaImage(
+  wikimediaTag: string | undefined,
+): Promise<string | null> {
+  if (!wikimediaTag) return null;
+  try {
+    const fileMatch = wikimediaTag.match(/^(?:File:|file:)(.+)$/);
+    if (!fileMatch) return null;
+    const fileName = fileMatch[1];
+    const params = new URLSearchParams({
+      action: "query",
+      titles: `File:${fileName}`,
+      prop: "imageinfo",
+      iiprop: "url",
+      iiurlwidth: "480",
+      format: "json",
+      origin: "*",
+    });
+    const res = await fetch(
+      `https://commons.wikimedia.org/w/api.php?${params}`,
+      {
+        headers: { "User-Agent": "XploreTN/1.0" },
+      },
+    );
+    if (!res.ok) return null;
+    const data = (await res.json()) as {
+      query?: {
+        pages?: Record<
+          string,
+          { imageinfo?: Array<{ thumburl?: string; url?: string }> }
+        >;
+      };
+    };
+    const pages = data?.query?.pages;
+    if (!pages) return null;
+    for (const page of Object.values(pages)) {
+      const info = page.imageinfo?.[0];
+      if (info?.thumburl) return info.thumburl;
+      if (info?.url) return info.url;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 // ─── Overpass API ──────────────────────────────────────────────────────────────
 
 interface OverpassElement {
@@ -168,16 +273,16 @@ interface PlaceResult {
   phone: string | null;
   website: string | null;
   tags: string[];
-  image: null;
+  image: string | null;
   lat: number;
   lng: number;
 }
 
-function overpassToPlace(
+async function overpassToPlace(
   el: OverpassElement,
   originLat: number,
   originLng: number,
-): PlaceResult | null {
+): Promise<PlaceResult | null> {
   const tags = el.tags ?? {};
   const lat = el.lat ?? el.center?.lat;
   const lng = el.lon ?? el.center?.lon;
@@ -207,6 +312,24 @@ function overpassToPlace(
   if (tags.takeaway === "yes") extraTags.push("À emporter");
   if (tags.delivery === "yes") extraTags.push("Livraison");
 
+  // ── Résolution image : Mapillary → Wikimedia → tag image OSM → null ──────────
+  let image: string | null = null;
+
+  // 1. Mapillary : photo réelle prise dans les 50–150m autour du lieu
+  image = await fetchMapillaryPhoto(lat, lng);
+
+  // 2. Wikimedia Commons (tag OSM wikimedia_commons)
+  if (!image && tags.wikimedia_commons) {
+    image = await resolveWikimediaImage(tags.wikimedia_commons);
+  }
+
+  // 3. Tag image direct dans OSM
+  if (!image && tags.image?.startsWith("http")) {
+    image = tags.image;
+  }
+
+  // 4. null → frontend affiche l'icône de catégorie
+
   return {
     id: String(el.id),
     name,
@@ -220,7 +343,7 @@ function overpassToPlace(
     phone: tags.phone ?? tags["contact:phone"] ?? null,
     website: tags.website ?? tags["contact:website"] ?? null,
     tags: extraTags.slice(0, 5),
-    image: null,
+    image,
     lat,
     lng,
   };
@@ -268,20 +391,6 @@ function validateSearchQuery(
 
 // ─── GET /api/exploreSearch/search ────────────────────────────────────────────
 
-/**
- * @route   GET /api/exploreSearch/search
- * @desc    Cherche des lieux proches via Overpass API (OpenStreetMap)
- * @access  Public
- *
- * Query params:
- *   location    string   Requis. Nom de ville ou "lat,lng"
- *   lat         number   Optionnel. Latitude explicite (court-circuite le géocodage)
- *   lng         number   Optionnel. Longitude explicite
- *   radius      number   Optionnel. Rayon en mètres (défaut 1000, max 50000)
- *   categories  string   Optionnel. Catégories séparées par virgule
- *   sortBy      string   Optionnel. "distance" | "name" (défaut "distance")
- *   limit       number   Optionnel. Max résultats (défaut 50, max 200)
- */
 router.get(
   "/search",
   validateSearchQuery,
@@ -334,19 +443,35 @@ router.get(
         parsedCategories,
       );
 
-      // ── 4. Transformer, dédupliquer, trier ─────────────────────────────────
+      // ── 4. Dédupliquer ──────────────────────────────────────────────────────
       const seen = new Set<string>();
-      const places: PlaceResult[] = [];
+      const rawPlaces: OverpassElement[] = [];
 
       for (const el of elements) {
-        const place = overpassToPlace(el, coords.lat, coords.lng);
-        if (!place) continue;
-        const key = `${place.name.toLowerCase()}|${place.city.toLowerCase()}`;
+        const t = el.tags ?? {};
+        const name = t.name || t["name:fr"] || t["name:ar"] || null;
+        if (!name) continue;
+        const city =
+          t["addr:city"] ?? t["addr:town"] ?? t["addr:village"] ?? "";
+        const key = `${name.toLowerCase()}|${city.toLowerCase()}`;
         if (seen.has(key)) continue;
         seen.add(key);
-        places.push(place);
+        rawPlaces.push(el);
       }
 
+      // ── 5. Résolution parallèle des photos + construction des lieux ─────────
+      // On limite avant les appels Mapillary pour éviter trop de requêtes
+      const toResolve = rawPlaces.slice(0, maxResults);
+
+      const settled = await Promise.all(
+        toResolve.map((el) => overpassToPlace(el, coords!.lat, coords!.lng)),
+      );
+
+      const places: PlaceResult[] = settled.filter(
+        (p): p is PlaceResult => p !== null,
+      );
+
+      // ── 6. Trier ────────────────────────────────────────────────────────────
       const validSort: SortOption = VALID_SORT.includes(sortBy as SortOption)
         ? (sortBy as SortOption)
         : "distance";
@@ -395,6 +520,17 @@ router.get("/:id", async (req: Request, res: Response): Promise<void> => {
     const lat = el.lat ?? el.center?.lat;
     const lng = el.lon ?? el.center?.lon;
 
+    let image: string | null = null;
+    if (lat != null && lng != null) {
+      image = await fetchMapillaryPhoto(lat, lng);
+    }
+    if (!image && tags.wikimedia_commons) {
+      image = await resolveWikimediaImage(tags.wikimedia_commons);
+    }
+    if (!image && tags.image?.startsWith("http")) {
+      image = tags.image;
+    }
+
     res.json({
       id: String(el.id),
       name: tags.name ?? tags["name:fr"] ?? "Sans nom",
@@ -407,6 +543,7 @@ router.get("/:id", async (req: Request, res: Response): Promise<void> => {
       lng,
       phone: tags.phone ?? tags["contact:phone"] ?? null,
       website: tags.website ?? tags["contact:website"] ?? null,
+      image,
       openingHours: tags.opening_hours ?? null,
       tags: Object.entries(tags)
         .filter(([k]) =>

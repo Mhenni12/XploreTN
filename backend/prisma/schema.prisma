@@ -45,6 +45,50 @@ model Activity {
   @@index([status])
 }
 
+model Housing {
+  id            String      @id @default(uuid())
+  title         String
+  description   String
+  location      String
+  type          HousingType
+  floors        Int
+  rooms         Int
+  familyMembers Int
+  maxTourists   Int
+  maxStayDays   Int
+  images        String[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  ownerId       Int
+  owner         User        @relation(fields: [ownerId], references: [id])
+}
+
+model Place {
+  id           String        @id @default(cuid())
+  name         String
+  category     PlaceCategory
+  address      String
+  city         String
+  latitude     Float
+  longitude    Float
+  rating       Float?
+  reviewCount  Int?
+  isOpen       Boolean?
+  openingHours Json?
+  phone        String?
+  website      String?
+  tags         String[]
+  images       String[]
+  description  String?
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([latitude, longitude])
+  @@index([category])
+  @@index([city])
+}
+
 enum Role {
   CITOYEN
   TOURISTE
@@ -78,52 +122,6 @@ enum HousingType {
   GUESTHOUSE
   RIAD
   CHALET
-}
-
-model Housing {
-  id            String      @id @default(uuid())
-  title         String
-  description   String
-  location      String
-  type          HousingType
-  floors        Int
-  rooms         Int
-  familyMembers Int
-  maxTourists   Int
-  maxStayDays   Int
-  images        String[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  ownerId Int
-  owner   User @relation(fields: [ownerId], references: [id])
-}
-
-model Place {
-  id           String        @id @default(cuid())
-  name         String
-  category     PlaceCategory
-  address      String
-  city         String
-  latitude     Float
-  longitude    Float
-  rating       Float?
-  reviewCount  Int?
-  isOpen       Boolean?
-  openingHours Json? // e.g. { mon: "08:00-22:00", tue: "08:00-22:00", ... }
-  phone        String?
-  website      String?
-  tags         String[]
-  images       String[]
-  description  String?
-  isActive     Boolean       @default(true)
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-
-  @@index([latitude, longitude]) // critical for bounding-box queries
-  @@index([category])
-  @@index([city])
 }
 
 enum PlaceCategory {
