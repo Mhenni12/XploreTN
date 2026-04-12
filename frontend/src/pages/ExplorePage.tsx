@@ -86,9 +86,7 @@ async function searchNominatim(query: string): Promise<NominatimSuggestion[]> {
   try {
     const res = await fetch(
       `https://nominatim.openstreetmap.org/search?${params}`,
-      {
-        headers: { "Accept-Language": "fr,en" },
-      },
+      { headers: { "Accept-Language": "fr,en" } },
     );
     if (!res.ok) return [];
     return await res.json();
@@ -129,7 +127,6 @@ const BASE_URL = (import.meta.env.VITE_API_URL ??
   "http://localhost:5000/api") as string;
 
 async function searchPlaces(filters: ExploreFilters): Promise<Place[]> {
-  // Toujours envoyer lat/lng si disponibles pour éviter le géocodage côté backend
   const params = new URLSearchParams({
     location: filters.location,
     radius: String(filters.radiusMeters),
@@ -411,18 +408,39 @@ function PlaceCard({
   place: Place;
   onSelect: (p: Place) => void;
 }) {
+  const [imgError, setImgError] = useState(false);
+
   return (
     <article
       onClick={() => onSelect(place)}
       className="group bg-surface-container-lowest rounded-[2rem] overflow-hidden shadow-lg shadow-primary/5 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 border border-surface-variant/20 flex flex-col cursor-pointer hover:-translate-y-1"
     >
-      {/* Image placeholder with icon */}
-      <div className="relative h-40 overflow-hidden bg-surface-container-high flex items-center justify-center">
-        <span className="material-symbols-outlined text-6xl text-outline-variant">
-          {CATEGORY_ICONS[place.category]}
-        </span>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+      {/* ── Photo ── */}
+      <div className="relative h-44 overflow-hidden bg-surface-container-high flex-shrink-0">
+        {place.image && !imgError ? (
+          <img
+            src={place.image}
+            alt={place.name}
+            loading="lazy"
+            onError={() => setImgError(true)}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          /* Fallback icône catégorie si pas de photo Mapillary */
+          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-surface-container-high to-surface-container gap-2">
+            <span className="material-symbols-outlined text-6xl text-outline-variant/60">
+              {CATEGORY_ICONS[place.category]}
+            </span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-outline-variant/50">
+              No photo available
+            </span>
+          </div>
+        )}
 
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent" />
+
+        {/* Badge catégorie */}
         <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-primary text-xs font-bold px-3 py-1.5 rounded-full shadow flex items-center gap-1">
           <span className="material-symbols-outlined text-sm">
             {CATEGORY_ICONS[place.category]}
@@ -430,9 +448,20 @@ function PlaceCard({
           {CATEGORY_LABELS[place.category]}
         </span>
 
+        {/* Badge Mapillary si photo réelle */}
+        {place.image && !imgError && (
+          <span className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm text-white text-[9px] font-bold px-2 py-1 rounded-full flex items-center gap-1">
+            <span className="material-symbols-outlined text-[10px]">
+              photo_camera
+            </span>
+            Mapillary
+          </span>
+        )}
+
+        {/* Distance */}
         {place.distance != null && (
           <div className="absolute bottom-3 left-3">
-            <span className="text-white/90 text-[11px] font-bold bg-black/40 backdrop-blur-sm px-2.5 py-1 rounded-full flex items-center gap-1">
+            <span className="text-white/95 text-[11px] font-bold bg-black/45 backdrop-blur-sm px-2.5 py-1 rounded-full flex items-center gap-1">
               <span className="material-symbols-outlined text-xs">near_me</span>
               {formatDistance(place.distance)}
             </span>
@@ -440,17 +469,22 @@ function PlaceCard({
         )}
       </div>
 
+      {/* ── Contenu ── */}
       <div className="p-5 flex flex-col flex-1 gap-2">
         <div>
-          <h3 className="font-headline text-base font-bold text-primary leading-snug group-hover:text-tertiary transition-colors line-clamp-1">
+          {/* Nom complet sans troncature */}
+          <h3 className="font-headline text-base font-bold text-primary leading-snug group-hover:text-tertiary transition-colors break-words">
             {place.name}
           </h3>
-          <p className="text-xs text-on-surface-variant mt-0.5 flex items-center gap-1">
-            <span className="material-symbols-outlined text-xs">
+          {/* Adresse sur 2 lignes max */}
+          <p className="text-xs text-on-surface-variant mt-0.5 flex items-start gap-1 line-clamp-2">
+            <span className="material-symbols-outlined text-xs mt-px flex-shrink-0">
               location_on
             </span>
-            {[place.address, place.city].filter(Boolean).join(", ") ||
-              "Adresse non renseignée"}
+            <span>
+              {[place.address, place.city].filter(Boolean).join(", ") ||
+                "Adresse non renseignée"}
+            </span>
           </p>
         </div>
 
@@ -462,7 +496,7 @@ function PlaceCard({
         )}
 
         {place.tags && place.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-auto">
+          <div className="flex flex-wrap gap-1 mt-auto pt-1">
             {place.tags.slice(0, 3).map((tag) => (
               <span
                 key={tag}
@@ -492,6 +526,8 @@ function PlaceDetailModal({
   place: Place;
   onClose: () => void;
 }) {
+  const [imgError, setImgError] = useState(false);
+
   const mapsUrl =
     place.lat && place.lng
       ? `https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}`
@@ -504,34 +540,69 @@ function PlaceDetailModal({
         onClick={onClose}
       />
       <div className="relative z-10 bg-surface-container-lowest w-full sm:max-w-lg max-h-[92dvh] overflow-y-auto rounded-t-[2.5rem] sm:rounded-[2.5rem] shadow-2xl shadow-primary/20 border border-surface-variant/20">
+        {/* Handle mobile */}
         <div className="flex justify-center pt-4 pb-1 sm:hidden">
           <div className="w-10 h-1.5 rounded-full bg-outline-variant" />
         </div>
 
-        <div className="p-8 pt-6">
-          <div className="flex items-start justify-between gap-4 mb-6">
-            <div className="flex-1">
-              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-tertiary mb-2">
-                <span className="material-symbols-outlined text-sm">
-                  {CATEGORY_ICONS[place.category]}
+        {/* Photo header */}
+        <div className="relative h-56 overflow-hidden bg-surface-container-high mx-4 mt-3 rounded-2xl flex-shrink-0">
+          {place.image && !imgError ? (
+            <>
+              <img
+                src={place.image}
+                alt={place.name}
+                className="w-full h-full object-cover"
+                onError={() => setImgError(true)}
+              />
+              {/* Badge Mapillary */}
+              <span className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm text-white text-[9px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
+                <span className="material-symbols-outlined text-[10px]">
+                  photo_camera
                 </span>
-                {CATEGORY_LABELS[place.category]}
+                Street photo · Mapillary
               </span>
-              <h2 className="font-headline text-2xl font-bold text-primary">
-                {place.name}
-              </h2>
+            </>
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-surface-container-high to-surface-container gap-3">
+              <span className="material-symbols-outlined text-7xl text-outline-variant/50">
+                {CATEGORY_ICONS[place.category]}
+              </span>
+              <span className="text-xs text-outline-variant/50 font-medium">
+                No photo available
+              </span>
             </div>
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-2xl" />
+
+          {/* Nom + catégorie en overlay */}
+          <div className="absolute bottom-0 left-0 right-0 p-4">
+            <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-white/75 mb-1">
+              <span className="material-symbols-outlined text-sm">
+                {CATEGORY_ICONS[place.category]}
+              </span>
+              {CATEGORY_LABELS[place.category]}
+            </span>
+            <h2 className="font-headline text-xl font-bold text-white leading-snug break-words">
+              {place.name}
+            </h2>
+          </div>
+        </div>
+
+        <div className="p-6 pt-4">
+          {/* Bouton fermer */}
+          <div className="flex justify-end mb-3">
             <button
               onClick={onClose}
-              className="w-9 h-9 bg-surface-container-high rounded-full flex items-center justify-center shrink-0 hover:bg-surface-container transition-colors"
+              className="w-9 h-9 bg-surface-container-high rounded-full flex items-center justify-center hover:bg-surface-container transition-colors"
             >
               <span className="material-symbols-outlined text-base">close</span>
             </button>
           </div>
 
-          {/* Distance card */}
+          {/* Distance */}
           {place.distance != null && (
-            <div className="bg-surface-container-low rounded-2xl p-4 text-center border border-surface-variant/20 mb-6">
+            <div className="bg-surface-container-low rounded-2xl p-4 text-center border border-surface-variant/20 mb-4">
               <span className="material-symbols-outlined text-primary text-xl mb-1 block">
                 near_me
               </span>
@@ -544,20 +615,20 @@ function PlaceDetailModal({
             </div>
           )}
 
-          {/* Address */}
-          <div className="flex items-center gap-3 p-4 bg-surface-container-low rounded-2xl border border-surface-variant/20 mb-4">
-            <span className="material-symbols-outlined text-primary">
+          {/* Adresse */}
+          <div className="flex items-start gap-3 p-4 bg-surface-container-low rounded-2xl border border-surface-variant/20 mb-3">
+            <span className="material-symbols-outlined text-primary flex-shrink-0 mt-0.5">
               location_on
             </span>
-            <p className="text-sm text-on-surface-variant">
+            <p className="text-sm text-on-surface-variant break-words">
               {[place.address, place.city].filter(Boolean).join(", ") ||
                 "Adresse non renseignée"}
             </p>
           </div>
 
-          {/* Phone */}
+          {/* Téléphone */}
           {place.phone && (
-            <div className="flex items-center gap-3 p-4 bg-surface-container-low rounded-2xl border border-surface-variant/20 mb-4">
+            <div className="flex items-center gap-3 p-4 bg-surface-container-low rounded-2xl border border-surface-variant/20 mb-3">
               <span className="material-symbols-outlined text-primary">
                 call
               </span>
@@ -570,9 +641,9 @@ function PlaceDetailModal({
             </div>
           )}
 
-          {/* Website */}
+          {/* Site web */}
           {place.website && (
-            <div className="flex items-center gap-3 p-4 bg-surface-container-low rounded-2xl border border-surface-variant/20 mb-4">
+            <div className="flex items-center gap-3 p-4 bg-surface-container-low rounded-2xl border border-surface-variant/20 mb-3">
               <span className="material-symbols-outlined text-primary">
                 language
               </span>
@@ -589,7 +660,7 @@ function PlaceDetailModal({
 
           {/* Tags */}
           {place.tags && place.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-6">
+            <div className="flex flex-wrap gap-2 mb-5">
               {place.tags.map((tag) => (
                 <span
                   key={tag}
@@ -649,11 +720,12 @@ function PlaceDetailModal({
 function SkeletonCard() {
   return (
     <div className="bg-surface-container-lowest rounded-[2rem] overflow-hidden shadow-lg border border-surface-variant/20 flex flex-col animate-pulse">
-      <div className="h-40 bg-surface-container-high" />
+      <div className="h-44 bg-surface-container-high" />
       <div className="p-5 flex flex-col gap-3">
-        <div className="h-4 w-2/3 bg-surface-container-high rounded-full" />
+        <div className="h-4 w-3/4 bg-surface-container-high rounded-full" />
         <div className="h-3 w-full bg-surface-container-high rounded-full" />
-        <div className="flex gap-2">
+        <div className="h-3 w-2/3 bg-surface-container-high rounded-full" />
+        <div className="flex gap-2 mt-1">
           {[1, 2, 3].map((i) => (
             <div
               key={i}
@@ -731,13 +803,11 @@ export default function ExplorePage() {
   const [sortBy, setSortBy] = useState<SortOption>("distance");
   const [gpsLoading, setGpsLoading] = useState(false);
 
-  // ── doSearch ──────────────────────────────────────────────────────────────────
   const doSearch = useCallback(async (f: ExploreFilters) => {
     if (!f.location.trim() || !f.categories.length) return;
 
     let resolved = { ...f };
 
-    // Si pas encore de coordonnées, géocoder via Nominatim côté frontend
     if (resolved.latitude == null || resolved.longitude == null) {
       const geo = await geocodeQuery(f.location);
       if (geo) {
@@ -764,7 +834,6 @@ export default function ExplorePage() {
     }
   }, []);
 
-  // ── GPS ───────────────────────────────────────────────────────────────────────
   const handleGPS = () => {
     if (!navigator.geolocation) return;
     setGpsLoading(true);
@@ -826,13 +895,13 @@ export default function ExplorePage() {
             Explore <span className="italic font-normal">near you</span>
           </h1>
           <p className="text-on-surface-variant mt-2 text-base">
-            Restaurants, cafés, shops and more — powered by OpenStreetMap.
+            Restaurants, cafés, shops and more — powered by OpenStreetMap &amp;
+            Mapillary.
           </p>
         </div>
 
         {/* Search Panel */}
         <div className="bg-surface-container-lowest rounded-[2rem] border border-surface-variant/20 shadow-lg shadow-primary/5 p-6 sm:p-8 space-y-7">
-          {/* Location */}
           <div className="space-y-2">
             <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant">
               Your location
@@ -858,7 +927,6 @@ export default function ExplorePage() {
             </div>
           </div>
 
-          {/* Categories */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant">
@@ -891,13 +959,11 @@ export default function ExplorePage() {
             )}
           </div>
 
-          {/* Radius */}
           <RadiusSlider
             value={filters.radiusMeters}
             onChange={(v) => setFilters((f) => ({ ...f, radiusMeters: v }))}
           />
 
-          {/* Search Button */}
           <button
             onClick={() => doSearch(filters)}
             disabled={!canSearch || loading}

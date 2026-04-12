@@ -30,7 +30,7 @@ export default function Header() {
           Home
         </Link>
         <Link
-          to="/explore"
+          to="/explorePage"
           className="text-slate-600 hover:text-[#1D4F91] font-headline font-bold text-lg transition-all duration-300"
         >
           Explore
