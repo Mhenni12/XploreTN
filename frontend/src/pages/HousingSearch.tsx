@@ -4,6 +4,12 @@ import { LocationAutocomplete } from "./LocationAutocomplete";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
+interface LocalUser {
+  id: number;
+  fullName: string;
+  image?: string | null;
+}
+
 export type HousingType =
   | "APARTMENT"
   | "VILLA"
@@ -186,7 +192,6 @@ function RangeSlider({
           className="absolute inset-0 w-full opacity-0 cursor-pointer h-full"
           style={{ zIndex: 3 }}
         />
-        {/* Thumb indicators */}
         <div
           className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-primary rounded-full shadow-md pointer-events-none"
           style={{
@@ -459,7 +464,6 @@ function HousingCard({
           </p>
         </div>
 
-        {/* Stats row */}
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-on-surface-variant mt-auto">
           <span className="flex items-center gap-1">
             <span className="material-symbols-outlined text-sm text-primary">
@@ -580,7 +584,6 @@ function HousingDetailModal({
         )}
 
         <div className="p-8">
-          {/* Title + type */}
           <div className="flex items-start justify-between gap-4 mb-2">
             <div>
               <span className="text-[10px] font-bold uppercase tracking-widest text-tertiary flex items-center gap-1">
@@ -605,7 +608,6 @@ function HousingDetailModal({
             {housing.description}
           </p>
 
-          {/* Stats grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
             {[
               { icon: "bed", label: "Rooms", value: housing.rooms },
@@ -752,7 +754,6 @@ function MobileFilterDrawer({
               </button>
             </div>
           </div>
-          {/* Reuse sidebar content */}
           <FilterSidebar
             filters={filters}
             onChange={onChange}
@@ -765,11 +766,9 @@ function MobileFilterDrawer({
   );
 }
 
-// ─── Main Page ─────────────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const DEFAULT_FILTERS: HousingFilters = {
-  sortBy: "newest",
-};
+const DEFAULT_FILTERS: HousingFilters = { sortBy: "newest" };
 
 function countActiveFilters(f: HousingFilters): number {
   let n = 0;
@@ -781,7 +780,97 @@ function countActiveFilters(f: HousingFilters): number {
   return n;
 }
 
+// ─── Guest Banner ─────────────────────────────────────────────────────────────
+
+function GuestBanner() {
+  return (
+    <main className="pt-20 min-h-screen w-full bg-surface-container-low">
+      <div className="w-full min-h-[calc(100vh-80px)] flex flex-col">
+        {/* Hero Image */}
+        <div className="w-full h-[45vh] relative overflow-hidden">
+          <img
+            src={messageImg}
+            alt="Housing Hero"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+
+          {/* Optional dark overlay */}
+          <div className="absolute inset-0 bg-black/30" />
+        </div>
+
+        {/* Content Section */}
+        <div className="flex-1 w-full bg-surface px-6 md:px-20 py-12 flex flex-col items-center justify-center gap-6">
+          {/* Badge */}
+          <div className="flex items-center gap-1.5 bg-amber-50 rounded-full px-4 py-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-600 inline-block" />
+            <span className="text-[11px] font-semibold text-amber-800 uppercase tracking-wide">
+              Authentic Tunisian Hospitality
+            </span>
+          </div>
+
+          {/* Title */}
+          <div className="text-center max-w-2xl">
+            <h1 className="font-headline text-4xl md:text-5xl italic text-primary leading-tight mb-4">
+              Stay With Locals,
+              <br />
+              Experience Tunisia Authentically
+            </h1>
+
+            <p className="text-lg text-on-surface-variant leading-relaxed">
+              Discover welcoming Tunisian families opening their homes to
+              travellers. Enjoy authentic stays, cultural exchange, and
+              unforgettable memories beyond traditional hotels.
+            </p>
+          </div>
+
+          {/* Tags */}
+          <div className="flex flex-wrap justify-center gap-3">
+            {[
+              "Authentic local hosting",
+              "Family-friendly stays",
+              "Cultural immersion",
+              "Trusted community",
+            ].map((tag) => (
+              <span
+                key={tag}
+                className="text-sm px-4 py-2 rounded-full border border-outline-variant/30 text-on-surface-variant bg-surface-container-low"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <a
+            href="/auth"
+            className="px-10 py-4 bg-primary text-on-primary rounded-xl text-sm font-bold uppercase tracking-wider shadow-md hover:scale-[1.02] active:scale-95 transition-transform"
+          >
+            Sign in to Explore Homes
+          </a>
+
+          <p className="text-sm text-outline text-center">
+            New here?{" "}
+            <a href="/auth" className="text-primary font-bold underline">
+              Create a free account
+            </a>
+          </p>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+// ─── Main Page ─────────────────────────────────────────────────────────────────
+
 export default function HousingSearchPage() {
+  // ── State ──
+  // undefined = not yet read from localStorage (avoids flash of guest banner)
+  // null      = read, no user logged in
+  // LocalUser = read, user is logged in
+  const [currentUser, setCurrentUser] = useState<LocalUser | null | undefined>(
+    undefined,
+  );
+
   const [housings, setHousings] = useState<Housing[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -791,6 +880,17 @@ export default function HousingSearchPage() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // ── Read auth from localStorage ──
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("user");
+      setCurrentUser(raw ? (JSON.parse(raw) as LocalUser) : null);
+    } catch {
+      setCurrentUser(null);
+    }
+  }, []);
+
+  // ── Fetch housings ──
   const fetchHousings = useCallback(async (f: HousingFilters) => {
     setLoading(true);
     setError(null);
@@ -804,8 +904,10 @@ export default function HousingSearchPage() {
     }
   }, []);
 
-  // Debounced search
+  // Debounced search — only fires once auth state is resolved
   useEffect(() => {
+    if (currentUser === undefined) return; // wait until auth is known
+    if (!currentUser) return; // don't fetch when not logged in
     if (searchTimeout.current) clearTimeout(searchTimeout.current);
     searchTimeout.current = setTimeout(() => {
       fetchHousings({ ...filters, search: search || undefined });
@@ -813,7 +915,7 @@ export default function HousingSearchPage() {
     return () => {
       if (searchTimeout.current) clearTimeout(searchTimeout.current);
     };
-  }, [filters, search]);
+  }, [filters, search, currentUser]);
 
   const handleFiltersChange = (f: HousingFilters) => setFilters(f);
   const handleReset = () => {
@@ -823,10 +925,15 @@ export default function HousingSearchPage() {
 
   const activeCount = countActiveFilters(filters);
 
+  // ── Auth guards (after all hooks) ──
+  if (currentUser === undefined) return null; // reading localStorage, avoid any flash
+  if (!currentUser) return <GuestBanner />;
+
+  // ── Authenticated view ──
   return (
     <>
       <div className="pt-24 pb-32 min-h-screen px-4 md:px-8 max-w-[1400px] mx-auto">
-        {/* ── Header ── */}
+        {/* Header */}
         <div className="mb-10">
           <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-tertiary mb-2">
             Discover Tunisia
@@ -874,7 +981,7 @@ export default function HousingSearchPage() {
           </div>
         </div>
 
-        {/* ── Mobile filter button ── */}
+        {/* Mobile filter button */}
         <div className="flex lg:hidden mb-6">
           <button
             onClick={() => setMobileFiltersOpen(true)}
@@ -892,7 +999,7 @@ export default function HousingSearchPage() {
           </button>
         </div>
 
-        {/* ── Layout ── */}
+        {/* Layout */}
         <div className="flex gap-8 items-start">
           {/* Sidebar — desktop only */}
           <div className="hidden lg:block">
@@ -966,7 +1073,7 @@ export default function HousingSearchPage() {
         </div>
       </div>
 
-      {/* ── Detail Modal ── */}
+      {/* Detail Modal */}
       {selected && (
         <HousingDetailModal
           housing={selected}
@@ -974,7 +1081,7 @@ export default function HousingSearchPage() {
         />
       )}
 
-      {/* ── Mobile Filter Drawer ── */}
+      {/* Mobile Filter Drawer */}
       <MobileFilterDrawer
         open={mobileFiltersOpen}
         onClose={() => setMobileFiltersOpen(false)}
