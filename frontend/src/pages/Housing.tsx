@@ -341,7 +341,7 @@ function HousingCard({
   isDeleting: boolean;
 }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const BASE_URL = "http://localhost:5000";
+  const BACKEND_URL = "http://localhost:5000";
 
   const resolveImage = (src: string) =>
     src.startsWith("http") || src.startsWith("data:")
@@ -1157,10 +1157,10 @@ export default function HousingPage() {
   };
 
   useEffect(() => {
-    if (currentUser === undefined) return; // wait until auth is known
-    if (!currentUser) return; // don't fetch when not logged in
+    if (currentUser === undefined) return;
+    if (!currentUser) return;
     load();
-  }, []);
+  }, [currentUser]);
 
   // ── Open modals ───────────────────────────────────────────────────────────
   const openAdd = () => setModal({ ...EMPTY_FORM });

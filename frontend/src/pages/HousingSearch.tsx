@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LocationAutocomplete } from "./LocationAutocomplete";
+import { createDM } from "../types/messages";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -505,14 +507,53 @@ function HousingCard({
 function HousingDetailModal({
   housing,
   onClose,
+  currentUser,
 }: {
   housing: Housing;
   onClose: () => void;
+  currentUser: LocalUser | null;
 }) {
+  const navigate = useNavigate();
   const BASE_URL = "http://localhost:5000";
   const resolveImage = (src: string) =>
     src.startsWith("http") ? src : `${BASE_URL}${src}`;
   const [activeImg, setActiveImg] = useState(0);
+  const [requesting, setRequesting] = useState(false);
+  const [requestError, setRequestError] = useState<string | null>(null);
+
+  // ── Handle Request Stay ──
+  const handleRequestStay = async () => {
+    if (!currentUser) return;
+
+    // Prevent contacting yourself
+    if (currentUser.id === housing.ownerId) {
+      setRequestError("You cannot request a stay at your own listing.");
+      return;
+    }
+
+    setRequesting(true);
+    setRequestError(null);
+
+    try {
+      const conv = await createDM(housing.ownerId);
+
+      // Navigate to messages with pre-filled context
+      navigate("/messaging", {
+        state: {
+          targetConvId: conv.id,
+          autoMessage: `Bonjour ! Je suis intéressé(e) par votre logement « ${housing.title} » à ${housing.location} (${HOUSING_TYPE_LABELS[housing.type]}, ${housing.rooms} chambre${housing.rooms > 1 ? "s" : ""}, jusqu'à ${housing.maxTourists} voyageur${housing.maxTourists > 1 ? "s" : ""}). Serait-il possible d'organiser un séjour ? Merci !`,
+        },
+      });
+
+      onClose();
+    } catch {
+      setRequestError("Impossible d'ouvrir la conversation. Réessayez.");
+    } finally {
+      setRequesting(false);
+    }
+  };
+
+  const isOwnListing = currentUser?.id === housing.ownerId;
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6">
@@ -653,13 +694,41 @@ function HousingDetailModal({
             </p>
           </div>
 
-          <button
-            onClick={onClose}
-            className="w-full py-4 rounded-xl bg-primary text-white font-bold text-sm shadow-lg shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
-          >
-            <span className="material-symbols-outlined text-base">mail</span>
-            Request a Stay
-          </button>
+          {/* Error message */}
+          {requestError && (
+            <div className="mb-4 flex items-center gap-2 p-3 bg-error/10 border border-error/20 rounded-xl text-sm text-error">
+              <span className="material-symbols-outlined text-base">error</span>
+              {requestError}
+            </div>
+          )}
+
+          {/* Request Stay Button */}
+          {isOwnListing ? (
+            <div className="w-full py-4 rounded-xl bg-surface-container-high text-on-surface-variant font-bold text-sm flex items-center justify-center gap-2 text-center">
+              <span className="material-symbols-outlined text-base">home</span>
+              This is your listing
+            </div>
+          ) : (
+            <button
+              onClick={handleRequestStay}
+              disabled={requesting}
+              className="w-full py-4 rounded-xl bg-primary text-white font-bold text-sm shadow-lg shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100"
+            >
+              {requesting ? (
+                <>
+                  <div className="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+                  Opening conversation…
+                </>
+              ) : (
+                <>
+                  <span className="material-symbols-outlined text-base">
+                    mail
+                  </span>
+                  Request a Stay
+                </>
+              )}
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -786,44 +855,25 @@ function GuestBanner() {
   return (
     <main className="pt-20 min-h-screen w-full bg-surface-container-low">
       <div className="w-full min-h-[calc(100vh-80px)] flex flex-col">
-        {/* Hero Image */}
-        <div className="w-full h-[45vh] relative overflow-hidden">
-          <img
-            src={messageImg}
-            alt="Housing Hero"
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-
-          {/* Optional dark overlay */}
-          <div className="absolute inset-0 bg-black/30" />
-        </div>
-
-        {/* Content Section */}
         <div className="flex-1 w-full bg-surface px-6 md:px-20 py-12 flex flex-col items-center justify-center gap-6">
-          {/* Badge */}
           <div className="flex items-center gap-1.5 bg-amber-50 rounded-full px-4 py-1">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-600 inline-block" />
             <span className="text-[11px] font-semibold text-amber-800 uppercase tracking-wide">
               Authentic Tunisian Hospitality
             </span>
           </div>
-
-          {/* Title */}
           <div className="text-center max-w-2xl">
             <h1 className="font-headline text-4xl md:text-5xl italic text-primary leading-tight mb-4">
               Stay With Locals,
               <br />
               Experience Tunisia Authentically
             </h1>
-
             <p className="text-lg text-on-surface-variant leading-relaxed">
               Discover welcoming Tunisian families opening their homes to
               travellers. Enjoy authentic stays, cultural exchange, and
               unforgettable memories beyond traditional hotels.
             </p>
           </div>
-
-          {/* Tags */}
           <div className="flex flex-wrap justify-center gap-3">
             {[
               "Authentic local hosting",
@@ -839,15 +889,12 @@ function GuestBanner() {
               </span>
             ))}
           </div>
-
-          {/* CTA */}
           <a
             href="/auth"
             className="px-10 py-4 bg-primary text-on-primary rounded-xl text-sm font-bold uppercase tracking-wider shadow-md hover:scale-[1.02] active:scale-95 transition-transform"
           >
             Sign in to Explore Homes
           </a>
-
           <p className="text-sm text-outline text-center">
             New here?{" "}
             <a href="/auth" className="text-primary font-bold underline">
@@ -863,10 +910,6 @@ function GuestBanner() {
 // ─── Main Page ─────────────────────────────────────────────────────────────────
 
 export default function HousingSearchPage() {
-  // ── State ──
-  // undefined = not yet read from localStorage (avoids flash of guest banner)
-  // null      = read, no user logged in
-  // LocalUser = read, user is logged in
   const [currentUser, setCurrentUser] = useState<LocalUser | null | undefined>(
     undefined,
   );
@@ -880,7 +923,6 @@ export default function HousingSearchPage() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // ── Read auth from localStorage ──
   useEffect(() => {
     try {
       const raw = localStorage.getItem("user");
@@ -890,7 +932,6 @@ export default function HousingSearchPage() {
     }
   }, []);
 
-  // ── Fetch housings ──
   const fetchHousings = useCallback(async (f: HousingFilters) => {
     setLoading(true);
     setError(null);
@@ -904,10 +945,9 @@ export default function HousingSearchPage() {
     }
   }, []);
 
-  // Debounced search — only fires once auth state is resolved
   useEffect(() => {
-    if (currentUser === undefined) return; // wait until auth is known
-    if (!currentUser) return; // don't fetch when not logged in
+    if (currentUser === undefined) return;
+    if (!currentUser) return;
     if (searchTimeout.current) clearTimeout(searchTimeout.current);
     searchTimeout.current = setTimeout(() => {
       fetchHousings({ ...filters, search: search || undefined });
@@ -925,11 +965,9 @@ export default function HousingSearchPage() {
 
   const activeCount = countActiveFilters(filters);
 
-  // ── Auth guards (after all hooks) ──
-  if (currentUser === undefined) return null; // reading localStorage, avoid any flash
+  if (currentUser === undefined) return null;
   if (!currentUser) return <GuestBanner />;
 
-  // ── Authenticated view ──
   return (
     <>
       <div className="pt-24 pb-32 min-h-screen px-4 md:px-8 max-w-[1400px] mx-auto">
@@ -1001,7 +1039,6 @@ export default function HousingSearchPage() {
 
         {/* Layout */}
         <div className="flex gap-8 items-start">
-          {/* Sidebar — desktop only */}
           <div className="hidden lg:block">
             <FilterSidebar
               filters={filters}
@@ -1011,7 +1048,6 @@ export default function HousingSearchPage() {
             />
           </div>
 
-          {/* Main content */}
           <div className="flex-1 min-w-0">
             {error ? (
               <div className="flex flex-col items-center justify-center py-20 text-center gap-4">
@@ -1078,6 +1114,7 @@ export default function HousingSearchPage() {
         <HousingDetailModal
           housing={selected}
           onClose={() => setSelected(null)}
+          currentUser={currentUser}
         />
       )}
 
