@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 import Header from "../components/Header";
 import {
   getConversations,
@@ -265,7 +266,6 @@ function NewDMModal({
                   onClick={() => onStart(user.id)}
                   className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-surface-container-high transition-colors text-left group"
                 >
-                  {/* Avatar */}
                   <div className="relative w-11 h-11 flex-shrink-0">
                     {user.image ? (
                       <img
@@ -284,15 +284,12 @@ function NewDMModal({
                       </div>
                     )}
                   </div>
-
-                  {/* Name */}
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-sm text-on-surface truncate">
                       {user.fullName}
                     </p>
                     <p className="text-xs text-outline">Tap to message</p>
                   </div>
-
                   <span className="material-symbols-outlined text-outline text-lg opacity-0 group-hover:opacity-100 transition-opacity">
                     chevron_right
                   </span>
@@ -334,6 +331,13 @@ function TypingBubble({ typers }: { typers: TypingUser[] }) {
 
 // ── Main Component ─────────────────────────────────────────────────────────
 export default function MessagingPage() {
+  // ── Read navigation state (from "Request a Stay") ──────────────────────
+  const location = useLocation();
+  const navState = location.state as {
+    targetConvId?: string;
+    autoMessage?: string;
+  } | null;
+
   const currentUser = ((): LocalUser | null => {
     try {
       const raw = localStorage.getItem("user");
@@ -375,11 +379,14 @@ export default function MessagingPage() {
   const [hoveredMsg, setHoveredMsg] = useState<string | null>(null);
   const [mobileView, setMobileView] = useState<"list" | "chat">("list");
 
+  // Track whether the auto-message has already been sent (avoid double send)
+  const autoMessageSentRef = useRef(false);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isTypingRef = useRef(false);
 
-  // Load conversations
+  // ── Load conversations ─────────────────────────────────────────────────
   useEffect(() => {
     if (!currentUser) return;
     setLoadingConvs(true);
@@ -389,7 +396,28 @@ export default function MessagingPage() {
       .finally(() => setLoadingConvs(false));
   }, []);
 
-  // Socket: new messages
+  // ── Auto-select conversation + send auto-message from nav state ────────
+  useEffect(() => {
+    if (!navState?.targetConvId) return;
+    if (loadingConvs) return; // Wait until conversations are loaded
+    if (autoMessageSentRef.current) return;
+
+    const targetConv = conversations.find(
+      (c) => c.id === navState.targetConvId,
+    );
+    if (!targetConv) return;
+
+    // Select the conversation
+    handleSelectConv(targetConv).then(() => {
+      // Send auto-message if provided
+      if (navState.autoMessage && connected && !autoMessageSentRef.current) {
+        autoMessageSentRef.current = true;
+        socketSend(targetConv.id, navState.autoMessage);
+      }
+    });
+  }, [conversations, loadingConvs, navState, connected]);
+
+  // ── Socket: new messages ───────────────────────────────────────────────
   useEffect(() => {
     const unsub = onNewMessage((msg) => {
       if (msg.conversationId === activeConv?.id) {
@@ -414,7 +442,7 @@ export default function MessagingPage() {
     return unsub;
   }, [onNewMessage, activeConv?.id, markRead]);
 
-  // Socket: typing
+  // ── Socket: typing ─────────────────────────────────────────────────────
   useEffect(() => {
     const unsubStart = onTypingStart((t) => {
       if (t.conversationId !== activeConv?.id) return;
@@ -433,11 +461,12 @@ export default function MessagingPage() {
     };
   }, [onTypingStart, onTypingStop, activeConv?.id, currentUser?.id]);
 
-  // Auto-scroll
+  // ── Auto-scroll ────────────────────────────────────────────────────────
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, typers]);
 
+  // ── Handlers ───────────────────────────────────────────────────────────
   const handleSelectConv = useCallback(
     async (conv: Conversation) => {
       setActiveConv(conv);
@@ -572,18 +601,15 @@ export default function MessagingPage() {
 
         <main className="pt-20 min-h-screen w-full bg-surface-container-low">
           <div className="w-full min-h-[calc(100vh-80px)] flex flex-col">
-            {/* Hero Section */}
-            <div className="w-full h-[45vh]  relative">
+            <div className="w-full h-[45vh] relative">
               <img
                 src={messageImg}
                 alt="Messaging Hero"
                 className="absolute inset-0 w-full h-full object-cover opacity"
-              ></img>
+              />
             </div>
 
-            {/* Content Section */}
             <div className="flex-1 w-full bg-surface px-6 md:px-20 py-12 flex flex-col items-center justify-center gap-6">
-              {/* Badge */}
               <div className="flex items-center gap-1.5 bg-amber-50 rounded-full px-4 py-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-600 inline-block" />
                 <span className="text-[11px] font-semibold text-amber-800 uppercase tracking-wide">
@@ -591,12 +617,10 @@ export default function MessagingPage() {
                 </span>
               </div>
 
-              {/* Title */}
               <div className="text-center max-w-2xl">
                 <h1 className="font-headline text-4xl md:text-5xl italic text-primary leading-tight mb-4">
                   Discover Tunisia through its people
                 </h1>
-
                 <p className="text-lg text-on-surface-variant leading-relaxed">
                   Chat directly with locals who share their favourite stays,
                   hidden restaurants, and authentic experiences — or connect
@@ -604,7 +628,6 @@ export default function MessagingPage() {
                 </p>
               </div>
 
-              {/* Tags */}
               <div className="flex flex-wrap justify-center gap-3">
                 {[
                   "Medinas & riads",
@@ -621,7 +644,6 @@ export default function MessagingPage() {
                 ))}
               </div>
 
-              {/* CTA */}
               <a
                 href="/auth"
                 className="px-10 py-4 bg-primary text-on-primary rounded-xl text-sm font-bold uppercase tracking-wider shadow-md hover:scale-[1.02] active:scale-95 transition-transform"
@@ -869,7 +891,6 @@ export default function MessagingPage() {
             {/* Chat header */}
             <header className="relative z-20 h-20 flex items-center justify-between px-6 bg-surface-container-low/60 backdrop-blur-md border-b border-outline-variant/10">
               <div className="flex items-center gap-4">
-                {/* Mobile back button */}
                 <button
                   onClick={() => setMobileView("list")}
                   className="md:hidden p-2 -ml-2 rounded-full hover:bg-surface-container-high transition-colors"
@@ -969,7 +990,6 @@ export default function MessagingPage() {
                         onMouseEnter={() => setHoveredMsg(msg.id)}
                         onMouseLeave={() => setHoveredMsg(null)}
                       >
-                        {/* Avatar (others) */}
                         {!isMine &&
                           (showAvatar ? (
                             <Avatar
@@ -993,7 +1013,6 @@ export default function MessagingPage() {
                           <div
                             className={`flex items-center gap-2 ${isMine ? "flex-row-reverse" : "flex-row"}`}
                           >
-                            {/* Delete button */}
                             {isMine && hoveredMsg === msg.id && (
                               <button
                                 onClick={() => handleDelete(msg.id)}
@@ -1008,7 +1027,6 @@ export default function MessagingPage() {
                               </button>
                             )}
 
-                            {/* Bubble */}
                             {isMine ? (
                               <div className="bg-gradient-to-br from-primary to-primary-container p-4 rounded-2xl rounded-br-none shadow-md text-on-primary text-sm leading-relaxed">
                                 {msg.text}
@@ -1020,7 +1038,6 @@ export default function MessagingPage() {
                             )}
                           </div>
 
-                          {/* Timestamp + read receipt */}
                           <div
                             className={`flex items-center gap-1 mt-1 px-1 ${isMine ? "flex-row-reverse" : "flex-row"}`}
                           >
