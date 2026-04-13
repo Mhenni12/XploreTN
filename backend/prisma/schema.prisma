@@ -8,16 +8,19 @@ datasource db {
 }
 
 model User {
-  id         Int        @id @default(autoincrement())
-  email      String     @unique
-  createdAt  DateTime   @default(now())
-  fullName   String
-  image      String?
-  password   String
-  role       Role       @default(TOURISTE)
-  bio        String?
+  id                       Int                       @id @default(autoincrement())
+  email                    String                    @unique
+  createdAt                DateTime                  @default(now())
+  fullName                 String
+  image                    String?
+  password                 String
+  role                     Role                      @default(TOURISTE)
+  bio                      String?
+  Activity                 Activity[]
+  housings                 Housing[]
+  conversationParticipants ConversationParticipant[]
+  messages                 Message[]
   activities Activity[]
-  Housing    Housing[]
 }
 
 model Activity {
@@ -47,6 +50,19 @@ model Activity {
 
 model Housing {
   id            String      @id
+  updatedAt   DateTime
+  creatorId   Int
+  User        User             @relation(fields: [creatorId], references: [id])
+
+  @@index([category])
+  @@index([creatorId])
+  @@index([date])
+  @@index([location])
+  @@index([status])
+}
+
+model Housing {
+  id            String      @id @default(uuid())
   title         String
   description   String
   location      String
@@ -58,15 +74,43 @@ model Housing {
   maxStayDays   Int
   images        String[]
   createdAt     DateTime    @default(now())
-  updatedAt     DateTime
   ownerId       Int
   User          User        @relation(fields: [ownerId], references: [id])
+  updatedAt     DateTime    @updatedAt
+  owner         User        @relation(fields: [ownerId], references: [id])
+}
+
+model Place {
+  id           String        @id @default(cuid())
+  name         String
+  category     PlaceCategory
+  address      String
+  city         String
+  latitude     Float
+  longitude    Float
+  rating       Float?
+  reviewCount  Int?
+  isOpen       Boolean?
+  openingHours Json?
+  phone        String?
+  website      String?
+  tags         String[]
+  images       String[]
+  description  String?
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([latitude, longitude])
+  @@index([category])
+  @@index([city])
 }
 
 enum Role {
   CITOYEN
   TOURISTE
 }
+
 
 enum ActivityStatus {
   PENDING
@@ -96,4 +140,53 @@ enum HousingType {
   GUESTHOUSE
   RIAD
   CHALET
+}
+
+enum PlaceCategory {
+  RESTAURANT
+  CAFE
+  TEA_HOUSE
+  SHOP
+  BEAUTY_SALON
+  PHARMACY
+  BAKERY
+  MARKET
+}
+
+model Conversation {
+  id        String   @id @default(uuid())
+  type      String // "dm" ou "group"
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  participants ConversationParticipant[]
+  messages     Message[]
+}
+
+model ConversationParticipant {
+  conversationId String
+  userId         Int
+  joinedAt       DateTime  @default(now())
+  lastReadAt     DateTime?
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([conversationId, userId])
+}
+
+model Message {
+  id             String @id @default(uuid())
+  conversationId String
+  senderId       Int
+  text           String
+
+  createdAt DateTime @default(now())
+
+  // Tableau des IDs utilisateurs ayant lu le message
+  readBy String[]
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
 }

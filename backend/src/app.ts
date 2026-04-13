@@ -5,6 +5,12 @@ import path from "path";
 import authRoutes from "./routes/auth";
 import profileRouter from "./routes/profile";
 import activityRoutes from "./routes/activities";
+import housingRouter from "./routes/housing";
+import housingSearchRouter from "./routes/housingSearch";
+import exploreSearchRouter from "./routes/exploreSearch";
+import messageRouter from "./routes/message";
+
+dotenv.config();
 
 const app = express();
 
@@ -22,5 +28,9 @@ app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRouter);
 app.use("/api/activities", activityRoutes);
+app.use("/api/housings", housingRouter);
+app.use("/api/housingSearch", housingSearchRouter);
+app.use("/api/exploreSearch", exploreSearchRouter);
+app.use("/api/messages", messageRouter);
 
 export default app;
