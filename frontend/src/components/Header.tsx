@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom";
 import { toImageUrl } from "../utils/imageUrl";
 
-const BACKEND_URL = "http://localhost:5000";
-
 export default function Header() {
   const token = localStorage.getItem("token");
   const storedUser = localStorage.getItem("user");
@@ -21,10 +19,10 @@ export default function Header() {
       </div>
       <div className="hidden md:flex items-center gap-8">
         <Link
-          to="/"
+          to="/explore"
           className="text-slate-600 hover:text-[#1D4F91] font-headline font-bold text-lg transition-all duration-300"
         >
-          Home
+          Activities
         </Link>
         <Link
           to="/explorePage"
