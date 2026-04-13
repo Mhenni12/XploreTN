@@ -16,7 +16,7 @@ model User {
   password                 String
   role                     Role                      @default(TOURISTE)
   bio                      String?
-  Activity                 Activity[]
+  // Activity                 Activity[]
   housings                 Housing[]
   conversationParticipants ConversationParticipant[]
   messages                 Message[]
@@ -48,18 +48,18 @@ model Activity {
   @@index([creatorId])
 }
 
-model Housing {
-  id            String      @id
-  updatedAt   DateTime
-  creatorId   Int
-  User        User             @relation(fields: [creatorId], references: [id])
+// model Housing {
+//   id            String      @id
+//   updatedAt   DateTime
+//   creatorId   Int
+//   User        User             @relation(fields: [creatorId], references: [id])
 
-  @@index([category])
-  @@index([creatorId])
-  @@index([date])
-  @@index([location])
-  @@index([status])
-}
+//   @@index([category])
+//   @@index([creatorId])
+//   @@index([date])
+//   @@index([location])
+//   @@index([status])
+// }
 
 model Housing {
   id            String      @id @default(uuid())
@@ -77,7 +77,7 @@ model Housing {
   ownerId       Int
   User          User        @relation(fields: [ownerId], references: [id])
   updatedAt     DateTime    @updatedAt
-  owner         User        @relation(fields: [ownerId], references: [id])
+  // owner         User        @relation(fields: [ownerId], references: [id])
 }
 
 model Place {
