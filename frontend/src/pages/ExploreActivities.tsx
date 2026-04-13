@@ -6,6 +6,8 @@ import {
   type Activity,
   type ActivityCategory,
 } from '../services/activityService';
+import { useDebouncedPrice } from '../hooks/useDebouncedPrice';
+import { PriceRangeSlider } from '../components/PriceRangeSlider';
 
 export default function ExploreActivities() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -20,6 +22,11 @@ export default function ExploreActivities() {
   const [selectedCategory, setSelectedCategory] = useState<ActivityCategory | ''>
     ((searchParams.get('category') as ActivityCategory) || '');
   const [maxPrice, setMaxPrice] = useState<number>(500);
+  const { localPrice, setLocalPrice } = useDebouncedPrice(
+    maxPrice,
+    (price) => setMaxPrice(price),
+    300 // Debounce delay in ms
+  );
   const [sortBy, setSortBy] = useState('newest');
 
   // ─── Fetch activities whenever filters change ───────────────────────────
@@ -33,7 +40,7 @@ export default function ExploreActivities() {
         if (maxPrice < 500) filters.maxPrice = maxPrice;
 
         const result = await fetchActivities(filters);
-        let sorted = result.activities;
+        const sorted = result.activities;
 
         // Client-side sort
         if (sortBy === 'newest') sorted.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
@@ -83,7 +90,7 @@ export default function ExploreActivities() {
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 src={activity.images[0] || 'https://placehold.co/800x600?text=No+Image'}
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent md:block hidden" />
+              <div className="absolute inset-0 bg-linear-to-r from-black/40 to-transparent md:block hidden" />
               <div className="absolute top-6 left-6 flex items-center gap-2">
                 <div className="bg-white/90 backdrop-blur-md px-4 py-2 rounded-full flex items-center gap-1 shadow-sm">
                   <span className="text-xs font-bold text-on-surface-variant uppercase tracking-tighter">Full Day</span>
@@ -131,13 +138,13 @@ export default function ExploreActivities() {
         className="group relative bg-surface-container-lowest rounded-[2.5rem] overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10"
       >
         <Link to={`/experience/${activity.id}`}>
-          <div className="aspect-[4/5] relative overflow-hidden">
+          <div className="aspect-4/5 relative overflow-hidden">
             <img
               alt={activity.title}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               src={activity.images[0] || 'https://placehold.co/800x1000?text=No+Image'}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" />
             <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full flex items-center gap-1 shadow-sm">
               <span className="text-xs font-bold text-on-surface-variant uppercase tracking-tighter">From</span>
               <span className="text-lg font-black text-primary">{activity.price} TND</span>
@@ -183,10 +190,10 @@ export default function ExploreActivities() {
       {/* Filter Sidebar */}
       <aside className="w-full md:w-80 shrink-0">
         <div 
-          className="sticky top-28 bg-surface-container-low rounded-[2rem] flex flex-col"
+          className="sticky top-28 bg-surface-container-low rounded-4xl flex flex-col"
           style={{ maxHeight: 'calc(100vh - 8rem)' }}
         >
-          <div className="absolute inset-0 arabesque-pattern pointer-events-none rounded-[2rem]"></div>
+          <div className="absolute inset-0 arabesque-pattern pointer-events-none rounded-4xl"></div>
           <div 
             className="relative z-10 p-8 overflow-y-auto" 
             style={{ scrollbarWidth: 'thin', scrollbarColor: 'var(--color-primary) transparent' }}
@@ -225,36 +232,20 @@ export default function ExploreActivities() {
             </div>
 
             {/* Price Range */}
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-4">Max Investment</p>
-              <div className="relative pt-6 pb-1">
-                <div 
-                  className="absolute top-0 -translate-x-1/2 bg-primary text-white text-[10px] font-bold py-1 px-2 rounded-md shadow-md transition-all duration-100 ease-out z-10 whitespace-nowrap before:content-[''] before:absolute before:top-full before:left-1/2 before:-translate-x-1/2 before:border-4 before:border-transparent before:border-t-primary"
-                  style={{ left: `calc(${((maxPrice - 20) / (500 - 20)) * 100}% + ${8 - (((maxPrice - 20) / (500 - 20)) * 16)}px)` }}
-                >
-                  {maxPrice >= 500 ? '500+' : maxPrice} TND
-                </div>
-                <input
-                  className="w-full h-2 bg-secondary-fixed-dim rounded-lg appearance-none cursor-pointer accent-primary relative z-0"
-                  type="range"
-                  min={20}
-                  max={500}
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(Number(e.target.value))}
-                />
-                <div className="flex justify-between text-xs mt-2 font-medium">
-                  <span>20 TND</span>
-                  <span>500+ TND</span>
-                </div>
-              </div>
-            </div>
+            <PriceRangeSlider
+              value={localPrice}
+              onLocalChange={setLocalPrice}
+              min={20}
+              max={500}
+            />
 
             <button
               onClick={() => {
                 handleCategorySelect('');
                 setMaxPrice(500);
+                setLocalPrice(500);
               }}
-              className="w-full py-4 rounded-full bg-gradient-to-br from-[#003873] to-[#1D4F91] text-white font-bold text-sm shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all mb-4"
+              className="w-full py-4 rounded-full bg-linear-to-br from-[#003873] to-[#1D4F91] text-white font-bold text-sm shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all mb-4"
             >
               Reset Filters
             </button>
@@ -291,7 +282,7 @@ export default function ExploreActivities() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {[1, 2, 3].map((i) => (
               <div key={i} className={`${i === 3 ? 'lg:col-span-2' : ''} bg-surface-container-lowest rounded-[2.5rem] overflow-hidden animate-pulse`}>
-                <div className="aspect-[4/5] bg-surface-container-high" />
+                <div className="aspect-4/5 bg-surface-container-high" />
                 <div className="p-8 space-y-4">
                   <div className="h-4 bg-surface-container-high rounded w-1/3" />
                   <div className="h-8 bg-surface-container-high rounded w-2/3" />
