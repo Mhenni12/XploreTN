@@ -253,7 +253,7 @@ function HeroBanner() {
             className="absolute inset-0 w-full h-full object-cover"
           />
 
-          {/* Optional dark overlay */}
+          {/*  dark overlay */}
           <div className="absolute inset-0 bg-black/30" />
         </div>
 

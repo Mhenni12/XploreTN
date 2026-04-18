@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LocationAutocomplete } from "./LocationAutocomplete";
 import { createDM } from "../types/messages";
+import housingImg from "../assets/housingSearch.jpg";
+
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -36,7 +38,7 @@ export const HOUSING_TYPE_LABELS: Record<HousingType, string> = {
 export const HOUSING_TYPE_ICONS: Record<HousingType, string> = {
   APARTMENT: "apartment",
   VILLA: "villa",
-  STUDIO: "studio",
+  STUDIO: "living",
   TRADITIONAL_HOUSE: "cottage",
   FARM_STAY: "agriculture",
   GUESTHOUSE: "night_shelter",
@@ -403,7 +405,9 @@ function FilterSidebar({
 
   return (
     <aside className="w-72 shrink-0 self-start sticky top-28">
+      
       <div className="bg-surface-container-lowest rounded-[1.75rem] border border-surface-variant/20 shadow-lg shadow-primary/5 overflow-hidden">
+      
         <div className="px-6 py-5 border-b border-surface-variant/20 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-primary text-lg">
@@ -694,6 +698,7 @@ function HousingDetailModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6">
+      
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
@@ -835,8 +840,7 @@ function HousingDetailModal({
                 Clicking{" "}
                 <span className="font-bold text-primary">Request a Stay</span>{" "}
                 will send a message to the host and create a reservation
-                request. The listing will be removed from search while your
-                request is pending.
+                request. 
               </p>
             </div>
           )}
@@ -1208,7 +1212,6 @@ export default function HousingSearchPage() {
             )}
           </button>
         </div>
-
         <div className="flex gap-8 items-start">
           <div className="hidden lg:block">
             <FilterSidebar

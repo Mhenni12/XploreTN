@@ -1,46 +1,21 @@
 import express from "express";
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
 import prisma from "../prisma";
+import { authenticateJWT, AuthRequest } from "../middleware/auth";
 
 const router = express.Router();
 
-// ─── Auth middleware ───────────────────────────────────────────────────────────
-interface JwtPayload {
-  id: number;
-  email: string;
-}
-
-function authMiddleware(req: Request, res: Response, next: Function) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Token manquant ou invalide" });
-  }
-  const token = authHeader.split(" ")[1];
-  try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || "default_secret",
-    ) as JwtPayload;
-    (req as any).user = decoded;
-    next();
-  } catch {
-    return res.status(401).json({ message: "Token expiré ou invalide" });
-  }
-}
-
 // ─── POST /api/reservations ────────────────────────────────────────────────────
 // Creates a PENDING reservation for a housing
-router.post("/", authMiddleware, async (req: Request, res: Response) => {
+router.post("/", authenticateJWT, async (req: Request, res: Response) => {
   try {
-    const touristId = (req as any).user.id;
+    const touristId = (req as AuthRequest).user!.userId;
     const { housingId, startDate, endDate } = req.body;
 
     if (!housingId) {
       return res.status(400).json({ message: "housingId est requis." });
     }
 
-    // Check housing exists
     const housing = await prisma.housing.findUnique({
       where: { id: housingId },
     });
@@ -48,14 +23,12 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Logement introuvable." });
     }
 
-    // Prevent owner from reserving their own housing
     if (housing.ownerId === touristId) {
       return res.status(403).json({
         message: "Vous ne pouvez pas réserver votre propre logement.",
       });
     }
 
-    // Check if tourist already has a PENDING or ACCEPTED reservation for this housing
     const existing = await prisma.reservation.findFirst({
       where: {
         housingId,
@@ -74,10 +47,7 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
       });
     }
 
-    // Use provided dates or default: today → today + maxStayDays
-    const start = startDate
-      ? new Date(startDate)
-      : new Date();
+    const start = startDate ? new Date(startDate) : new Date();
     const end = endDate
       ? new Date(endDate)
       : new Date(Date.now() + housing.maxStayDays * 24 * 60 * 60 * 1000);
@@ -109,9 +79,9 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
 
 // ─── GET /api/reservations/my ──────────────────────────────────────────────────
 // Returns all reservations for the current tourist
-router.get("/my", authMiddleware, async (req: Request, res: Response) => {
+router.get("/my", authenticateJWT, async (req: Request, res: Response) => {
   try {
-    const touristId = (req as any).user.id;
+    const touristId = (req as AuthRequest).user!.userId;
 
     const reservations = await prisma.reservation.findMany({
       where: { touristId },
@@ -123,6 +93,8 @@ router.get("/my", authMiddleware, async (req: Request, res: Response) => {
             location: true,
             type: true,
             images: true,
+            rooms: true,
+            maxTourists: true,
           },
         },
       },
@@ -140,11 +112,11 @@ router.get("/my", authMiddleware, async (req: Request, res: Response) => {
 // Returns all reservations for a given housing (owner only)
 router.get(
   "/housing/:housingId",
-  authMiddleware,
+  authenticateJWT,
   async (req: Request, res: Response) => {
     try {
-      const ownerId = (req as any).user.id;
-      const housingId = req.params.housingId;
+      const ownerId = (req as AuthRequest).user!.userId;
+      const housingId = String(req.params.housingId);
 
       const housing = await prisma.housing.findUnique({
         where: { id: housingId },
@@ -178,11 +150,11 @@ router.get(
 // Owner accepts or rejects a reservation
 router.patch(
   "/:id/status",
-  authMiddleware,
+  authenticateJWT,
   async (req: Request, res: Response) => {
     try {
-      const ownerId = (req as any).user.id;
-      const reservationId = req.params.id;
+      const ownerId = (req as AuthRequest).user!.userId;
+      const reservationId = String(req.params.id);
       const { status } = req.body;
 
       if (!["ACCEPTED", "REJECTED"].includes(status)) {
@@ -227,15 +199,63 @@ router.patch(
   },
 );
 
-// ─── PATCH /api/reservations/:id/cancel ───────────────────────────────────────
-// Tourist cancels their reservation
+// ─── PATCH /api/reservations/:id/complete ─────────────────────────────────────
+// Owner marks an ACCEPTED reservation as COMPLETED → housing becomes available again
 router.patch(
-  "/:id/cancel",
-  authMiddleware,
+  "/:id/complete",
+  authenticateJWT,
   async (req: Request, res: Response) => {
     try {
-      const touristId = (req as any).user.id;
-      const reservationId = req.params.id;
+      const ownerId = (req as AuthRequest).user!.userId;
+      const reservationId = String(req.params.id);
+
+      const reservation = await prisma.reservation.findUnique({
+        where: { id: reservationId },
+        include: { housing: true },
+      });
+
+      if (!reservation) {
+        return res.status(404).json({ message: "Réservation introuvable." });
+      }
+      if (reservation.housing.ownerId !== ownerId) {
+        return res.status(403).json({ message: "Accès refusé." });
+      }
+      if (reservation.status !== "ACCEPTED") {
+        return res.status(400).json({
+          message: "Seules les réservations acceptées peuvent être marquées comme terminées.",
+        });
+      }
+
+      const updated = await prisma.reservation.update({
+        where: { id: reservationId },
+        data: { status: "COMPLETED" },
+        include: {
+          tourist: {
+            select: { id: true, fullName: true, email: true, image: true },
+          },
+        },
+      });
+
+      return res.json({
+        message: "Séjour marqué comme terminé. Le logement est de nouveau disponible.",
+        reservation: updated,
+      });
+    } catch (error) {
+      console.error("Complete reservation error:", error);
+      return res.status(500).json({ message: "Erreur interne du serveur" });
+    }
+  },
+);
+
+// ─── PATCH /api/reservations/:id/cancel ───────────────────────────────────────
+// Tourist cancels their own reservation
+router.patch(
+  "/:id/cancel",
+  authenticateJWT,
+  async (req: Request, res: Response) => {
+    try {
+      const touristId = (req as AuthRequest).user!.userId;
+      const reservationId = String(req.params.id);
 
       const reservation = await prisma.reservation.findUnique({
         where: { id: reservationId },

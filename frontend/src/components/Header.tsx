@@ -10,6 +10,7 @@ export default function Header() {
   const housingTarget =
     user?.role === "TOURISTE" ? "/housingSearch" : "/housing";
 
+
   const avatarSrc = toImageUrl(user?.image);
 
   return (
@@ -36,12 +37,14 @@ export default function Header() {
         >
           Housing
         </Link>
-        <Link
-          to="/dashboard"
-          className="text-slate-600 hover:text-[#1D4F91] font-headline font-bold text-lg transition-all duration-300"
-        >
-          Dashboard
-        </Link>
+        {user?.role === "CITOYEN" && (
+  <Link
+    to="/dashboard"
+    className="text-slate-600 hover:text-[#1D4F91] font-headline font-bold text-lg transition-all duration-300"
+  >
+    Dashboard
+  </Link>
+)}
         <Link
           to="/messaging"
           className="text-slate-600 hover:text-[#1D4F91] font-headline font-bold text-lg transition-all duration-300"

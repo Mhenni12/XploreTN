@@ -1,35 +1,11 @@
 import express from "express";
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
 import { v2 as cloudinary } from "cloudinary";
-import { upload } from "../cloudinary"; // ton config cloudinary
+import { upload } from "../cloudinary";
 import prisma from "../prisma";
+import { authenticateJWT, AuthRequest } from "../middleware/auth";
 
 const router = express.Router();
-
-// ─── Auth middleware ───────────────────────────────────────────────────────────
-interface JwtPayload {
-  id: number;
-  email: string;
-}
-
-function authMiddleware(req: Request, res: Response, next: Function) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Token manquant ou invalide" });
-  }
-  const token = authHeader.split(" ")[1];
-  try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || "default_secret",
-    ) as JwtPayload;
-    (req as any).user = decoded;
-    next();
-  } catch {
-    return res.status(401).json({ message: "Token expiré ou invalide" });
-  }
-}
 
 // ─── Cloudinary helper ─────────────────────────────────────────────────────────
 function extractPublicId(url: string): string | null {
@@ -139,9 +115,9 @@ function validateHousingBody(body: Partial<HousingBody>): string | null {
 }
 
 // ─── GET /api/housings/view ────────────────────────────────────────────────────
-router.get("/view", authMiddleware, async (req: Request, res: Response) => {
+router.get("/view", authenticateJWT, async (req: Request, res: Response) => {
   try {
-    const ownerId = (req as any).user.id;
+    const ownerId = (req as AuthRequest).user!.userId;
     const housings = await prisma.housing.findMany({
       where: { ownerId },
       orderBy: { createdAt: "desc" },
@@ -154,9 +130,9 @@ router.get("/view", authMiddleware, async (req: Request, res: Response) => {
 });
 
 // ─── GET /api/housings/:id ─────────────────────────────────────────────────────
-router.get("/:id", authMiddleware, async (req: Request, res: Response) => {
+router.get("/:id", authenticateJWT, async (req: Request, res: Response) => {
   try {
-    const ownerId = (req as any).user.id;
+    const ownerId = (req as AuthRequest).user!.userId;
     const id = str(req.params.id);
     const housing = await prisma.housing.findUnique({ where: { id } });
     if (!housing)
@@ -173,11 +149,11 @@ router.get("/:id", authMiddleware, async (req: Request, res: Response) => {
 // ─── POST /api/housings/new ────────────────────────────────────────────────────
 router.post(
   "/new",
-  authMiddleware,
+  authenticateJWT,
   upload.array("images", 10),
   async (req: Request, res: Response) => {
     try {
-      const ownerId = (req as any).user.id;
+      const ownerId = (req as AuthRequest).user!.userId;
 
       const body: Partial<HousingBody> = {
         title: str(req.body.title),
@@ -195,7 +171,6 @@ router.post(
       if (validationError)
         return res.status(400).json({ message: validationError });
 
-      // req.files[].path = URLs Cloudinary complètes
       const files = req.files as Express.Multer.File[];
       const imageUrls = files.map((f) => f.path);
 
@@ -228,11 +203,11 @@ router.post(
 // ─── PUT /api/housings/:id ─────────────────────────────────────────────────────
 router.put(
   "/:id",
-  authMiddleware,
+  authenticateJWT,
   upload.array("images", 10),
   async (req: Request, res: Response) => {
     try {
-      const ownerId = (req as any).user.id;
+      const ownerId = (req as AuthRequest).user!.userId;
       const id = str(req.params.id);
 
       const existing = await prisma.housing.findUnique({ where: { id } });
@@ -282,7 +257,6 @@ router.put(
       if (validationError)
         return res.status(400).json({ message: validationError });
 
-      // Supprimer les images demandées (Cloudinary + liste)
       let currentImages: string[] = existing.images as string[];
       const toRemove: string[] = req.body.removeImages
         ? JSON.parse(str(req.body.removeImages))
@@ -293,7 +267,6 @@ router.put(
         currentImages = currentImages.filter((url) => !toRemove.includes(url));
       }
 
-      // Ajouter les nouvelles images uploadées
       const newFiles = req.files as Express.Multer.File[];
       const newUrls = newFiles.map((f) => f.path);
       const finalImages = [...currentImages, ...newUrls];
@@ -323,9 +296,9 @@ router.put(
 );
 
 // ─── DELETE /api/housings/:id ──────────────────────────────────────────────────
-router.delete("/:id", authMiddleware, async (req: Request, res: Response) => {
+router.delete("/:id", authenticateJWT, async (req: Request, res: Response) => {
   try {
-    const ownerId = (req as any).user.id;
+    const ownerId = (req as AuthRequest).user!.userId;
     const id = str(req.params.id);
 
     const existing = await prisma.housing.findUnique({ where: { id } });
@@ -334,9 +307,7 @@ router.delete("/:id", authMiddleware, async (req: Request, res: Response) => {
     if (existing.ownerId !== ownerId)
       return res.status(403).json({ message: "Accès refusé." });
 
-    // Supprimer toutes les images Cloudinary associées
     await deleteCloudinaryImages(existing.images as string[]);
-
     await prisma.housing.delete({ where: { id } });
 
     return res.json({ message: "Logement supprimé avec succès.", id });

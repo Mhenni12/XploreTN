@@ -41,6 +41,9 @@ export interface Housing {
   createdAt: string;
   updatedAt?: string;
   ownerId: number;
+  // derived — populated after fetching reservations
+  isReserved?: boolean;
+  activeReservationId?: string;
 }
 
 export interface HousingFormData {
@@ -220,13 +223,42 @@ function fail<T>(message: string, status = 400): ApiResponse<T> {
   return { data: null, error: message, status };
 }
 
+function getAuthHeaders() {
+  const token = localStorage.getItem("token");
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 const housingApi = {
   async list(): Promise<ApiResponse<Housing[]>> {
     try {
       const { data, status } = await api.get<Housing[]>(
         "http://localhost:5000/api/housings/view",
       );
-      return ok(data, status);
+      const housings: Housing[] = Array.isArray(data) ? data : [];
+
+      // Fetch accepted reservations for each housing to determine reserved status
+      const withStatus = await Promise.all(
+        housings.map(async (h) => {
+          try {
+            const { data: reservations } = await axios.get(
+              `http://localhost:5000/api/reservations/housing/${h.id}`,
+              { headers: getAuthHeaders() },
+            );
+            const accepted = (reservations as any[]).find(
+              (r) => r.status === "ACCEPTED",
+            );
+            return {
+              ...h,
+              isReserved: !!accepted,
+              activeReservationId: accepted?.id ?? undefined,
+            };
+          } catch {
+            return { ...h, isReserved: false };
+          }
+        }),
+      );
+
+      return ok(withStatus, status);
     } catch (err: any) {
       return fail(
         err.response?.data?.message ?? "Failed to load housings.",
@@ -289,6 +321,22 @@ const housingApi = {
       );
     }
   },
+
+  async completeReservation(reservationId: string): Promise<ApiResponse<any>> {
+    try {
+      const { data, status } = await axios.patch(
+        `http://localhost:5000/api/reservations/${reservationId}/complete`,
+        {},
+        { headers: getAuthHeaders() },
+      );
+      return ok(data, status);
+    } catch (err: any) {
+      return fail(
+        err.response?.data?.message ?? "Failed to complete reservation.",
+        err.response?.status ?? 500,
+      );
+    }
+  },
 };
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -333,12 +381,16 @@ function HousingCard({
   housing,
   onEdit,
   onDelete,
+  onComplete,
   isDeleting,
+  isCompleting,
 }: {
   housing: Housing;
   onEdit: (h: Housing) => void;
   onDelete: (id: string) => void;
+  onComplete: (reservationId: string, housingId: string) => void;
   isDeleting: boolean;
+  isCompleting: boolean;
 }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const BACKEND_URL = "http://localhost:5000";
@@ -370,12 +422,24 @@ function HousingCard({
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+
+        {/* Housing type badge */}
         <span className="absolute top-4 left-4 bg-white/90 backdrop-blur-md text-primary text-xs font-bold px-3 py-1.5 rounded-full shadow">
           {HOUSING_TYPE_LABELS[housing.type]}
         </span>
-        <span className="absolute top-4 right-4 bg-primary text-white text-xs font-bold px-3 py-1.5 rounded-full shadow">
-          {housing.maxTourists} guests max
-        </span>
+
+        {/* ── Availability status badge ── */}
+        {housing.isReserved ? (
+          <span className="absolute top-4 right-4 flex items-center gap-1.5 bg-rose-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
+            <span className="w-1.5 h-1.5 rounded-full bg-white/80" />
+            Reserved
+          </span>
+        ) : (
+          <span className="absolute top-4 right-4 flex items-center gap-1.5 bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
+            <span className="w-1.5 h-1.5 rounded-full bg-white/80 animate-pulse" />
+            Available
+          </span>
+        )}
       </div>
 
       {/* Body */}
@@ -410,6 +474,34 @@ function HousingCard({
             icon="calendar_month"
           />
         </div>
+
+        {/* ── "Mark Stay Complete" banner (only when reserved) ── */}
+        {housing.isReserved && housing.activeReservationId && (
+          <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3">
+            <span className="material-symbols-outlined text-amber-600 text-lg shrink-0">
+              hotel
+            </span>
+            <p className="text-xs text-amber-800 font-medium flex-1 leading-snug">
+              A tourist is currently staying. Mark as complete when their stay ends.
+            </p>
+            <button
+              onClick={() =>
+                onComplete(housing.activeReservationId!, housing.id)
+              }
+              disabled={isCompleting}
+              className="shrink-0 flex items-center gap-1.5 bg-amber-600 hover:bg-amber-700 disabled:opacity-60 text-white text-[11px] font-bold uppercase tracking-wider px-3 py-2 rounded-xl transition-all"
+            >
+              {isCompleting ? (
+                <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <span className="material-symbols-outlined text-sm">
+                  check_circle
+                </span>
+              )}
+              Done
+            </button>
+          </div>
+        )}
 
         <p className="text-[10px] text-outline-variant mt-auto">
           Added {formatDate(housing.createdAt)}
@@ -511,9 +603,6 @@ function ImageUploader({
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
-  const BASE_URL =
-    import.meta.env.VITE_API_URL?.replace("/api", "") ??
-    "http://localhost:3000";
 
   const handleFiles = (files: FileList | null) => {
     if (!files) return;
@@ -573,7 +662,6 @@ function ImageUploader({
         />
       </div>
 
-      {/* Existing server images */}
       {existingImages.length > 0 && (
         <div>
           <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">
@@ -599,7 +687,6 @@ function ImageUploader({
         </div>
       )}
 
-      {/* New images (base64) */}
       {images.length > 0 && (
         <div>
           <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">
@@ -746,7 +833,7 @@ function HousingModal({
 }) {
   const [form, setForm] = useState<HousingFormData>({
     ...initial,
-    images: [], // new uploads only; existing managed separately
+    images: [],
     removeImages: [],
   });
   const [existingImgs, setExistingImgs] = useState<string[]>(originalImages);
@@ -812,7 +899,6 @@ function HousingModal({
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Basic Info */}
             <section className="space-y-4">
               <SectionLabel icon="home" title="Basic Information" />
               <div>
@@ -838,7 +924,6 @@ function HousingModal({
               </div>
             </section>
 
-            {/* Location */}
             <section className="space-y-4">
               <SectionLabel icon="location_on" title="Location" />
               <div>
@@ -849,12 +934,10 @@ function HousingModal({
                   error={errors.location}
                   placeholder="e.g. Sidi Bou Said, Tunis"
                 />
-
                 {errors.location && <FieldError msg={errors.location} />}
               </div>
             </section>
 
-            {/* Housing Details */}
             <section className="space-y-4">
               <SectionLabel icon="apartment" title="Housing Details" />
               <div>
@@ -896,7 +979,6 @@ function HousingModal({
               </div>
             </section>
 
-            {/* Tourist Capacity */}
             <section className="space-y-4">
               <SectionLabel icon="group" title="Tourist Capacity" />
               <div className="space-y-3">
@@ -917,7 +999,6 @@ function HousingModal({
               </div>
             </section>
 
-            {/* Photos */}
             <section className="space-y-4">
               <SectionLabel icon="photo_library" title="Photos" />
               <ImageUploader
@@ -928,7 +1009,6 @@ function HousingModal({
               />
             </section>
 
-            {/* Actions */}
             <div className="flex gap-4 pt-4 border-t border-surface-variant/30">
               <button
                 type="button"
@@ -1028,26 +1108,20 @@ function ErrorBanner({
 }
 
 // ─── Guest Banner ─────────────────────────────────────────────────────────────
-
 function GuestBanner() {
   return (
     <main className="pt-20 min-h-screen w-full bg-surface-container-low">
       <div className="w-full min-h-[calc(100vh-80px)] flex flex-col">
-        {/* Hero Image */}
         <div className="w-full h-[45vh] relative overflow-hidden">
           <img
             src={messageImg}
             alt="Housing Hero"
             className="absolute inset-0 w-full h-full object-cover"
           />
-
-          {/* Optional dark overlay */}
           <div className="absolute inset-0 bg-black/30" />
         </div>
 
-        {/* Content Section */}
         <div className="flex-1 w-full bg-surface px-6 md:px-20 py-12 flex flex-col items-center justify-center gap-6">
-          {/* Badge */}
           <div className="flex items-center gap-1.5 bg-amber-50 rounded-full px-4 py-1">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-600 inline-block" />
             <span className="text-[11px] font-semibold text-amber-800 uppercase tracking-wide">
@@ -1055,14 +1129,12 @@ function GuestBanner() {
             </span>
           </div>
 
-          {/* Title */}
           <div className="text-center max-w-2xl">
             <h1 className="font-headline text-4xl md:text-5xl italic text-primary leading-tight mb-4">
               Stay With Locals,
               <br />
               Experience Tunisia Authentically
             </h1>
-
             <p className="text-lg text-on-surface-variant leading-relaxed">
               Discover welcoming Tunisian families opening their homes to
               travellers. Enjoy authentic stays, cultural exchange, and
@@ -1070,7 +1142,6 @@ function GuestBanner() {
             </p>
           </div>
 
-          {/* Tags */}
           <div className="flex flex-wrap justify-center gap-3">
             {[
               "Authentic local hosting",
@@ -1087,7 +1158,6 @@ function GuestBanner() {
             ))}
           </div>
 
-          {/* CTA */}
           <a
             href="/auth"
             className="px-10 py-4 bg-primary text-on-primary rounded-xl text-sm font-bold uppercase tracking-wider shadow-md hover:scale-[1.02] active:scale-95 transition-transform"
@@ -1107,6 +1177,15 @@ function GuestBanner() {
   );
 }
 
+// ─── LocalUser type ────────────────────────────────────────────────────────────
+interface LocalUser {
+  id: number;
+  fullName: string;
+  email: string;
+  role: string;
+  image?: string;
+}
+
 // ─── Main Page ─────────────────────────────────────────────────────────────────
 export default function HousingPage() {
   const [housings, setHousings] = useState<Housing[]>([]);
@@ -1121,22 +1200,17 @@ export default function HousingPage() {
   const [deleteTarget, setDeleteTarget] = useState<Housing | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const BACKEND_URL = "http://localhost:5000";
+  const [completingId, setCompletingId] = useState<string | null>(null);
+
   const [currentUser, setCurrentUser] = useState<LocalUser | null | undefined>(
     undefined,
   );
-
-  const toImageUrl = (p?: string) => {
-    if (!p) return "/../assets/profile.jpg";
-    return p.startsWith("http") ? p : `${BACKEND_URL}${p}`;
-  };
 
   const [toast, setToast] = useState<{
     message: string;
     variant: ToastVariant;
   } | null>(null);
 
-  // ── Read auth from localStorage ──
   useEffect(() => {
     try {
       const raw = localStorage.getItem("user");
@@ -1146,7 +1220,6 @@ export default function HousingPage() {
     }
   }, []);
 
-  // ── Load ──────────────────────────────────────────────────────────────────
   const load = async () => {
     setLoading(true);
     setFetchError(null);
@@ -1162,7 +1235,6 @@ export default function HousingPage() {
     load();
   }, [currentUser]);
 
-  // ── Open modals ───────────────────────────────────────────────────────────
   const openAdd = () => setModal({ ...EMPTY_FORM });
 
   const openEdit = (h: Housing) =>
@@ -1182,7 +1254,6 @@ export default function HousingPage() {
       _originalImages: h.images,
     });
 
-  // ── Save ──────────────────────────────────────────────────────────────────
   const handleSave = async (data: HousingFormData, id?: string) => {
     setIsSaving(true);
     const res = id
@@ -1193,24 +1264,17 @@ export default function HousingPage() {
       setToast({ message: res.error, variant: "error" });
     } else if (res.data) {
       if (id) {
-        setHousings((prev) => prev.map((h) => (h.id === id ? res.data! : h)));
-        setToast({
-          message: "Housing updated successfully!",
-          variant: "success",
-        });
+        setHousings((prev) => prev.map((h) => (h.id === id ? { ...res.data!, isReserved: h.isReserved, activeReservationId: h.activeReservationId } : h)));
+        setToast({ message: "Housing updated successfully!", variant: "success" });
       } else {
-        setHousings((prev) => [res.data!, ...prev]);
-        setToast({
-          message: "Housing published successfully!",
-          variant: "success",
-        });
+        setHousings((prev) => [{ ...res.data!, isReserved: false }, ...prev]);
+        setToast({ message: "Housing published successfully!", variant: "success" });
       }
       setModal(null);
     }
     setIsSaving(false);
   };
 
-  // ── Delete ─────────────────────────────────────────────────────────────────
   const handleDeleteConfirm = async () => {
     if (!deleteTarget) return;
     setIsDeleting(true);
@@ -1227,33 +1291,55 @@ export default function HousingPage() {
     setDeleteTarget(null);
   };
 
-  // ── Stats ──────────────────────────────────────────────────────────────────
+  // ── Mark reservation as complete → housing becomes available ─────────────────
+  const handleComplete = async (reservationId: string, housingId: string) => {
+    setCompletingId(housingId);
+    const res = await housingApi.completeReservation(reservationId);
+    if (res.error) {
+      setToast({ message: res.error, variant: "error" });
+    } else {
+      // Mark housing as available again in local state
+      setHousings((prev) =>
+        prev.map((h) =>
+          h.id === housingId
+            ? { ...h, isReserved: false, activeReservationId: undefined }
+            : h,
+        ),
+      );
+      setToast({
+        message: "Stay marked as complete! Your home is available again.",
+        variant: "success",
+      });
+    }
+    setCompletingId(null);
+  };
+
+  const reservedCount = housings.filter((h) => h.isReserved).length;
+  const availableCount = housings.filter((h) => !h.isReserved).length;
+
   const stats = [
     { label: "Total Listings", value: housings.length, icon: "home" },
     {
-      label: "Total Capacity",
-      value: housings.reduce((s, h) => s + h.maxTourists, 0) + " guests",
-      icon: "group",
+      label: "Available",
+      value: availableCount,
+      icon: "check_circle",
+      highlight: "text-emerald-600",
     },
     {
-      label: "Avg. Stay",
-      value:
-        housings.length > 0
-          ? Math.round(
-              housings.reduce((s, h) => s + h.maxStayDays, 0) / housings.length,
-            ) + " days"
-          : "—",
-      icon: "calendar_month",
+      label: "Reserved",
+      value: reservedCount,
+      icon: "hotel",
+      highlight: "text-rose-600",
     },
     {
       label: "Total Rooms",
       value: housings.reduce((s, h) => s + h.rooms, 0),
       icon: "bed",
+      highlight: undefined,
     },
   ];
 
-  // ── Auth guards (after all hooks) ──
-  if (currentUser === undefined) return null; // reading localStorage, avoid any flash
+  if (currentUser === undefined) return null;
   if (!currentUser) return <GuestBanner />;
 
   return (
@@ -1296,10 +1382,14 @@ export default function HousingPage() {
                 key={stat.label}
                 className="bg-surface-container-lowest rounded-2xl p-5 border border-surface-variant/20 shadow-sm hover:shadow-md transition-shadow"
               >
-                <span className="material-symbols-outlined text-tertiary text-xl mb-2 block">
+                <span
+                  className={`material-symbols-outlined text-xl mb-2 block ${stat.highlight ?? "text-tertiary"}`}
+                >
                   {stat.icon}
                 </span>
-                <p className="font-headline text-2xl font-black text-primary">
+                <p
+                  className={`font-headline text-2xl font-black ${stat.highlight ?? "text-primary"}`}
+                >
                   {stat.value}
                 </p>
                 <p className="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold mt-0.5">
@@ -1349,7 +1439,9 @@ export default function HousingPage() {
                 onDelete={(id) =>
                   setDeleteTarget(housings.find((x) => x.id === id) ?? null)
                 }
+                onComplete={handleComplete}
                 isDeleting={deletingId === h.id}
+                isCompleting={completingId === h.id}
               />
             ))}
           </div>
