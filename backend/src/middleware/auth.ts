@@ -31,7 +31,7 @@ export const authenticateJWT = async (
     const user = await prisma.user.findUnique({ where: { id: payload.id } });
     if (!user) return res.status(401).json({ error: "User not found" });
 
-    // ✅ Mapper vers userId pour être cohérent avec les routes
+    // Mapper vers userId pour être cohérent avec les routes
     (req as AuthRequest).user = {
       userId: user.id,
       email: user.email,

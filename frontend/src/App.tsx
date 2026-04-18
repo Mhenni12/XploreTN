@@ -7,7 +7,6 @@ import BookingPage from "./pages/BookingPage";
 import HostExperience from "./pages/HostExperience";
 import UserProfile from "./pages/UserProfile";
 import CuratorDashboard from "./pages/CuratorDashboard";
-import MessagingInterface from "./pages/MessagingInterface";
 import AuthPage from "./pages/AuthPage";
 import HousingPage from "./pages/Housing";
 import HousingSearchPage from "./pages/HousingSearch";
@@ -34,8 +33,6 @@ function App() {
           <Route path="/activities" element={<Activities />} />
         </Route>
         <Route path="auth" element={<AuthPage />} />
-        <Route path="/messaging" element={<MessagingApp />} />
-        <Route path="messages" element={<MessagingInterface />} />
       </Routes>
     </BrowserRouter>
   );

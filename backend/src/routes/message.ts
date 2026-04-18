@@ -57,7 +57,7 @@ router.get("/conversations", async (req: Request, res: Response) => {
 
     // Compter les messages non lus pour chaque conversation
     const withUnread = await Promise.all(
-      conversations.map(async (conv) => {
+      (conversations as any[]).map(async (conv: any) => {
         const unreadCount = await prisma.message.count({
           where: {
             conversationId: conv.id,
@@ -71,7 +71,7 @@ router.get("/conversations", async (req: Request, res: Response) => {
 
         // Trouver le participant courant pour lastReadAt
         const currentParticipant = conv.participants.find(
-          (p) => p.userId === userId,
+          (p: any) => p.userId === userId,
         );
 
         return {
@@ -522,7 +522,7 @@ router.patch("/conversations/:id/read", async (req: Request, res: Response) => {
 
     // Ajouter userId dans readBy pour chacun
     await Promise.all(
-      unreadMessages.map((msg) =>
+      (unreadMessages as any[]).map((msg: any) =>
         prisma.message.update({
           where: { id: msg.id },
           data: {
@@ -562,7 +562,7 @@ router.get("/unread/total", async (req: Request, res: Response) => {
       select: { conversationId: true },
     });
 
-    const conversationIds = participations.map((p) => p.conversationId);
+    const conversationIds = (participations as any[]).map((p: any) => p.conversationId as string);
 
     const total = await prisma.message.count({
       where: {
