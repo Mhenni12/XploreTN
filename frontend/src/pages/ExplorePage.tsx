@@ -1439,7 +1439,7 @@ export default function ExplorePage() {
                   <h3 className="font-headline text-xl font-bold text-on-surface mb-6">
                     Search Results ({searchResults.length})
                   </h3>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {searchResults.map((item) => (
                       <ActivityCard
                         key={item.id}
@@ -1564,7 +1564,7 @@ export default function ExplorePage() {
         )}
 
         {/* ── Social Matching Section (Tourists only) ── */}
-        {isLoggedIn && aiQuery.trim().length < 2 && (
+        {isLoggedIn && (
           <section className="mb-20">
             <div className="mb-8">
               <h2 className="font-headline text-3xl font-bold text-on-surface">
