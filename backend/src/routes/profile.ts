@@ -1,35 +1,16 @@
-import express from "express";
-import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import express, { Request, Response, NextFunction } from "express";
 import { v2 as cloudinary } from "cloudinary";
 import { upload } from "../cloudinary"; // ton config cloudinary
 import prisma from "../prisma";
+import { authenticateJWT, type AuthRequest } from "../middleware/auth.js";
+import { afterUserWrite } from "../middleware/ai.middleware.js";
 
 const router = express.Router();
 
-// ─── Auth middleware ───────────────────────────────────────────────────────────
-interface JwtPayload {
-  id: number;
-  email: string;
-}
-
-function authMiddleware(req: Request, res: Response, next: Function) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Token manquant ou invalide" });
-  }
-  const token = authHeader.split(" ")[1];
-  try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || "default_secret",
-    ) as JwtPayload;
-    (req as any).user = decoded;
-    next();
-  } catch {
-    return res.status(401).json({ message: "Token expiré ou invalide" });
-  }
-}
+const respond = (req: Request, res: Response): void => {
+  const { user, statusCode = 200, message } = res.locals;
+  res.status(statusCode).json({ message, user });
+};
 
 // ─── Cloudinary helper ─────────────────────────────────────────────────────────
 function extractPublicId(url: string): string | null {
@@ -39,9 +20,9 @@ function extractPublicId(url: string): string | null {
 }
 
 // ─── GET /api/profile/me ───────────────────────────────────────────────────────
-router.get("/me", authMiddleware, async (req: Request, res: Response) => {
+router.get("/me", authenticateJWT, async (req: AuthRequest, res: Response) => {
   try {
-    const userId = (req as any).user.id;
+    const userId = req.user!.userId;
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
@@ -51,38 +32,123 @@ router.get("/me", authMiddleware, async (req: Request, res: Response) => {
         role: true,
         image: true,
         bio: true,
+        interests: true,
         createdAt: true,
       },
     });
+
     if (!user)
-      return res.status(404).json({ message: "Utilisateur introuvable" });
+      return res.status(404).json({ message: "User not found" });
+
     return res.json(user);
   } catch (error) {
     console.error("Get profile error:", error);
-    return res.status(500).json({ message: "Erreur interne du serveur" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 });
 
 // ─── PUT /api/profile/update ───────────────────────────────────────────────────
-router.put("/update", authMiddleware, async (req: Request, res: Response) => {
+async function updateProfile(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
   try {
-    const userId = (req as any).user.id;
-    const { fullName, bio } = req.body as { fullName?: string; bio?: string };
+    const userId = req.user!.userId;
+    const { fullName, bio, interests } = req.body as {
+      fullName?: string;
+      bio?: string;
+      interests?: string[];
+    };
+
+    const existing = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        bio: true,
+        interests: true,
+      },
+    });
+
+    if (!existing) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
 
     if (fullName !== undefined && fullName.trim().length === 0) {
-      return res.status(400).json({ message: "Le nom ne peut pas être vide." });
+      res.status(400).json({ message: "The name cannot be empty." });
+      return;
     }
+
     if (bio !== undefined && bio.length > 500) {
-      return res
+      res
         .status(400)
-        .json({ message: "La bio ne peut pas dépasser 500 caractères." });
+        .json({ message: "The bio cannot exceed 500 characters." });
+      return;
     }
+
+    if (interests !== undefined) {
+      if (!Array.isArray(interests)) {
+        res.status(400).json({
+          message: "The interests must be an array of strings.",
+        });
+        return;
+      }
+      if (interests.length === 0) {
+        res
+          .status(400)
+          .json({ message: "You must provide at least one interest." });
+        return;
+      }
+      if (
+        interests.some(
+          (item) => typeof item !== "string" || item.trim().length === 0,
+        )
+      ) {
+        res
+          .status(400)
+          .json({ message: "Each interest must be a non-empty string." });
+        return;
+      }
+      if (interests.length > 10) {
+        res
+          .status(400)
+          .json({ message: "You can add up to 10 interests." });
+        return;
+      }
+    }
+
+    const completionRequired =
+      !existing.bio?.trim() || existing.interests.length === 0;
+
+    if (completionRequired) {
+      if (bio === undefined || bio.trim().length === 0) {
+        res.status(400).json({ message: "The bio is required." });
+        return;
+      }
+
+      if (
+        interests === undefined ||
+        interests.length === 0 ||
+        interests.some((item) => typeof item !== "string" || item.trim() === "")
+      ) {
+        res.status(400).json({
+          message: "The interests are required and must be valid.",
+        });
+        return;
+      }
+    }
+
+    const sanitizedInterests =
+      interests?.map((item) => item.trim()) ?? undefined;
 
     const updated = await prisma.user.update({
       where: { id: userId },
       data: {
         ...(fullName !== undefined && { fullName: fullName.trim() }),
-        ...(bio !== undefined && { bio }),
+        ...(bio !== undefined && { bio: bio.trim() }),
+        ...(sanitizedInterests !== undefined && {
+          interests: sanitizedInterests,
+        }),
       },
       select: {
         id: true,
@@ -91,26 +157,41 @@ router.put("/update", authMiddleware, async (req: Request, res: Response) => {
         role: true,
         image: true,
         bio: true,
+        interests: true,
       },
     });
 
-    return res.json({ message: "Profil mis à jour.", user: updated });
+    res.locals.user = {
+      id: updated.id,
+      email: updated.email,
+      fullName: updated.fullName,
+      role: updated.role,
+      image: updated.image,
+      bio: updated.bio,
+      interests: updated.interests,
+    };
+    res.locals.statusCode = 200;
+    res.locals.message = "Profile updated successfully.";
+
+    next();
   } catch (error) {
     console.error("Update profile error:", error);
-    return res.status(500).json({ message: "Erreur interne du serveur" });
+    res.status(500).json({ message: "Internal server error" });
   }
-});
+}
+
+router.put("/update", authenticateJWT, updateProfile, afterUserWrite, respond);
 
 // ─── POST /api/profile/photo ───────────────────────────────────────────────────
 router.post(
   "/photo",
-  authMiddleware,
+  authenticateJWT,
   upload.single("photo"),
-  async (req: Request, res: Response) => {
+  async (req: AuthRequest, res: Response) => {
     try {
-      const userId = (req as any).user.id;
+      const userId = req.user!.userId;
       if (!req.file) {
-        return res.status(400).json({ message: "Aucun fichier reçu." });
+        return res.status(400).json({ message: "No file received." });
       }
 
       // req.file.path = URL Cloudinary complète (multer-storage-cloudinary)
@@ -137,13 +218,14 @@ router.post(
           role: true,
           image: true,
           bio: true,
+          interests: true,
         },
       });
 
-      return res.json({ message: "Photo mise à jour.", user: updated });
+      return res.json({ message: "Photo updated successfully.", user: updated });
     } catch (error) {
       console.error("Upload photo error:", error);
-      return res.status(500).json({ message: "Erreur interne du serveur" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   },
 );

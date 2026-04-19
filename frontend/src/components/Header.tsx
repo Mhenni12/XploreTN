@@ -1,10 +1,24 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toImageUrl } from "../utils/imageUrl";
 
 export default function Header() {
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+
+  useEffect(() => {
+    const refreshUser = () => {
+      const storedUser = localStorage.getItem("user");
+      setUser(storedUser ? JSON.parse(storedUser) : null);
+    };
+
+    window.addEventListener("userUpdated", refreshUser);
+    return () => window.removeEventListener("userUpdated", refreshUser);
+  }, []);
+
   const token = localStorage.getItem("token");
-  const storedUser = localStorage.getItem("user");
-  const user = storedUser ? JSON.parse(storedUser) : null;
   const profileTarget = token ? "/profile" : "/auth";
 
   const housingTarget =

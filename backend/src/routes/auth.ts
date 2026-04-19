@@ -54,6 +54,8 @@ router.post("/login", async (req: Request, res: Response) => {
         fullName: user.fullName,
         role: user.role,
         image: user.image,
+        bio: user.bio,
+        interests: user.interests,
       },
     });
   } catch (error) {
@@ -108,6 +110,8 @@ router.post("/signup", async (req: Request, res: Response) => {
         fullName,
         role,
         image: profileImage,
+        bio: null,
+        interests: [],
       },
     });
 
@@ -128,6 +132,8 @@ router.post("/signup", async (req: Request, res: Response) => {
         fullName: user.fullName,
         role: user.role,
         image: user.image,
+        bio: user.bio,
+        interests: user.interests,
       },
     });
   } catch (error) {
