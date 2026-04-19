@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toImageUrl } from "../utils/imageUrl";
 
@@ -13,6 +13,7 @@ interface UserData {
   image: string;
   bio: string | null;
   review: string | null;
+  interests: string[];
   createdAt?: string;
 }
 
@@ -61,6 +62,9 @@ export default function UserProfile() {
   const [editOpen, setEditOpen] = useState(false);
   const [editName, setEditName] = useState("");
   const [editBio, setEditBio] = useState("");
+  const [editInterests, setEditInterests] = useState<string[]>([]);
+  const [interestInput, setInterestInput] = useState("");
+  const [completionRequired, setCompletionRequired] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
 
@@ -149,8 +153,21 @@ export default function UserProfile() {
         headers: getAuthHeaders(),
       })
       .then((res) => {
-        setUser(res.data);
-        setReview(res.data.review ?? "");
+        const fetchedUser = {
+          ...res.data,
+          bio: res.data.bio ?? "",
+          interests: res.data.interests ?? [],
+        };
+        setUser(fetchedUser);
+        const needsCompletion =
+          !fetchedUser.bio.trim() || fetchedUser.interests.length === 0;
+        if (needsCompletion) {
+          setCompletionRequired(true);
+          setEditName(fetchedUser.fullName);
+          setEditBio(fetchedUser.bio);
+          setEditInterests(fetchedUser.interests);
+          setEditOpen(true);
+        }
       })
       .catch(() => {
         localStorage.clear();
@@ -163,26 +180,80 @@ export default function UserProfile() {
     if (!user) return;
     setEditName(user.fullName);
     setEditBio(user.bio ?? "");
+    setEditInterests(user.interests ?? []);
+    setInterestInput("");
     setSaveError("");
     setEditOpen(true);
   }
+
+  const addInterest = () => {
+    const trimmedInterest = interestInput.trim();
+    if (!trimmedInterest) return;
+    if (
+      editInterests.some(
+        (item) => item.toLowerCase() === trimmedInterest.toLowerCase(),
+      )
+    ) {
+      setSaveError("This interest is already added.");
+      return;
+    }
+    if (editInterests.length >= 10) {
+      setSaveError("You can add up to 10 interests.");
+      return;
+    }
+    setEditInterests((current) => [...current, trimmedInterest]);
+    setInterestInput("");
+    setSaveError("");
+  };
+
+  const removeInterest = (index: number) => {
+    setEditInterests((current) => current.filter((_, i) => i !== index));
+  };
 
   async function handleSave() {
     if (!editName.trim()) {
       setSaveError("Name cannot be empty.");
       return;
     }
+
+    if (completionRequired) {
+      if (!editBio.trim()) {
+        setSaveError("The bio is required.");
+        return;
+      }
+      if (editInterests.length === 0) {
+        setSaveError("Add at least one interest.");
+        return;
+      }
+    }
+
     setSaving(true);
     setSaveError("");
     try {
-      const res = await axios.put<{ user: UserData }>(
+      const res = await axios.put<{ user: Partial<UserData> }>(
         `${BACKEND_URL}/api/profile/update`,
-        { fullName: editName.trim(), bio: editBio },
+        {
+          fullName: editName.trim(),
+          bio: editBio,
+          interests: editInterests,
+        },
         { headers: getAuthHeaders() },
       );
-      setUser(res.data.user);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+      const updatedUser: UserData = {
+        id: res.data.user.id ?? user!.id,
+        email: res.data.user.email ?? user!.email,
+        fullName: res.data.user.fullName ?? user!.fullName,
+        role: res.data.user.role ?? user!.role,
+        image: res.data.user.image ?? user!.image,
+        bio: res.data.user.bio ?? user!.bio ?? "",
+        interests: res.data.user.interests ?? user!.interests ?? [],
+        createdAt: user!.createdAt,
+      };
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      window.dispatchEvent(new Event("userUpdated"));
       setEditOpen(false);
+      setCompletionRequired(false);
     } catch (err: any) {
       setSaveError(
         err.response?.data?.message || "An error occurred while saving.",
@@ -209,10 +280,21 @@ export default function UserProfile() {
           },
         },
       );
-      setUser(res.data.user);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+      const updatedUser: UserData = {
+        id: res.data.user.id ?? user!.id,
+        email: res.data.user.email ?? user!.email,
+        fullName: res.data.user.fullName ?? user!.fullName,
+        role: res.data.user.role ?? user!.role,
+        image: res.data.user.image ?? user!.image,
+        bio: res.data.user.bio ?? user!.bio ?? "",
+        interests: res.data.user.interests ?? user!.interests ?? [],
+        createdAt: user!.createdAt,
+      };
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      window.dispatchEvent(new Event("userUpdated"));
     } catch {
-      alert("Photo upload failed.");
+      alert("Failed to upload the photo.");
     } finally {
       setPhotoUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -266,7 +348,7 @@ export default function UserProfile() {
 
   if (!user) return null;
 
-  const roleLabel = user.role === "CITOYEN" ? "Citizen" : "Tourist";
+  const roleLabel = user.role === "CITOYEN" ? "Local" : "Tourist";
   const roleIcon = user.role === "CITOYEN" ? "person_pin" : "luggage";
 
   return (
@@ -295,7 +377,7 @@ export default function UserProfile() {
                     add_a_photo
                   </span>
                   <span className="text-white text-xs font-bold uppercase tracking-widest">
-                    Change
+                    Change photo
                   </span>
                 </>
               )}
@@ -319,21 +401,33 @@ export default function UserProfile() {
                 </span>
                 {roleLabel}
               </span>
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-green-500" />
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
-                  Online
-                </span>
-              </div>
+
             </div>
             <h1 className="font-headline text-6xl md:text-7xl font-bold text-slate-900 leading-tight">
               {user.fullName}
             </h1>
             <p className="font-headline italic text-2xl text-slate-500">
-              {user.bio || "No description yet."}
+              {user.bio ||
+                "No bio available. Click 'Modify Profile' to add a bio and interests for better recommendations!"}
             </p>
           </div>
-          <p className="text-sm text-slate-400 flex items-center justify-center lg:justify-start gap-2">
+          <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
+            {(user.interests ?? []).length > 0 ? (
+              (user.interests ?? []).map((interest) => (
+                <span
+                  key={interest}
+                  className="inline-flex items-center rounded-full bg-slate-100 text-slate-700 px-4 py-2 text-xs font-semibold"
+                >
+                  {interest}
+                </span>
+              ))
+            ) : (
+              <span className="text-slate-400 text-sm">
+                Add some interests to let others know what you like!
+              </span>
+            )}
+          </div>
+          <p className="text-sm text-slate-400 flex items-center justify-center lg:justify-start gap-2 pt-4">
             <span className="material-symbols-outlined text-base">
               alternate_email
             </span>
@@ -352,7 +446,7 @@ export default function UserProfile() {
               className="bg-white border border-slate-200 text-slate-600 px-10 py-4 rounded-full font-bold hover:bg-slate-50 transition-all flex items-center gap-3"
             >
               <span className="material-symbols-outlined text-xl">logout</span>
-              Sign Out
+              Logout
             </button>
           </div>
         </div>
@@ -896,7 +990,8 @@ export default function UserProfile() {
         <div
           className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center px-4"
           onClick={(e) => {
-            if (e.target === e.currentTarget) setEditOpen(false);
+            if (e.target === e.currentTarget && !completionRequired)
+              setEditOpen(false);
           }}
         >
           <div className="bg-white rounded-[2rem] p-10 w-full max-w-lg shadow-2xl space-y-6">
@@ -905,14 +1000,21 @@ export default function UserProfile() {
                 Edit Profile
               </h2>
               <button
-                onClick={() => setEditOpen(false)}
-                className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-colors"
+                onClick={() => !completionRequired && setEditOpen(false)}
+                disabled={completionRequired}
+                className={`w-10 h-10 flex items-center justify-center rounded-full ${completionRequired ? "bg-slate-200 text-slate-400 cursor-not-allowed" : "bg-slate-100 hover:bg-slate-200 text-slate-600"} transition-colors`}
               >
                 <span className="material-symbols-outlined text-slate-600">
                   close
                 </span>
               </button>
             </div>
+            {completionRequired && (
+              <div className="bg-yellow-50 border border-yellow-100 text-yellow-700 text-sm px-4 py-3 rounded-xl">
+                To continue, please complete your bio and add at least one
+                interest.
+              </div>
+            )}
             {saveError && (
               <div className="bg-red-50 border border-red-100 text-red-600 text-sm px-4 py-3 rounded-xl flex items-center gap-2">
                 <span className="material-symbols-outlined text-base">
@@ -948,6 +1050,53 @@ export default function UserProfile() {
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 resize-none focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
               />
             </div>
+            <div className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                  Interests
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={interestInput}
+                    onChange={(e) => setInterestInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        addInterest();
+                      }
+                    }}
+                    placeholder="Add an interest"
+                    className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+                  />
+                  <button
+                    onClick={addInterest}
+                    type="button"
+                    className="bg-primary text-white rounded-xl px-6 py-3 font-bold text-sm hover:opacity-90 transition-all"
+                  >
+                    Add Interest
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {editInterests.map((interest, index) => (
+                    <span
+                      key={`${interest}-${index}`}
+                      className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-2 text-xs text-slate-700"
+                    >
+                      {interest}
+                      <button
+                        type="button"
+                        onClick={() => removeInterest(index)}
+                        className="rounded-full p-0.5 text-slate-400 hover:text-slate-700"
+                        aria-label={`Remove ${interest}`}
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
             <div className="flex gap-4 pt-2">
               <button
                 onClick={handleSave}
@@ -971,8 +1120,9 @@ export default function UserProfile() {
                 )}
               </button>
               <button
-                onClick={() => setEditOpen(false)}
-                className="px-8 py-4 rounded-xl border border-slate-200 font-bold text-sm text-slate-600 hover:bg-slate-50 transition-all"
+                onClick={() => !completionRequired && setEditOpen(false)}
+                disabled={completionRequired}
+                className={`px-8 py-4 rounded-xl border border-slate-200 font-bold text-sm transition-all ${completionRequired ? "bg-slate-100 text-slate-400 cursor-not-allowed" : "text-slate-600 hover:bg-slate-50"}`}
               >
                 Cancel
               </button>

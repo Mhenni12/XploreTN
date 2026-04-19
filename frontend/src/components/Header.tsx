@@ -7,9 +7,22 @@ const BACKEND_URL =
   (import.meta as any).env?.VITE_API_URL || "http://localhost:5000";
 
 export default function Header() {
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+
+  useEffect(() => {
+    const refreshUser = () => {
+      const storedUser = localStorage.getItem("user");
+      setUser(storedUser ? JSON.parse(storedUser) : null);
+    };
+
+    window.addEventListener("userUpdated", refreshUser);
+    return () => window.removeEventListener("userUpdated", refreshUser);
+  }, []);
+
   const token = localStorage.getItem("token");
-  const storedUser = localStorage.getItem("user");
-  const user = storedUser ? JSON.parse(storedUser) : null;
   const profileTarget = token ? "/profile" : "/auth";
 
   const housingTarget =

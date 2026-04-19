@@ -20,6 +20,7 @@ import uploadRoutes from "./routes/upload";
 import reservationsRoute from "./routes/reservations";
 import activityReservationsRouter from "./routes/activityReservations";
 import notificationRouter from "./routes/notifications";
+import aiRoutes from "./routes/ai.routes";
 
 dotenv.config();
 
@@ -43,5 +44,6 @@ app.use("/api/upload", uploadRoutes);
 app.use("/api/reservations", reservationsRoute);
 app.use("/api/activity-reservations", activityReservationsRouter);
 app.use("/api/notifications", notificationRouter);
+app.use("/api/ai", aiRoutes);
 
 export default app;

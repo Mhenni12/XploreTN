@@ -18,6 +18,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
+// Component to handle programmatic map movements
 function ChangeView({ center }: { center: [number, number] }) {
   const map = useMap();
   useEffect(() => {

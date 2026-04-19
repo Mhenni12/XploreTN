@@ -16,8 +16,16 @@ import Activities from "./pages/ExploreActivities";
 import ActivityPage from "./pages/ActivityPage";
 import NotificationPage from "./pages/Notifications";
 import ScrollToTop from "./components/ScrollToTop";
+import DiscoveryPage from "./components/DiscoveryPage";
 
 function App() {
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const role =
+    typeof window !== "undefined" ? localStorage.getItem("role") : null;
+  const isLoggedIn = Boolean(token);
+  const isTourist = role === "TOURISTE";
+
   return (
     <BrowserRouter>
       <ScrollToTop />
@@ -39,6 +47,14 @@ function App() {
           <Route path="/notifications" element={<NotificationPage />} />
         </Route>
         <Route path="auth" element={<AuthPage />} />
+        <Route path="/messaging" element={<MessagingApp />} />
+        //! For testing only: remove before production
+        <Route
+          path="/discovery"
+          element={
+            <DiscoveryPage isLoggedIn={isLoggedIn} isTourist={isTourist} />
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

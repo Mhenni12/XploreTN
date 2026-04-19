@@ -1,5 +1,6 @@
 import prisma from "../prisma.js";
 import type {
+  Prisma,
   ActivityCategory,
   ActivityStatus,
 } from "../../generated/prisma/client.js";
@@ -9,6 +10,8 @@ import type {
 } from "../validators/activity.validator.js";
 
 // ─── Filters interface ──────────────────────────────────────────────────────
+type ActivitySortBy = "newest" | "price_asc" | "price_desc";
+
 interface ActivityFilters {
   category?: ActivityCategory;
   status?: ActivityStatus;
@@ -17,6 +20,7 @@ interface ActivityFilters {
   search?: string;
   page?: number;
   pageSize?: number;
+  sortBy?: ActivitySortBy;
 }
 
 // ─── Create a new activity ──────────────────────────────────────────────────
@@ -59,6 +63,7 @@ export async function getActivities(filters: ActivityFilters = {}) {
     search,
     page = 1,
     pageSize = 12,
+    sortBy = "newest",
   } = filters;
 
   const where: any = {
@@ -88,6 +93,14 @@ export async function getActivities(filters: ActivityFilters = {}) {
     ];
   }
 
+  const orderBy = (
+    sortBy === "price_asc"
+      ? [{ price: "asc" }, { createdAt: "desc" }]
+      : sortBy === "price_desc"
+        ? [{ price: "desc" }, { createdAt: "desc" }]
+        : [{ createdAt: "desc" }, { id: "desc" }]
+  ) as Prisma.ActivityOrderByWithRelationInput[];
+
   const [activities, total] = await Promise.all([
     prisma.activity.findMany({
       where,
@@ -96,7 +109,7 @@ export async function getActivities(filters: ActivityFilters = {}) {
           select: { id: true, fullName: true, image: true },
         },
       },
-      orderBy: { createdAt: "desc" },
+      orderBy,
       skip: (page - 1) * pageSize,
       take: pageSize,
     }),
@@ -141,6 +154,7 @@ export async function updateActivity(
   data: UpdateActivityInput,
   userId: number,
 ) {
+  // Check existence and ownership
   const existing = await prisma.activity.findUnique({ where: { id } });
   if (!existing) return { error: "NOT_FOUND" as const };
   if (existing.creatorId !== userId) return { error: "FORBIDDEN" as const };
