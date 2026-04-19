@@ -18,6 +18,7 @@ import exploreSearchRouter from "./routes/exploreSearch";
 import messageRouter from "./routes/message";
 import uploadRoutes from "./routes/upload";
 import reservationsRoute from "./routes/reservations";
+import activityReservationsRouter from "./routes/activityReservations";
 
 dotenv.config();
 
@@ -38,6 +39,7 @@ app.use("/api/housingSearch", housingSearchRouter);
 app.use("/api/exploreSearch", exploreSearchRouter);
 app.use("/api/messages", messageRouter);
 app.use("/api/upload", uploadRoutes);
-app.use("/api/reservations" ,reservationsRoute);
+app.use("/api/reservations", reservationsRoute);
+app.use("/api/activity-reservations", activityReservationsRouter);
 
 export default app;

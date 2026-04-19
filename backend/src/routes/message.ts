@@ -562,7 +562,9 @@ router.get("/unread/total", async (req: Request, res: Response) => {
       select: { conversationId: true },
     });
 
-    const conversationIds = (participations as any[]).map((p: any) => p.conversationId as string);
+    const conversationIds = (participations as any[]).map(
+      (p: any) => p.conversationId as string,
+    );
 
     const total = await prisma.message.count({
       where: {

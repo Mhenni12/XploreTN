@@ -2,6 +2,8 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import axios from "axios";
 import { LocationAutocomplete } from "./LocationAutocomplete";
 import messageImg from "../assets/housing1.jpg";
+import MapPicker from "../components/MapPicker";
+import { Link, useNavigate } from "react-router-dom";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -58,6 +60,8 @@ export interface HousingFormData {
   maxStayDays: number;
   images: string[];
   removeImages?: string[];
+  latitude: number;
+  longitude: number;
 }
 
 export type HousingFormErrors = Partial<Record<keyof HousingFormData, string>>;
@@ -197,6 +201,8 @@ async function buildFormData(data: HousingFormData): Promise<FormData> {
   fd.append("familyMembers", String(data.familyMembers));
   fd.append("maxTourists", String(data.maxTourists));
   fd.append("maxStayDays", String(data.maxStayDays));
+  fd.append("latitude", String(data.latitude));
+  fd.append("longitude", String(data.longitude));
 
   for (const img of data.images) {
     if (img.startsWith("data:image/")) {
@@ -482,7 +488,8 @@ function HousingCard({
               hotel
             </span>
             <p className="text-xs text-amber-800 font-medium flex-1 leading-snug">
-              A tourist is currently staying. Mark as complete when their stay ends.
+              A tourist is currently staying. Mark as complete when their stay
+              ends.
             </p>
             <button
               onClick={() =>
@@ -816,6 +823,8 @@ const EMPTY_FORM: HousingFormData = {
   maxStayDays: 7,
   images: [],
   removeImages: [],
+  latitude: 36.8065, // Tunis par défaut
+  longitude: 10.1815,
 };
 
 function HousingModal({
@@ -936,6 +945,19 @@ function HousingModal({
                 />
                 {errors.location && <FieldError msg={errors.location} />}
               </div>
+
+              {/* ← Map synchronisée */}
+              <MapPicker
+                latitude={form.latitude}
+                longitude={form.longitude}
+                locationName={form.location}
+                onLocationChange={(lat, lng) => {
+                  set("latitude", lat);
+                  set("longitude", lng);
+                }}
+                onLocationNameChange={(name) => set("location", name)}
+                height="280px"
+              />
             </section>
 
             <section className="space-y-4">
@@ -1251,6 +1273,8 @@ export default function HousingPage() {
       maxStayDays: h.maxStayDays,
       images: [],
       removeImages: [],
+      latitude: (h as any).latitude ?? 36.8065,
+      longitude: (h as any).longitude ?? 10.1815,
       _originalImages: h.images,
     });
 
@@ -1264,11 +1288,27 @@ export default function HousingPage() {
       setToast({ message: res.error, variant: "error" });
     } else if (res.data) {
       if (id) {
-        setHousings((prev) => prev.map((h) => (h.id === id ? { ...res.data!, isReserved: h.isReserved, activeReservationId: h.activeReservationId } : h)));
-        setToast({ message: "Housing updated successfully!", variant: "success" });
+        setHousings((prev) =>
+          prev.map((h) =>
+            h.id === id
+              ? {
+                  ...res.data!,
+                  isReserved: h.isReserved,
+                  activeReservationId: h.activeReservationId,
+                }
+              : h,
+          ),
+        );
+        setToast({
+          message: "Housing updated successfully!",
+          variant: "success",
+        });
       } else {
         setHousings((prev) => [{ ...res.data!, isReserved: false }, ...prev]);
-        setToast({ message: "Housing published successfully!", variant: "success" });
+        setToast({
+          message: "Housing published successfully!",
+          variant: "success",
+        });
       }
       setModal(null);
     }
@@ -1365,13 +1405,23 @@ export default function HousingPage() {
               Share your home and welcome tourists from around the world.
             </p>
           </div>
-          <button
-            onClick={openAdd}
-            className="self-start sm:self-auto flex items-center gap-3 bg-primary text-white px-8 py-4 rounded-2xl font-bold text-sm uppercase tracking-widest shadow-xl shadow-primary/30 hover:scale-[1.03] active:scale-95 transition-all"
-          >
-            <span className="material-symbols-outlined">add_home</span>
-            Add Housing
-          </button>
+          {/* Action buttons */}
+          <div className="flex flex-wrap gap-3 self-start sm:self-auto">
+            <Link
+              to="/housingSearch"
+              className="flex items-center gap-2 border border-primary text-primary px-6 py-3.5 rounded-2xl font-bold text-sm uppercase tracking-widest hover:bg-primary hover:text-white transition-all"
+            >
+              <span className="material-symbols-outlined text-sm">explore</span>
+              Explore Housing
+            </Link>
+            <button
+              onClick={openAdd}
+              className="self-start sm:self-auto flex items-center gap-3 bg-primary text-white px-8 py-4 rounded-2xl font-bold text-sm uppercase tracking-widest shadow-xl shadow-primary/30 hover:scale-[1.03] active:scale-95 transition-all"
+            >
+              <span className="material-symbols-outlined">add_home</span>
+              Add Housing
+            </button>
+          </div>
         </div>
 
         {/* ── Stats strip ── */}
