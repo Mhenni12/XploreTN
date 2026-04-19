@@ -1,57 +1,57 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   createActivity,
   CATEGORY_CONFIG,
   type ActivityCategory,
   type CreateActivityData,
-} from '../services/activityService';
-import ImageUploader from '../components/ImageUploader';
-import MapPicker from '../components/MapPicker';
+} from "../services/activityService";
+import ImageUploader from "../components/ImageUploader";
+import MapPicker from "../components/MapPicker";
+import { LocationAutocomplete } from "./LocationAutocomplete";
 
 const allCategories = Object.keys(CATEGORY_CONFIG) as ActivityCategory[];
 
 export default function HostExperience() {
   const navigate = useNavigate();
 
-  // ─── Form state ─────────────────────────────────────────────────────────
   const [form, setForm] = useState<CreateActivityData>({
-    title: '',
-    description: '',
+    title: "",
+    description: "",
     price: 0,
-    date: '',
-    location: '',
+    date: "",
+    location: "",
     latitude: 36.8065,
     longitude: 10.1815,
     images: [],
     capacity: 6,
-    category: 'ART_HERITAGE',
+    category: "ART_HERITAGE",
   });
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  // ─── Handlers ───────────────────────────────────────────────────────────
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     const { name, value, type } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: type === 'number' ? Number(value) : value,
+      [name]: type === "number" ? Number(value) : value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
-    // Check if user is logged in
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      setError('You must be logged in as a Citoyen to create an activity.');
+      setError("You must be logged in as a Citoyen to create an activity.");
       setSubmitting(false);
       return;
     }
@@ -61,15 +61,14 @@ export default function HostExperience() {
         ...form,
         date: new Date(form.date).toISOString(),
       });
-      setSuccess('Activity published successfully! It is now live.');
-      setTimeout(() => navigate('/dashboard'), 2000);
+      setSuccess("Activity published successfully! It is now live.");
+      setTimeout(() => navigate("/dashboard"), 2000);
     } catch (err: any) {
       const msg =
-        err?.response?.data?.message ||
-        err?.response?.data?.errors
+        err?.response?.data?.message || err?.response?.data?.errors
           ? JSON.stringify(err.response.data.errors)
-          : 'Failed to create activity. Please try again.';
-      setError(typeof msg === 'string' ? msg : JSON.stringify(msg));
+          : "Failed to create activity. Please try again.";
+      setError(typeof msg === "string" ? msg : JSON.stringify(msg));
     } finally {
       setSubmitting(false);
     }
@@ -83,15 +82,16 @@ export default function HostExperience() {
           Share Your Tunisia
         </h1>
         <p className="text-on-surface-variant text-lg max-w-2xl font-medium">
-          As a local curator, you are the bridge between heritage and the curious traveler. Craft an
-          experience that lingers in the soul.
+          As a local curator, you are the bridge between heritage and the
+          curious traveler. Craft an experience that lingers in the soul.
         </p>
       </div>
 
-      {/* Success / Error Messages */}
       {success && (
         <div className="mb-8 p-6 bg-green-50 border border-green-200 rounded-2xl flex items-center gap-4">
-          <span className="material-symbols-outlined text-green-600">check_circle</span>
+          <span className="material-symbols-outlined text-green-600">
+            check_circle
+          </span>
           <p className="text-green-800 font-medium">{success}</p>
         </div>
       )}
@@ -103,18 +103,19 @@ export default function HostExperience() {
       )}
 
       <form onSubmit={handleSubmit}>
-        {/* Form Canvas */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          {/* Left Column: Media & Details */}
+          {/* Left Column */}
           <div className="lg:col-span-7 space-y-12">
-            {/* Image URLs Section */}
+            {/* Image Uploader */}
             <section className="relative group">
               <div className="bg-surface-container-low rounded-[2rem] border-2 border-dashed border-outline-variant p-2 space-y-4">
-                 <ImageUploader 
-                   images={form.images} 
-                   onImagesChange={(urls) => setForm(prev => ({...prev, images: urls}))} 
-                   maxImages={6} 
-                 />
+                <ImageUploader
+                  images={form.images}
+                  onImagesChange={(urls) =>
+                    setForm((prev) => ({ ...prev, images: urls }))
+                  }
+                  maxImages={6}
+                />
               </div>
             </section>
 
@@ -134,6 +135,7 @@ export default function HostExperience() {
                   required
                 />
               </div>
+
               <div className="space-y-2">
                 <label className="font-label text-sm font-bold uppercase tracking-widest text-primary/70 px-1">
                   The Narrative *
@@ -148,6 +150,7 @@ export default function HostExperience() {
                   required
                 />
               </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="font-label text-sm font-bold uppercase tracking-widest text-primary/70 px-1">
@@ -167,6 +170,7 @@ export default function HostExperience() {
                     ))}
                   </select>
                 </div>
+
                 <div className="space-y-2">
                   <label className="font-label text-sm font-bold uppercase tracking-widest text-primary/70 px-1">
                     Investment (TND) *
@@ -178,12 +182,13 @@ export default function HostExperience() {
                     min="1"
                     step="0.01"
                     name="price"
-                    value={form.price || ''}
+                    value={form.price || ""}
                     onChange={handleChange}
                     required
                   />
                 </div>
               </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="font-label text-sm font-bold uppercase tracking-widest text-primary/70 px-1">
@@ -195,53 +200,69 @@ export default function HostExperience() {
                     type="number"
                     min="1"
                     name="capacity"
-                    value={form.capacity || ''}
+                    value={form.capacity || ""}
                     onChange={handleChange}
                     required
                   />
                 </div>
+
+                {/* ── Location Autocomplete (remplace l'input texte) ── */}
                 <div className="space-y-2">
                   <label className="font-label text-sm font-bold uppercase tracking-widest text-primary/70 px-1">
                     Location *
                   </label>
-                  <input
-                    className="w-full bg-surface-container-lowest border-none rounded-2xl p-5 text-body focus:ring-2 focus:ring-primary-container shadow-sm"
-                    placeholder="e.g., Sidi Bou Said, Tunis"
-                    type="text"
-                    name="location"
+                  <LocationAutocomplete
                     value={form.location}
-                    onChange={handleChange}
-                    required
+                    onChange={(val) =>
+                      setForm((prev) => ({ ...prev, location: val }))
+                    }
+                    placeholder="e.g., Sidi Bou Said, Tunis"
+                    className="bg-surface-container-lowest border-none rounded-2xl p-5 text-body focus:ring-2 focus:ring-primary-container shadow-sm"
                   />
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right Column: Context & Scheduling */}
+          {/* Right Column */}
           <div className="lg:col-span-5 space-y-8 lg:sticky lg:top-32">
-            {/* Location Picker */}
+            {/* Map seul — plus de champ location dupliqué */}
             <div className="bg-surface-container-lowest p-6 rounded-[2rem] shadow-2xl shadow-on-surface/5 space-y-4">
               <div className="flex justify-between items-center px-2 mb-2">
-                <h3 className="font-headline text-xl font-bold text-primary">Location</h3>
+                <h3 className="font-headline text-xl font-bold text-primary">
+                  Location
+                </h3>
                 <span className="text-xs font-bold text-on-surface-variant flex items-center gap-1">
-                  <span className="material-symbols-outlined text-sm">location_on</span>
-                  {form.location || 'Tunisia'}
+                  <span className="material-symbols-outlined text-sm">
+                    location_on
+                  </span>
+                  {form.location || "Tunisia"}
                 </span>
               </div>
-
-              <MapPicker 
-                latitude={form.latitude} 
-                longitude={form.longitude} 
-                onLocationChange={(lat, lng) => setForm(prev => ({...prev, latitude: lat, longitude: lng}))} 
-                height="350px" 
+              <MapPicker
+                latitude={form.latitude}
+                longitude={form.longitude}
+                locationName={form.location}
+                onLocationChange={(lat, lng) =>
+                  setForm((prev) => ({
+                    ...prev,
+                    latitude: lat,
+                    longitude: lng,
+                  }))
+                }
+                onLocationNameChange={(name) =>
+                  setForm((prev) => ({ ...prev, location: name }))
+                }
+                height="350px"
               />
             </div>
 
-            {/* Date Selection */}
+            {/* Date */}
             <div className="bg-secondary-container/30 p-8 rounded-[2rem] space-y-4">
               <div className="flex items-center gap-3 mb-2">
-                <span className="material-symbols-outlined text-secondary">calendar_today</span>
+                <span className="material-symbols-outlined text-secondary">
+                  calendar_today
+                </span>
                 <h3 className="font-headline text-lg font-bold text-secondary-fixed-variant">
                   Availability
                 </h3>
@@ -261,7 +282,7 @@ export default function HostExperience() {
               </div>
             </div>
 
-            {/* Final Action */}
+            {/* Submit */}
             <div className="pt-4">
               <button
                 type="submit"
@@ -281,10 +302,10 @@ export default function HostExperience() {
                 )}
               </button>
               <p className="text-center text-xs text-on-surface-variant mt-6 px-8 leading-relaxed">
-                By publishing, you agree to our{' '}
+                By publishing, you agree to our{" "}
                 <Link to="#" className="underline">
                   Editorial Standards
-                </Link>{' '}
+                </Link>{" "}
                 and the curator code of conduct.
               </p>
             </div>

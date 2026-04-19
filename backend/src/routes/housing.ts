@@ -50,6 +50,8 @@ interface HousingBody {
   familyMembers: number;
   maxTourists: number;
   maxStayDays: number;
+  latitude: number;
+  longitude: number;
 }
 
 function str(val: unknown): string {
@@ -165,6 +167,8 @@ router.post(
         familyMembers: Number(str(req.body.familyMembers)),
         maxTourists: Number(str(req.body.maxTourists)),
         maxStayDays: Number(str(req.body.maxStayDays)),
+        latitude: parseFloat(str(req.body.latitude)) || 36.8065,
+        longitude: parseFloat(str(req.body.longitude)) || 10.1815,
       };
 
       const validationError = validateHousingBody(body);
@@ -187,6 +191,8 @@ router.post(
           maxStayDays: body.maxStayDays!,
           images: imageUrls,
           ownerId,
+          latitude: body.latitude!,
+          longitude: body.longitude!,
         },
       });
 
@@ -252,6 +258,15 @@ router.put(
             ? Number(str(req.body.maxStayDays))
             : existing.maxStayDays,
       };
+      const latitude =
+        req.body.latitude !== undefined
+          ? parseFloat(str(req.body.latitude))
+          : ((existing as any).latitude ?? 36.8065);
+
+      const longitude =
+        req.body.longitude !== undefined
+          ? parseFloat(str(req.body.longitude))
+          : ((existing as any).longitude ?? 10.1815);
 
       const validationError = validateHousingBody(body);
       if (validationError)
@@ -284,6 +299,8 @@ router.put(
           maxTourists: body.maxTourists!,
           maxStayDays: body.maxStayDays!,
           images: finalImages,
+          latitude: body.latitude!,
+          longitude: body.longitude!,
         },
       });
 

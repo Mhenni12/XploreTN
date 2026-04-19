@@ -34,12 +34,17 @@ function intOrUndefined(val: unknown): number | undefined {
 
 function buildOrderBy(sortBy: SortBy): object {
   switch (sortBy) {
-    case "oldest":      return { createdAt: "asc" };
-    case "maxTourists": return { maxTourists: "desc" };
-    case "maxStayDays": return { maxStayDays: "desc" };
-    case "rooms":       return { rooms: "desc" };
+    case "oldest":
+      return { createdAt: "asc" };
+    case "maxTourists":
+      return { maxTourists: "desc" };
+    case "maxStayDays":
+      return { maxStayDays: "desc" };
+    case "rooms":
+      return { rooms: "desc" };
     case "newest":
-    default:            return { createdAt: "desc" };
+    default:
+      return { createdAt: "desc" };
   }
 }
 
@@ -50,14 +55,14 @@ const db = prisma as any;
 
 router.get("/search", async (req: Request, res: Response) => {
   try {
-    const search    = str(req.query.search).trim();
-    const location  = str(req.query.location).trim();
-    const typesRaw  = str(req.query.types).trim();
+    const search = str(req.query.search).trim();
+    const location = str(req.query.location).trim();
+    const typesRaw = str(req.query.types).trim();
     const sortByRaw = str(req.query.sortBy).trim() as SortBy;
     const excludeReservedByRaw = intOrUndefined(req.query.excludeReservedBy);
 
-    const minRooms    = intOrUndefined(req.query.minRooms);
-    const maxRooms    = intOrUndefined(req.query.maxRooms);
+    const minRooms = intOrUndefined(req.query.minRooms);
+    const maxRooms = intOrUndefined(req.query.maxRooms);
     const minTourists = intOrUndefined(req.query.minTourists);
     const maxTourists = intOrUndefined(req.query.maxTourists);
     const minStayDays = intOrUndefined(req.query.minStayDays);
@@ -69,16 +74,26 @@ router.get("/search", async (req: Request, res: Response) => {
       const parsed = typesRaw
         .split(",")
         .map((t) => t.trim().toUpperCase())
-        .filter((t) => VALID_HOUSING_TYPES.includes(t as HousingType)) as HousingType[];
+        .filter((t) =>
+          VALID_HOUSING_TYPES.includes(t as HousingType),
+        ) as HousingType[];
       if (parsed.length > 0) types = parsed;
     }
 
-    const VALID_SORT: SortBy[] = ["newest", "oldest", "maxTourists", "maxStayDays", "rooms"];
-    const sortBy: SortBy = VALID_SORT.includes(sortByRaw) ? sortByRaw : "newest";
+    const VALID_SORT: SortBy[] = [
+      "newest",
+      "oldest",
+      "maxTourists",
+      "maxStayDays",
+      "rooms",
+    ];
+    const sortBy: SortBy = VALID_SORT.includes(sortByRaw)
+      ? sortByRaw
+      : "newest";
 
     // ── Collect reserved housing IDs ──────────────────────────────────────────
     const activeRows: { housingId: string }[] = await db.reservation.findMany({
-      where: { status: { in: [ "ACCEPTED"] } },
+      where: { status: { in: ["ACCEPTED"] } },
       select: { housingId: true },
     });
 
@@ -95,7 +110,10 @@ router.get("/search", async (req: Request, res: Response) => {
         select: { housingId: true },
       });
       reservedHousingIds = [
-        ...new Set([...reservedHousingIds, ...userRows.map((r) => r.housingId)]),
+        ...new Set([
+          ...reservedHousingIds,
+          ...userRows.map((r) => r.housingId),
+        ]),
       ];
     }
 
@@ -108,9 +126,9 @@ router.get("/search", async (req: Request, res: Response) => {
 
     if (search) {
       where.OR = [
-        { title:       { contains: search, mode: "insensitive" } },
+        { title: { contains: search, mode: "insensitive" } },
         { description: { contains: search, mode: "insensitive" } },
-        { location:    { contains: search, mode: "insensitive" } },
+        { location: { contains: search, mode: "insensitive" } },
       ];
     }
 
@@ -157,14 +175,15 @@ router.get("/search", async (req: Request, res: Response) => {
 router.get("/search/locations", async (_req: Request, res: Response) => {
   try {
     const activeRows: { housingId: string }[] = await db.reservation.findMany({
-      where: { status: { in: [ "ACCEPTED"] } },
+      where: { status: { in: ["ACCEPTED"] } },
       select: { housingId: true },
     });
 
     const reservedIds = [...new Set(activeRows.map((r) => r.housingId))];
 
     const allResults: { location: string }[] = await db.housing.findMany({
-      where: reservedIds.length > 0 ? { id: { notIn: reservedIds } } : undefined,
+      where:
+        reservedIds.length > 0 ? { id: { notIn: reservedIds } } : undefined,
       select: { location: true },
       orderBy: { location: "asc" },
     });
@@ -190,8 +209,9 @@ router.get("/search/stats", async (_req: Request, res: Response) => {
       select: { housingId: true },
     });
 
-    const reservedIds  = [...new Set(activeRows.map((r) => r.housingId))];
-    const whereClause  = reservedIds.length > 0 ? { id: { notIn: reservedIds } } : {};
+    const reservedIds = [...new Set(activeRows.map((r) => r.housingId))];
+    const whereClause =
+      reservedIds.length > 0 ? { id: { notIn: reservedIds } } : {};
 
     const [total, aggregate] = await Promise.all([
       db.housing.count({ where: whereClause }),
@@ -205,8 +225,8 @@ router.get("/search/stats", async (_req: Request, res: Response) => {
     return res.json({
       total,
       totalCapacity: aggregate._sum.maxTourists ?? 0,
-      totalRooms:    aggregate._sum.rooms        ?? 0,
-      avgStayDays:   Math.round(aggregate._avg.maxStayDays ?? 0),
+      totalRooms: aggregate._sum.rooms ?? 0,
+      avgStayDays: Math.round(aggregate._avg.maxStayDays ?? 0),
     });
   } catch (error) {
     console.error("Housing stats error:", error);

@@ -1,6 +1,12 @@
 import prisma from "../prisma.js";
-import type { ActivityCategory, ActivityStatus } from "../../generated/prisma/client.js";
-import type { CreateActivityInput, UpdateActivityInput } from "../validators/activity.validator.js";
+import type {
+  ActivityCategory,
+  ActivityStatus,
+} from "../../generated/prisma/client.js";
+import type {
+  CreateActivityInput,
+  UpdateActivityInput,
+} from "../validators/activity.validator.js";
 
 // ─── Filters interface ──────────────────────────────────────────────────────
 interface ActivityFilters {
@@ -14,7 +20,10 @@ interface ActivityFilters {
 }
 
 // ─── Create a new activity ──────────────────────────────────────────────────
-export async function createActivity(data: CreateActivityInput, creatorId: number) {
+export async function createActivity(
+  data: CreateActivityInput,
+  creatorId: number,
+) {
   const activity = await prisma.activity.create({
     data: {
       title: data.title,
@@ -52,7 +61,17 @@ export async function getActivities(filters: ActivityFilters = {}) {
     pageSize = 12,
   } = filters;
 
-  const where: any = {};
+  const where: any = {
+    // ── Exclure les activités avec une réservation ACCEPTED active ──
+    // Seules les activités sans réservation acceptée apparaissent dans
+    // la liste publique (explore). Les activités réservées restent
+    // visibles uniquement dans le dashboard du créateur.
+    activityReservations: {
+      none: {
+        status: { in: ["ACCEPTED", "COMPLETED"] },
+      },
+    },
+  };
 
   if (category) where.category = category;
   if (status) where.status = status;
@@ -117,8 +136,11 @@ export async function getMyActivities(userId: number) {
 }
 
 // ─── Update an activity (with ownership check) ─────────────────────────────
-export async function updateActivity(id: number, data: UpdateActivityInput, userId: number) {
-  // Check existence and ownership
+export async function updateActivity(
+  id: number,
+  data: UpdateActivityInput,
+  userId: number,
+) {
   const existing = await prisma.activity.findUnique({ where: { id } });
   if (!existing) return { error: "NOT_FOUND" as const };
   if (existing.creatorId !== userId) return { error: "FORBIDDEN" as const };

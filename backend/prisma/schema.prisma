@@ -22,25 +22,27 @@ model User {
   housings                 Housing[]
   messages                 Message[]
   reservations             Reservation[]
+  activityReservations     ActivityReservation[]
 }
 
 model Activity {
-  id          Int              @id @default(autoincrement())
-  title       String
-  description String
-  price       Float
-  date        DateTime
-  location    String
-  latitude    Float
-  longitude   Float
-  images      String[]
-  status      ActivityStatus   @default(APPROVED)
-  capacity    Int
-  category    ActivityCategory
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-  creatorId   Int
-  creator     User             @relation(fields: [creatorId], references: [id])
+  id                   Int                   @id @default(autoincrement())
+  title                String
+  description          String
+  price                Float
+  date                 DateTime
+  location             String
+  latitude             Float
+  longitude            Float
+  images               String[]
+  status               ActivityStatus        @default(APPROVED)
+  capacity             Int
+  category             ActivityCategory
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  creatorId            Int
+  creator              User                  @relation(fields: [creatorId], references: [id])
+  activityReservations ActivityReservation[]
 
   @@index([location])
   @@index([date])
@@ -54,6 +56,8 @@ model Housing {
   title         String
   description   String
   location      String
+  latitude      Float         @default(36.8065)
+  longitude     Float         @default(10.1815)
   type          HousingType
   floors        Int
   rooms         Int
@@ -195,4 +199,21 @@ enum ReservationStatus {
   REJECTED
   CANCELLED
   COMPLETED
+}
+
+model ActivityReservation {
+  id         String            @id @default(uuid())
+  activityId Int
+  touristId  Int
+  guests     Int               @default(1)
+  notes      String?
+  status     ReservationStatus @default(PENDING)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+  activity   Activity          @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  tourist    User              @relation(fields: [touristId], references: [id], onDelete: Cascade)
+
+  @@index([activityId])
+  @@index([touristId])
+  @@index([status])
 }

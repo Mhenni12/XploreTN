@@ -35,6 +35,23 @@ interface Reservation {
   };
 }
 
+interface ActivityReservation {
+  id: string;
+  status: "PENDING" | "ACCEPTED" | "REJECTED" | "CANCELLED" | "COMPLETED";
+  guests: number;
+  notes: string | null;
+  createdAt: string;
+  activity: {
+    id: number;
+    title: string;
+    date: string;
+    location: string;
+    price: number;
+    images: string[];
+    category: string;
+  };
+}
+
 export default function UserProfile() {
   const navigate = useNavigate();
   const [user, setUser] = useState<UserData | null>(null);
@@ -49,39 +66,68 @@ export default function UserProfile() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [photoUploading, setPhotoUploading] = useState(false);
   const [reservations, setReservations] = useState<Reservation[]>([]);
-const [resLoading, setResLoading] = useState(false);
-
+  const [resLoading, setResLoading] = useState(false);
+  const [activityReservations, setActivityReservations] = useState<
+    ActivityReservation[]
+  >([]);
+  const [actResLoading, setActResLoading] = useState(false);
 
   const [activeTab, setActiveTab] = useState<
     "bookings" | "activities" | "reviews"
   >("bookings");
 
   useEffect(() => {
-  if (!user || user.role !== "TOURISTE") return;
-  setResLoading(true);
-  axios
-    .get<Reservation[]>(`${BACKEND_URL}/api/reservations/my`, {
-      headers: getAuthHeaders(),
-    })
-    .then((res) => setReservations(res.data))
-    .catch(() => {})
-    .finally(() => setResLoading(false));
-}, [user]);
+    if (!user || user.role !== "TOURISTE") return;
+    setResLoading(true);
+    axios
+      .get<Reservation[]>(`${BACKEND_URL}/api/reservations/my`, {
+        headers: getAuthHeaders(),
+      })
+      .then((res) => setReservations(res.data))
+      .catch(() => {})
+      .finally(() => setResLoading(false));
+  }, [user]);
 
-async function handleCancelReservation(id: string) {
-  try {
-    await axios.patch(
-      `${BACKEND_URL}/api/reservations/${id}/cancel`,
-      {},
-      { headers: getAuthHeaders() },
-    );
-    setReservations((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, status: "CANCELLED" } : r)),
-    );
-  } catch {
-    alert("Impossible d'annuler la réservation.");
+  useEffect(() => {
+    if (!user || user.role !== "TOURISTE") return;
+    setActResLoading(true);
+    axios
+      .get<ActivityReservation[]>(
+        `${BACKEND_URL}/api/activity-reservations/my`,
+        {
+          headers: getAuthHeaders(),
+        },
+      )
+      .then((res) => setActivityReservations(res.data))
+      .catch(() => {})
+      .finally(() => setActResLoading(false));
+  }, [user]);
+
+  async function handleCancelReservation(id: string) {
+    try {
+      await axios.patch(
+        `${BACKEND_URL}/api/reservations/${id}/cancel`,
+        {},
+        { headers: getAuthHeaders() },
+      );
+      setReservations((prev) => prev.filter((r) => r.id !== id));
+    } catch {
+      alert("Impossible d'annuler la réservation.");
+    }
   }
-}
+
+  async function handleCancelActivityReservation(id: string) {
+    try {
+      await axios.patch(
+        `${BACKEND_URL}/api/activity-reservations/${id}/cancel`,
+        {},
+        { headers: getAuthHeaders() },
+      );
+      setActivityReservations((prev) => prev.filter((r) => r.id !== id));
+    } catch {
+      alert("Impossible d'annuler la réservation.");
+    }
+  }
 
   // ── Fetch profile on mount ────────────────────────────────────────────────
   useEffect(() => {
@@ -194,7 +240,7 @@ async function handleCancelReservation(id: string) {
         <div className="relative group flex-shrink-0">
           <div className="absolute -inset-4 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-all duration-700" />
           <div className="relative w-72 h-72 md:w-80 md:h-80 rounded-full overflow-hidden border-8 border-white shadow-2xl">
-            {/* ✅ toImageUrl gère Cloudinary, chemins locaux, et fallback */}
+            {/*  toImageUrl gère Cloudinary, chemins locaux, et fallback */}
             <img
               alt={user.fullName}
               className="w-full h-full object-cover"
@@ -280,221 +326,445 @@ async function handleCancelReservation(id: string) {
 
       {/* Tabs — Reservations, Activities, Reviews : TOURIST */}
       <section className="space-y-20">
-  <div className="flex justify-center md:justify-start gap-12 border-b border-slate-100">
-    {(
-      user.role === "TOURISTE"
-        ? (["bookings", "activities", "reviews"] as const)
-        : (["activities", "reviews"] as const)
-    ).map((tab) => (
-      <button
-        key={tab}
-        onClick={() => setActiveTab(tab)}
-        className={`pb-6 border-b-2 text-sm font-bold uppercase tracking-widest transition-colors ${
-          activeTab === tab
-            ? "border-primary text-primary"
-            : "border-transparent text-slate-400 hover:text-slate-600"
-        }`}
-      >
-        {tab === "bookings"
-          ? "Réservations"
-          : tab === "activities"
-            ? "Activités"
-            : "Avis"}
-      </button>
-    ))}
-  </div>
-
-  {activeTab === "bookings" && user.role === "TOURISTE" && (
-    <div className="space-y-4">
-      <h2 className="font-headline text-2xl font-bold text-slate-900">
-        Mes réservations
-      </h2>
-
-      {resLoading ? (
-        <div className="flex items-center justify-center py-16">
-          <span className="material-symbols-outlined text-primary text-4xl animate-spin">
-            refresh
-          </span>
+        <div className="flex justify-center md:justify-start gap-12 border-b border-slate-100">
+          {(user.role === "TOURISTE"
+            ? (["bookings", "activities", "reviews"] as const)
+            : (["activities", "reviews"] as const)
+          ).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`pb-6 border-b-2 text-sm font-bold uppercase tracking-widest transition-colors ${
+                activeTab === tab
+                  ? "border-primary text-primary"
+                  : "border-transparent text-slate-400 hover:text-slate-600"
+              }`}
+            >
+              {tab === "bookings"
+                ? "Réservations"
+                : tab === "activities"
+                  ? "Activités"
+                  : "Avis"}
+            </button>
+          ))}
         </div>
-      ) : reservations.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-center gap-4">
-          <span className="material-symbols-outlined text-6xl text-slate-200">
-            calendar_month
-          </span>
-          <p className="text-slate-400 font-medium">
-            Aucune réservation pour le moment.
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-          {reservations.map((r) => {
-            const statusConfig = {
-              PENDING: {
-                label: "En attente",
-                icon: "schedule",
-                bg: "bg-amber-50",
-                border: "border-amber-200",
-                text: "text-amber-700",
-                dot: "bg-amber-400",
-              },
-              ACCEPTED: {
-                label: "Acceptée",
-                icon: "check_circle",
-                bg: "bg-emerald-50",
-                border: "border-emerald-200",
-                text: "text-emerald-700",
-                dot: "bg-emerald-500",
-              },
-              REJECTED: {
-                label: "Refusée",
-                icon: "cancel",
-                bg: "bg-red-50",
-                border: "border-red-200",
-                text: "text-red-700",
-                dot: "bg-red-500",
-              },
-              CANCELLED: {
-                label: "Annulée",
-                icon: "block",
-                bg: "bg-slate-50",
-                border: "border-slate-200",
-                text: "text-slate-500",
-                dot: "bg-slate-400",
-              },
-              COMPLETED: {
-    label: "Terminée",
-    icon: "verified",
-    bg: "bg-blue-50",
-    border: "border-blue-200",
-    text: "text-blue-700",
-    dot: "bg-blue-500",
-  },
-            }[r.status];
 
-            const img = r.housing.images[0];
-            const imgSrc = img
-              ? img.startsWith("http")
-                ? img
-                : `${BACKEND_URL}${img}`
-              : null;
+        {activeTab === "bookings" && user.role === "TOURISTE" && (
+          <div className="space-y-4">
+            <h2 className="font-headline text-2xl font-bold text-slate-900">
+              My housing reservations
+            </h2>
 
-            return (
-              <div
-                key={r.id}
-                className="bg-white rounded-[1.75rem] border border-slate-100 shadow-sm overflow-hidden flex flex-col"
-              >
-                {/* Image */}
-                <div className="relative h-44 bg-slate-100 overflow-hidden">
-                  {imgSrc ? (
-                    <img
-                      src={imgSrc}
-                      alt={r.housing.title}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <span className="material-symbols-outlined text-5xl text-slate-300">
-                        home
-                      </span>
-                    </div>
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                  {/* Status badge */}
-                  <span
-                    className={`absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold border ${statusConfig.bg} ${statusConfig.border} ${statusConfig.text} shadow-sm`}
-                  >
-                    <span
-                      className={`w-1.5 h-1.5 rounded-full ${statusConfig.dot} inline-block`}
-                    />
-                    {statusConfig.label}
-                  </span>
-                </div>
-
-                {/* Content */}
-                <div className="p-5 flex flex-col gap-3 flex-1">
-                  <div>
-                    <h3 className="font-headline text-lg font-bold text-slate-900 leading-snug line-clamp-1">
-                      {r.housing.title}
-                    </h3>
-                    <p className="text-xs text-slate-400 flex items-center gap-1 mt-1">
-                      <span className="material-symbols-outlined text-xs">
-                        location_on
-                      </span>
-                      {r.housing.location}
-                    </p>
-                  </div>
-
-                  <div className="flex gap-3 text-xs text-slate-500">
-                    <span className="flex items-center gap-1">
-                      <span className="material-symbols-outlined text-sm text-primary">
-                        bed
-                      </span>
-                      {r.housing.rooms} chambres
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <span className="material-symbols-outlined text-sm text-primary">
-                        people
-                      </span>
-                      {r.housing.maxTourists} voyageurs
-                    </span>
-                  </div>
-
-                  <p className="text-[11px] text-slate-400 mt-auto">
-                    Demandée le{" "}
-                    {new Date(r.createdAt).toLocaleDateString("fr-FR", {
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric",
-                    })}
-                  </p>
-
-                  {r.status === "PENDING" && (
-                    <button
-                      onClick={() => handleCancelReservation(r.id)}
-                      className="mt-1 w-full py-2.5 rounded-xl border border-red-200 text-red-600 text-xs font-bold uppercase tracking-widest hover:bg-red-50 transition-all flex items-center justify-center gap-2"
-                    >
-                      <span className="material-symbols-outlined text-sm">
-                        cancel
-                      </span>
-                      Annuler la réservation
-                    </button>
-                  )}
-
-                  {r.status === "ACCEPTED" && (
-                    <div className="mt-1 w-full py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold flex items-center justify-center gap-2">
-                      <span className="material-symbols-outlined text-sm">
-                        check_circle
-                      </span>
-                      Séjour confirmé
-                    </div>
-                  )}
-
-                  {r.status === "REJECTED" && (
-                    <div className="mt-1 w-full py-2.5 rounded-xl bg-red-50 border border-red-200 text-red-600 text-xs font-bold flex items-center justify-center gap-2">
-                      <span className="material-symbols-outlined text-sm">
-                        cancel
-                      </span>
-                      Demande refusée par l'hôte
-                    </div>
-                  )}
-
-                  {r.status === "CANCELLED" && (
-                    <div className="mt-1 w-full py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-400 text-xs font-bold flex items-center justify-center gap-2">
-                      <span className="material-symbols-outlined text-sm">
-                        block
-                      </span>
-                      Annulée par vous
-                    </div>
-                  )}
-                </div>
+            {resLoading ? (
+              <div className="flex items-center justify-center py-16">
+                <span className="material-symbols-outlined text-primary text-4xl animate-spin">
+                  refresh
+                </span>
               </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  )}
-</section>
+            ) : reservations.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-20 text-center gap-4">
+                <span className="material-symbols-outlined text-6xl text-slate-200">
+                  calendar_month
+                </span>
+                <p className="text-slate-400 font-medium">
+                  Aucune réservation pour le moment.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                {reservations.map((r) => {
+                  const statusConfig = {
+                    PENDING: {
+                      label: "En attente",
+                      icon: "schedule",
+                      bg: "bg-amber-50",
+                      border: "border-amber-200",
+                      text: "text-amber-700",
+                      dot: "bg-amber-400",
+                    },
+                    ACCEPTED: {
+                      label: "Acceptée",
+                      icon: "check_circle",
+                      bg: "bg-emerald-50",
+                      border: "border-emerald-200",
+                      text: "text-emerald-700",
+                      dot: "bg-emerald-500",
+                    },
+                    REJECTED: {
+                      label: "Refusée",
+                      icon: "cancel",
+                      bg: "bg-red-50",
+                      border: "border-red-200",
+                      text: "text-red-700",
+                      dot: "bg-red-500",
+                    },
+                    CANCELLED: {
+                      label: "Annulée",
+                      icon: "block",
+                      bg: "bg-slate-50",
+                      border: "border-slate-200",
+                      text: "text-slate-500",
+                      dot: "bg-slate-400",
+                    },
+                    COMPLETED: {
+                      label: "Terminée",
+                      icon: "verified",
+                      bg: "bg-blue-50",
+                      border: "border-blue-200",
+                      text: "text-blue-700",
+                      dot: "bg-blue-500",
+                    },
+                  }[r.status];
+
+                  const img = r.housing.images[0];
+                  const imgSrc = img
+                    ? img.startsWith("http")
+                      ? img
+                      : `${BACKEND_URL}${img}`
+                    : null;
+
+                  return (
+                    <div
+                      key={r.id}
+                      className="bg-white rounded-[1.75rem] border border-slate-100 shadow-sm overflow-hidden flex flex-col"
+                    >
+                      {/* Image */}
+                      <div className="relative h-44 bg-slate-100 overflow-hidden">
+                        {imgSrc ? (
+                          <img
+                            src={imgSrc}
+                            alt={r.housing.title}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <span className="material-symbols-outlined text-5xl text-slate-300">
+                              home
+                            </span>
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                        {/* Status badge */}
+                        <span
+                          className={`absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold border ${statusConfig.bg} ${statusConfig.border} ${statusConfig.text} shadow-sm`}
+                        >
+                          <span
+                            className={`w-1.5 h-1.5 rounded-full ${statusConfig.dot} inline-block`}
+                          />
+                          {statusConfig.label}
+                        </span>
+                      </div>
+
+                      {/* Content */}
+                      <div className="p-5 flex flex-col gap-3 flex-1">
+                        <div>
+                          <h3 className="font-headline text-lg font-bold text-slate-900 leading-snug line-clamp-1">
+                            {r.housing.title}
+                          </h3>
+                          <p className="text-xs text-slate-400 flex items-center gap-1 mt-1">
+                            <span className="material-symbols-outlined text-xs">
+                              location_on
+                            </span>
+                            {r.housing.location}
+                          </p>
+                        </div>
+
+                        <div className="flex gap-3 text-xs text-slate-500">
+                          <span className="flex items-center gap-1">
+                            <span className="material-symbols-outlined text-sm text-primary">
+                              bed
+                            </span>
+                            {r.housing.rooms} chambres
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <span className="material-symbols-outlined text-sm text-primary">
+                              people
+                            </span>
+                            {r.housing.maxTourists} voyageurs
+                          </span>
+                        </div>
+
+                        <p className="text-[11px] text-slate-400 mt-auto">
+                          Demandée le{" "}
+                          {new Date(r.createdAt).toLocaleDateString("fr-FR", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          })}
+                        </p>
+
+                        {r.status === "PENDING" && (
+                          <button
+                            onClick={() => handleCancelReservation(r.id)}
+                            className="mt-1 w-full py-2.5 rounded-xl border border-red-200 text-red-600 text-xs font-bold uppercase tracking-widest hover:bg-red-50 transition-all flex items-center justify-center gap-2"
+                          >
+                            <span className="material-symbols-outlined text-sm">
+                              cancel
+                            </span>
+                            Annuler la réservation
+                          </button>
+                        )}
+
+                        {r.status === "ACCEPTED" && (
+                          <div className="mt-1 w-full py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold flex items-center justify-center gap-2">
+                            <span className="material-symbols-outlined text-sm">
+                              check_circle
+                            </span>
+                            Séjour confirmé
+                          </div>
+                        )}
+
+                        {r.status === "REJECTED" && (
+                          <div className="mt-1 w-full py-2.5 rounded-xl bg-red-50 border border-red-200 text-red-600 text-xs font-bold flex items-center justify-center gap-2">
+                            <span className="material-symbols-outlined text-sm">
+                              cancel
+                            </span>
+                            Demande refusée par l'hôte
+                          </div>
+                        )}
+
+                        {r.status === "CANCELLED" && (
+                          <div className="mt-1 w-full py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-400 text-xs font-bold flex items-center justify-center gap-2">
+                            <span className="material-symbols-outlined text-sm">
+                              block
+                            </span>
+                            Annulée par vous
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+        {activeTab === "activities" && (
+          <div className="space-y-4">
+            <h2 className="font-headline text-2xl font-bold text-slate-900">
+              My activity reservations
+            </h2>
+
+            {actResLoading ? (
+              <div className="flex items-center justify-center py-16">
+                <span className="material-symbols-outlined text-primary text-4xl animate-spin">
+                  refresh
+                </span>
+              </div>
+            ) : activityReservations.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-20 text-center gap-4">
+                <span className="material-symbols-outlined text-6xl text-slate-200">
+                  event_available
+                </span>
+                <p className="text-slate-400 font-medium">
+                  Aucune réservation d'activité pour le moment.
+                </p>
+                <Link
+                  to="/activities"
+                  className="px-6 py-3 bg-primary text-white rounded-full text-sm font-bold hover:scale-[1.02] transition-all shadow-md shadow-primary/20"
+                >
+                  Explorer les activités
+                </Link>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                {activityReservations.map((r) => {
+                  const statusConfig = {
+                    PENDING: {
+                      label: "En attente",
+                      icon: "schedule",
+                      bg: "bg-amber-50",
+                      border: "border-amber-200",
+                      text: "text-amber-700",
+                      dot: "bg-amber-400",
+                    },
+                    ACCEPTED: {
+                      label: "Confirmée",
+                      icon: "check_circle",
+                      bg: "bg-emerald-50",
+                      border: "border-emerald-200",
+                      text: "text-emerald-700",
+                      dot: "bg-emerald-500",
+                    },
+                    REJECTED: {
+                      label: "Refusée",
+                      icon: "cancel",
+                      bg: "bg-red-50",
+                      border: "border-red-200",
+                      text: "text-red-700",
+                      dot: "bg-red-500",
+                    },
+                    CANCELLED: {
+                      label: "Annulée",
+                      icon: "block",
+                      bg: "bg-slate-50",
+                      border: "border-slate-200",
+                      text: "text-slate-500",
+                      dot: "bg-slate-400",
+                    },
+                    COMPLETED: {
+                      label: "Terminée",
+                      icon: "verified",
+                      bg: "bg-blue-50",
+                      border: "border-blue-200",
+                      text: "text-blue-700",
+                      dot: "bg-blue-500",
+                    },
+                  }[r.status];
+
+                  const img = r.activity.images[0];
+                  const imgSrc = img
+                    ? img.startsWith("http")
+                      ? img
+                      : `${BACKEND_URL}${img}`
+                    : null;
+
+                  const activityDate = new Date(
+                    r.activity.date,
+                  ).toLocaleDateString("fr-FR", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  });
+
+                  return (
+                    <div
+                      key={r.id}
+                      className="bg-white rounded-[1.75rem] border border-slate-100 shadow-sm overflow-hidden flex flex-col"
+                    >
+                      {/* Image */}
+                      <div className="relative h-44 bg-slate-100 overflow-hidden">
+                        {imgSrc ? (
+                          <img
+                            src={imgSrc}
+                            alt={r.activity.title}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <span className="material-symbols-outlined text-5xl text-slate-300">
+                              event
+                            </span>
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                        {/* Status badge */}
+                        <span
+                          className={`absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold border ${statusConfig.bg} ${statusConfig.border} ${statusConfig.text} shadow-sm`}
+                        >
+                          <span
+                            className={`w-1.5 h-1.5 rounded-full ${statusConfig.dot} inline-block`}
+                          />
+                          {statusConfig.label}
+                        </span>
+                        {/* Guests badge */}
+                        <span className="absolute top-3 left-3 flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px] font-bold bg-black/40 text-white backdrop-blur-sm">
+                          <span className="material-symbols-outlined text-xs">
+                            group
+                          </span>
+                          {r.guests} participant{r.guests > 1 ? "s" : ""}
+                        </span>
+                      </div>
+
+                      {/* Content */}
+                      <div className="p-5 flex flex-col gap-3 flex-1">
+                        <div>
+                          <h3 className="font-headline text-lg font-bold text-slate-900 leading-snug line-clamp-1">
+                            {r.activity.title}
+                          </h3>
+                          <p className="text-xs text-slate-400 flex items-center gap-1 mt-1">
+                            <span className="material-symbols-outlined text-xs">
+                              location_on
+                            </span>
+                            {r.activity.location}
+                          </p>
+                        </div>
+
+                        <div className="flex gap-3 text-xs text-slate-500 flex-wrap">
+                          <span className="flex items-center gap-1">
+                            <span className="material-symbols-outlined text-sm text-primary">
+                              calendar_today
+                            </span>
+                            {activityDate}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <span className="material-symbols-outlined text-sm text-primary">
+                              payments
+                            </span>
+                            {(r.activity.price * r.guests).toFixed(2)} TND
+                          </span>
+                        </div>
+
+                        {r.notes && (
+                          <p className="text-[11px] text-slate-400 italic bg-slate-50 px-3 py-2 rounded-lg border border-slate-100 line-clamp-2">
+                            "{r.notes}"
+                          </p>
+                        )}
+
+                        <p className="text-[11px] text-slate-400 mt-auto">
+                          Demandée le{" "}
+                          {new Date(r.createdAt).toLocaleDateString("fr-FR", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          })}
+                        </p>
+
+                        {/* Actions */}
+                        {r.status === "PENDING" && (
+                          <button
+                            onClick={() =>
+                              handleCancelActivityReservation(r.id)
+                            }
+                            className="mt-1 w-full py-2.5 rounded-xl border border-red-200 text-red-600 text-xs font-bold uppercase tracking-widest hover:bg-red-50 transition-all flex items-center justify-center gap-2"
+                          >
+                            <span className="material-symbols-outlined text-sm">
+                              cancel
+                            </span>
+                            Annuler la réservation
+                          </button>
+                        )}
+                        {r.status === "CONFIRMED" && (
+                          <div className="mt-1 w-full py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold flex items-center justify-center gap-2">
+                            <span className="material-symbols-outlined text-sm">
+                              check_circle
+                            </span>
+                            Activité confirmée
+                          </div>
+                        )}
+                        {r.status === "REJECTED" && (
+                          <div className="mt-1 w-full py-2.5 rounded-xl bg-red-50 border border-red-200 text-red-600 text-xs font-bold flex items-center justify-center gap-2">
+                            <span className="material-symbols-outlined text-sm">
+                              cancel
+                            </span>
+                            Demande refusée
+                          </div>
+                        )}
+                        {r.status === "CANCELLED" && (
+                          <div className="mt-1 w-full py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-400 text-xs font-bold flex items-center justify-center gap-2">
+                            <span className="material-symbols-outlined text-sm">
+                              block
+                            </span>
+                            Annulée par vous
+                          </div>
+                        )}
+                        {r.status === "COMPLETED" && (
+                          <div className="mt-1 w-full py-2.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold flex items-center justify-center gap-2">
+                            <span className="material-symbols-outlined text-sm">
+                              verified
+                            </span>
+                            Activité terminée
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+      </section>
 
       {editOpen && (
         <div
