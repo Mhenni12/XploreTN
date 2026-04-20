@@ -6,6 +6,7 @@ import {
   CATEGORY_CONFIG,
 } from "../services/activityService";
 import { useNavigate } from "react-router-dom";
+import { toImageUrl } from "../utils/imageUrl";
 
 export default function BookingPage() {
   const { id } = useParams();
@@ -128,7 +129,9 @@ export default function BookingPage() {
           alt={activity.title}
           className="w-full h-full object-cover"
           src={
-            activity.images[0] || "https://placehold.co/1920x1080?text=No+Image"
+            activity.images[0]
+              ? toImageUrl(activity.images[0])
+              : "https://placehold.co/1920x1080?text=No+Image"
           }
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-primary/60"></div>
@@ -180,11 +183,7 @@ export default function BookingPage() {
                 <div className="flex items-center gap-4 bg-surface-container-low p-4 rounded-xl border border-surface-variant/20">
                   <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border-2 border-white shadow-sm">
                     <img
-                      src={
-                        activity.creator.image
-                          ? `http://localhost:5000${activity.creator.image}`
-                          : `https://ui-avatars.com/api/?name=${encodeURIComponent(activity.creator.fullName)}`
-                      }
+                      src={toImageUrl(activity.creator.image)}
                       alt={activity.creator.fullName}
                       className="w-full h-full object-cover"
                     />

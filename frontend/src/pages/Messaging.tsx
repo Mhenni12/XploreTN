@@ -134,7 +134,7 @@ function Avatar({
     >
       {photo ? (
         <img
-          src={`${BASE_URL}/uploads/${photo}`}
+          src={toImageUrl(photo)}
           alt={initials}
           className="rounded-full object-cover w-full h-full"
         />
