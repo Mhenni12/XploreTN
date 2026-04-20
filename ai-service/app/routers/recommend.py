@@ -47,7 +47,7 @@ async def recommend(body: RecommendRequest):
     if user_row["embedding"] is None:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail=f"User {body.user_id} has no embedding. Call POST /embed/user first.",
+            detail=f"User has no embedding. Call POST /embed/user first.",
         )
 
     user_vec = user_row["embedding"]   # already decoded to list[float] by our codec
@@ -63,18 +63,34 @@ async def recommend(body: RecommendRequest):
     table = table_map[body.entity]
 
     async with acquire() as conn:
-        rows = await conn.fetch(
-            f"""
-            SELECT   *,
-                     1 - (embedding <=> $1::vector) AS similarity
-            FROM     "{table}"
-            WHERE    embedding IS NOT NULL
-            ORDER BY embedding <=> $1::vector
-            LIMIT    $2
-            """,
-            user_vec,
-            body.top_k,
-        )
+        if body.entity == "activity":
+            rows = await conn.fetch(
+                """
+                SELECT   *,
+                         1 - (embedding <=> $1) AS similarity
+                FROM     "Activity"
+                WHERE    embedding IS NOT NULL
+                  AND    "creatorId" != $2
+                ORDER BY embedding <=> $1
+                LIMIT    $3
+                """,
+                user_vec,
+                body.user_id,
+                body.top_k,
+            )
+        else:
+            rows = await conn.fetch(
+                f"""
+                SELECT   *,
+                         1 - (embedding <=> $1) AS similarity
+                FROM     "{table}"
+                WHERE    embedding IS NOT NULL
+                ORDER BY embedding <=> $1
+                LIMIT    $2
+                """,
+                user_vec,
+                body.top_k,
+            )
 
     results = [
         ScoredItem(

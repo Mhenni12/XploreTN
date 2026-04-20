@@ -58,7 +58,9 @@ async def personalised_search(body: PersonalisedSearchRequest):
             FROM   "Activity"
             WHERE  embedding IS NOT NULL
               AND  status = 'APPROVED'
-            """
+              AND  "creatorId" != $1
+            """,
+            body.user_id,
         )
 
     if not activity_rows:
