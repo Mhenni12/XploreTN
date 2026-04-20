@@ -47,6 +47,7 @@ const usersData = [
   {
     email: "sami.mejri@gmail.com",
     fullName: "Sami Mejri",
+    image: "https://img.freepik.com/premium-photo/friendly-casual-man-smiling-cozy-cafe_911620-20019.jpg",
     password: hashedPassword,
     role: Role.CITOYEN,
     bio: "Born and raised in the Medina of Tunis. I spend my weekends guiding visitors through souks and sharing my passion for Andalusian music and traditional craftsmanship.",
@@ -61,6 +62,7 @@ const usersData = [
   {
     email: "fatma.ben.ali@gmail.com",
     fullName: "Fatma Ben Ali",
+    image: "https://tse4.mm.bing.net/th/id/OIP.v0k8EPA6XrsIV7kRzVfLJQHaLH?w=1280&h=1920&rs=1&pid=ImgDetMain&o=7&rm=3",
     password: hashedPassword,
     role: Role.CITOYEN,
     bio: "Professional pastry chef in Sfax with 12 years of experience in traditional Tunisian sweets. I love sharing recipes passed down from my grandmother and hosting cooking circles.",
@@ -75,6 +77,7 @@ const usersData = [
   {
     email: "youssef.trabelsi@gmail.com",
     fullName: "Youssef Trabelsi",
+    image: "https://gentlesmiles.net/wp-content/uploads/2021/05/Dexter-5.20-2048x1365.jpeg",
     password: hashedPassword,
     role: Role.CITOYEN,
     bio: "Desert guide based in Douz with 15 years leading camel treks and overnight camps in the Sahara. I know every dune and star in the Grand Erg Oriental.",
@@ -89,6 +92,7 @@ const usersData = [
   {
     email: "leila.chaabane@gmail.com",
     fullName: "Leila Chaabane",
+    image: "https://tse2.mm.bing.net/th/id/OIP.LpZUAJTyOMPKJg1gpRL3iAHaLH?rs=1&pid=ImgDetMain&o=7&rm=3",
     password: hashedPassword,
     role: Role.CITOYEN,
     bio: "Marine biologist and freediving instructor in Tabarka. I guide snorkeling tours along coral reefs and lead citizen science sessions to monitor sea life.",
@@ -103,6 +107,7 @@ const usersData = [
   {
     email: "karim.gasmi@gmail.com",
     fullName: "Karim Gasmi",
+    image: "https://img.freepik.com/free-photo/portrait-casual-smiley-guy-posing-studio_176420-28930.jpg",
     password: hashedPassword,
     role: Role.CITOYEN,
     bio: "Contemporary artist and art educator in Sidi Bou Said. I run open studios for ceramics, painting, and mosaic work, mixing traditional zellige techniques with modern art.",
@@ -117,6 +122,7 @@ const usersData = [
   {
     email: "nadia.khelifa@gmail.com",
     fullName: "Nadia Khelifa",
+    image: "https://tse3.mm.bing.net/th/id/OIP.h4S8tmnydItwd9ybwR6yCAHaJT?rs=1&pid=ImgDetMain&o=7&rm=3",
     password: hashedPassword,
     role: Role.CITOYEN,
     bio: "Wellness practitioner and hammam specialist in La Marsa. I offer traditional Tunisian hammam rituals, aromatherapy sessions, and workshops on natural beauty remedies.",
@@ -131,6 +137,7 @@ const usersData = [
   {
     email: "omar.ben.youssef@gmail.com",
     fullName: "Omar Ben Youssef",
+    image: "https://as2.ftcdn.net/v2/jpg/04/17/12/01/1000_F_417120104_mXXSlY2clURYmFuDSQoaZW73IhPgka7N.jpg",
     password: hashedPassword,
     role: Role.CITOYEN,
     bio: "Historian and archaeologist specializing in Carthaginian and Roman sites. I lead immersive tours of Carthage, Dougga, and El Jem that go far beyond the guidebooks.",
@@ -145,6 +152,7 @@ const usersData = [
   {
     email: "amira.bouzid@gmail.com",
     fullName: "Amira Bouzid",
+    image: "https://thumbs.dreamstime.com/b/business-woman-professional-confident-1179464.jpg",
     password: hashedPassword,
     role: Role.CITOYEN,
     bio: "Textile artist and weaver from Gafsa, trained in traditional Berber carpet weaving. I run hands-on workshops teaching the symbolic language of Tunisian kilim patterns.",
@@ -161,6 +169,7 @@ const usersData = [
   {
     email: "emma.richter@gmail.com",
     fullName: "Emma Richter",
+    image: "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659652_960_720.png",
     password: hashedPassword,
     role: Role.TOURISTE,
     bio: "Travel writer from Berlin exploring North Africa for six months. Obsessed with authentic street food, living history, and getting off the tourist trail.",
@@ -175,6 +184,7 @@ const usersData = [
   {
     email: "james.okonkwo@gmail.com",
     fullName: "James Okonkwo",
+    image: "https://cdn.pixabay.com/photo/2017/01/31/21/23/avatar-2027369_960_720.png",
     password: hashedPassword,
     role: Role.TOURISTE,
     bio: "Software engineer from Lagos on a sabbatical year. I seek adventure sports, desert landscapes, and conversations with locals about culture and daily life.",
@@ -189,6 +199,7 @@ const usersData = [
   {
     email: "sophia.laurent@gmail.com",
     fullName: "Sophia Laurent",
+    image: "https://cdn.pixabay.com/photo/2021/02/18/12/00/avatar-6026446_960_720.png",
     password: hashedPassword,
     role: Role.TOURISTE,
     bio: "Parisian art therapist traveling solo. I gravitate towards artisan workshops, spiritual spaces, and slow immersive experiences that connect me with local communities.",
@@ -203,6 +214,7 @@ const usersData = [
   {
     email: "miguel.fernandez@gmail.com",
     fullName: "Miguel Fernandez",
+    image: "https://cdn.pixabay.com/photo/2016/03/31/19/56/avatar-1295397_960_720.png",
     password: hashedPassword,
     role: Role.TOURISTE,
     bio: "Marine photographer and diver from Barcelona. Visiting Tunisia for its Mediterranean coastline and underwater caves. Always looking for the next dive site.",
@@ -217,6 +229,7 @@ const usersData = [
   {
     email: "yuki.tanaka@gmail.com",
     fullName: "Yuki Tanaka",
+    image: "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659652_960_720.png",
     password: hashedPassword,
     role: Role.TOURISTE,
     bio: "Food anthropologist from Tokyo documenting culinary traditions across the Mediterranean. Particularly interested in the crossroads of Berber, Arab, and Andalusian flavors.",
@@ -231,6 +244,7 @@ const usersData = [
   {
     email: "ana.santos@gmail.com",
     fullName: "Ana Santos",
+    image: "https://cdn.pixabay.com/photo/2017/01/31/21/23/avatar-2027369_960_720.png",
     password: hashedPassword,
     role: Role.TOURISTE,
     bio: "Yoga instructor from Lisbon taking a wellness retreat across North Africa. Interested in traditional healing practices, hammam culture, and herbal medicine.",
@@ -245,6 +259,7 @@ const usersData = [
   {
     email: "lucas.meyer@gmail.com",
     fullName: "Lucas Meyer",
+    image: "https://cdn.pixabay.com/photo/2021/02/18/12/00/avatar-6026446_960_720.png",
     password: hashedPassword,
     role: Role.TOURISTE,
     bio: "History teacher from Zurich spending summer retracing Roman and Carthaginian civilizations. Reads Latin, sketches ruins, and believes every stone tells a story.",
@@ -259,6 +274,7 @@ const usersData = [
   {
     email: "priya.sharma@gmail.com",
     fullName: "Priya Sharma",
+    image: "https://cdn.pixabay.com/photo/2016/03/31/19/56/avatar-1295397_960_720.png",
     password: hashedPassword,
     role: Role.TOURISTE,
     bio: "Fashion designer from Mumbai inspired by textile traditions worldwide. Looking for authentic Tunisian weaving, embroidery, and artisan fabric markets.",
@@ -273,6 +289,7 @@ const usersData = [
   {
     email: "noah.williams@gmail.com",
     fullName: "Noah Williams",
+    image: "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659652_960_720.png",
     password: hashedPassword,
     role: Role.TOURISTE,
     bio: "Astrophysicist from Cape Town who chases dark skies. I plan every trip around new moon nights and remote desert locations for stargazing and astrophotography.",
@@ -287,6 +304,7 @@ const usersData = [
   {
     email: "clara.dubois@gmail.com",
     fullName: "Clara Dubois",
+    image: "https://cdn.pixabay.com/photo/2017/01/31/21/23/avatar-2027369_960_720.png",
     password: hashedPassword,
     role: Role.TOURISTE,
     bio: "Sustainability consultant from Lyon focused on ecotourism and regenerative travel. I seek community-led tourism projects, permaculture farms, and conservation initiatives.",
@@ -301,6 +319,7 @@ const usersData = [
   {
     email: "ali.hassan@gmail.com",
     fullName: "Ali Hassan",
+    image: "https://cdn.pixabay.com/photo/2021/02/18/12/00/avatar-6026446_960_720.png",
     password: hashedPassword,
     role: Role.TOURISTE,
     bio: "Journalist from Cairo on assignment exploring the cultural revival in Tunisian cities. Interested in street art, music scenes, independent bookshops, and youth culture.",
@@ -315,6 +334,7 @@ const usersData = [
   {
     email: "isabella.rossi@gmail.com",
     fullName: "Isabella Rossi",
+    image: "https://cdn.pixabay.com/photo/2016/03/31/19/56/avatar-1295397_960_720.png",
     password: hashedPassword,
     role: Role.TOURISTE,
     bio: "Retired botanist from Florence spending a year studying Mediterranean flora. I collect pressed flowers, sketch plants, and follow old pilgrim routes through countryside and hills.",
@@ -334,7 +354,7 @@ const usersData = [
 const activitiesData = [
   // ── Sami Mejri (index 0) ── Medina / Heritage
   {
-    creatorId: 7,
+    creatorId: 0,
     title: "Hidden Souks of the Tunis Medina — Dawn Walk",
     description:
       "Join a pre-sunrise walk through the UNESCO-listed Medina before the crowds arrive. We pass through the Souk des Chéchias, the perfumers' alley, and lesser-known craftsmen courtyards rarely visited by tourists. Sami shares oral histories, architectural details, and insider stories that no guidebook contains. Ends with traditional zlabia and mint tea in a century-old café.",
@@ -346,6 +366,7 @@ const activitiesData = [
     capacity: 8,
     category: ActivityCategory.HISTORICAL_TOUR,
     status: ActivityStatus.APPROVED,
+    images: ["https://tse1.mm.bing.net/th/id/OIP.sSXd3Z_TJcEV3tyDxRF1lQHaE8?rs=1&pid=ImgDetMain&o=7&rm=3"],
     tags: [
       "medina",
       "UNESCO",
@@ -357,7 +378,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 7,
+    creatorId: 0,
     title: "Calligraphy & Arabic Script Workshop in a Medina Riad",
     description:
       "A 3-hour hands-on workshop in a restored 18th-century riad, learning the basics of Arabic calligraphy using traditional reed pens and natural ink. Sami teaches the Naskh and Thuluth scripts, explaining their role in Islamic architecture and manuscript culture. Participants leave with a framed piece of their own work and a set of calligraphy tools.",
@@ -369,6 +390,7 @@ const activitiesData = [
     capacity: 6,
     category: ActivityCategory.ARTISAN_WORKSHOP,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2015/11/09/21/38/gold-1036021_640.jpg"],
     tags: [
       "calligraphy",
       "Arabic script",
@@ -379,7 +401,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 7,
+    creatorId: 0,
     title: "Andalusian Music Evening — Malouf Concert and Storytelling",
     description:
       "An intimate evening in a private Medina courtyard featuring a live performance of Malouf, the Tunisian-Andalusian musical tradition brought by exiles from 15th-century Spain. Sami contextualizes each piece with historical storytelling, tracing melodies from Granada to Tunis. Traditional Tunisian dinner is served during the performance.",
@@ -391,6 +413,7 @@ const activitiesData = [
     capacity: 15,
     category: ActivityCategory.CULTURAL_EVENT,
     status: ActivityStatus.APPROVED,
+    images: ["https://tse3.mm.bing.net/th/id/OIP.YrRhsw1oHRyvkywBfKk1mAHaDi?rs=1&pid=ImgDetMain&o=7&rm=3"],
     tags: [
       "Malouf",
       "Andalusian music",
@@ -403,7 +426,7 @@ const activitiesData = [
 
   // ── Fatma Ben Ali (index 1) ── Gastronomy
   {
-    creatorId: 8,
+    creatorId: 1,
     title: "Full-Day Medina Food Journey — Sfax",
     description:
       "An immersive full-day culinary journey through the winding alleys of Sfax's Medina. Visit hidden spice shops, meet family food artisans, and taste street food that guidebooks never mention. End the day cooking a traditional Sfaxian dinner in Fatma's family courtyard — dishes include fish couscous, stuffed octopus, and almond-filled baklava.",
@@ -415,6 +438,7 @@ const activitiesData = [
     capacity: 8,
     category: ActivityCategory.GASTRONOMY,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2018/06/10/17/40/olives-3466908_1280.jpg"],
     tags: [
       "food tour",
       "Sfax",
@@ -426,7 +450,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 8,
+    creatorId: 1,
     title: "Tunisian Pastry Masterclass — Sweets of Eid and Weddings",
     description:
       "Learn to make makroud, cornes de gazelle, and kaak warka — traditional Tunisian pastries prepared for celebrations and religious occasions. Fatma explains the symbolism behind each sweet, the regional variations across Tunisia, and the techniques passed through generations. Every participant goes home with a box of handmade sweets and the full recipe collection.",
@@ -438,6 +462,7 @@ const activitiesData = [
     capacity: 10,
     category: ActivityCategory.GASTRONOMY,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2017/03/10/13/57/cooking-2132874_1280.jpg"],
     tags: [
       "pastry",
       "makroud",
@@ -448,7 +473,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 8,
+    creatorId: 1,
     title: "Harissa Making and the Spice Trade of Southern Tunisia",
     description:
       "Discover the fiery heart of Tunisian cuisine. Fatma leads a morning tour of Sfax's spice market, explaining the provenance and cultural significance of each ingredient, followed by a hands-on harissa-making session using stone-ground dried chilies, caraway, and garlic. Learn how harissa varies from region to region and its role in every Tunisian table.",
@@ -460,6 +485,7 @@ const activitiesData = [
     capacity: 12,
     category: ActivityCategory.GASTRONOMY,
     status: ActivityStatus.APPROVED,
+    images: ["https://tse4.mm.bing.net/th/id/OIP.mPHlD9pgA-CWerokZgoyTgHaLH?rs=1&pid=ImgDetMain&o=7&rm=3"],
     tags: [
       "harissa",
       "spices",
@@ -473,7 +499,7 @@ const activitiesData = [
 
   // ── Youssef Trabelsi (index 2) ── Desert
   {
-    creatorId: 9,
+    creatorId: 2,
     title: "3-Day Sahara Camel Trek — Grand Erg Oriental",
     description:
       "A fully guided three-day camel trek through the Grand Erg Oriental, departing from Douz. Youssef navigates ancient caravan routes, stopping at hidden oases and Berber tent camps. Nights are spent under stars with no light pollution — astrophotography enthusiasts bring their cameras. Includes all meals, traditional Berber music by campfire, and morning sandboarding.",
@@ -485,6 +511,7 @@ const activitiesData = [
     capacity: 10,
     category: ActivityCategory.DESERT_EXPEDITION,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2023/12/04/19/45/camel-8430227_1280.jpg"],
     tags: [
       "Sahara",
       "camel trek",
@@ -496,7 +523,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 9,
+    creatorId: 2,
     title: "Desert Dawn Meditation and Sunrise Photography",
     description:
       "Wake before dawn and trek to a high dune ridge to witness the Saharan sunrise. Youssef guides a short desert survival workshop before the sun rises, then leads a silent observation session as the dunes turn gold. Perfect for photographers and anyone seeking a meditative desert experience away from the tourist crowds around Douz.",
@@ -508,6 +535,7 @@ const activitiesData = [
     capacity: 12,
     category: ActivityCategory.DESERT_EXPEDITION,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2019/04/17/17/58/desert-4134918_640.jpg"],
     tags: [
       "sunrise",
       "desert",
@@ -519,7 +547,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 9,
+    creatorId: 2,
     title: "Berber Star Stories — Sahara Night Sky Experience",
     description:
       "Far from any artificial light, Youssef leads a night sky experience rooted in Berber astronomical tradition. Learn how desert nomads navigated by stars, the Arabic names of constellations still used in modern astronomy, and the myths woven around them. Includes use of telescopes, traditional tea ceremony, and a Berber drum circle to close the night.",
@@ -531,6 +559,7 @@ const activitiesData = [
     capacity: 15,
     category: ActivityCategory.CULTURAL_EVENT,
     status: ActivityStatus.APPROVED,
+    images: ["https://tse4.mm.bing.net/th/id/OIP.UcCCiSwZ5qUkkxnRA1wYkwHaFj?rs=1&pid=ImgDetMain&o=7&rm=3"],
     tags: [
       "stargazing",
       "astronomy",
@@ -543,7 +572,7 @@ const activitiesData = [
 
   // ── Leila Chaabane (index 3) ── Coastal / Marine
   {
-    creatorId: 10,
+    creatorId: 3,
     title: "Coral Reef Snorkeling Tour — Tabarka Marine Reserve",
     description:
       "Explore one of Tunisia's most biodiverse marine environments with a marine biologist as your guide. Leila identifies every species you encounter — nudibranchs, groupers, sea urchins, and occasional octopus. The tour includes a 20-minute pre-dive briefing on local marine ecosystems and a citizen science log where participants record their sightings.",
@@ -555,6 +584,7 @@ const activitiesData = [
     capacity: 8,
     category: ActivityCategory.COASTAL_ESCAPE,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2017/08/29/18/25/coral-2694453_640.jpg"],
     tags: [
       "snorkeling",
       "coral reef",
@@ -565,7 +595,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 10,
+    creatorId: 3,
     title: "Freediving Introduction Course — Tabarka Bay",
     description:
       "A beginner-friendly two-day freediving course in the crystal-clear waters of Tabarka Bay. Leila covers breathing techniques, equalization, safety protocols, and underwater movement. By the end of day two, participants reach 10 meters on a single breath. Course includes all equipment, theory sessions, and a night snorkel on the second evening.",
@@ -577,6 +607,7 @@ const activitiesData = [
     capacity: 6,
     category: ActivityCategory.COASTAL_ESCAPE,
     status: ActivityStatus.APPROVED,
+    images: ["https://tse2.mm.bing.net/th/id/OIP.8KWWobF31KiSMb11WGxwUgHaE8?rs=1&pid=ImgDetMain&o=7&rm=3"],
     tags: [
       "freediving",
       "diving course",
@@ -588,7 +619,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 10,
+    creatorId: 3,
     title: "Underwater Photography Workshop — Posidonia Meadows",
     description:
       "A specialized workshop for photographers wanting to capture Tunisia's underwater landscapes. Leila leads participants through Tabarka's Posidonia seagrass meadows — a habitat critical for Mediterranean biodiversity. Covers camera settings for underwater shooting, composition techniques, and ethical wildlife photography. Max 4 participants for personalized coaching.",
@@ -600,6 +631,7 @@ const activitiesData = [
     capacity: 4,
     category: ActivityCategory.COASTAL_ESCAPE,
     status: ActivityStatus.APPROVED,
+    images: ["https://tse1.mm.bing.net/th/id/OIP._gdtHueEJDYmblk135CFRgHaEo?rs=1&pid=ImgDetMain&o=7&rm=3"],
     tags: [
       "underwater photography",
       "Posidonia",
@@ -612,7 +644,7 @@ const activitiesData = [
 
   // ── Karim Gasmi (index 4) ── Art / Craft
   {
-    creatorId: 11,
+    creatorId: 4,
     title: "Zellige Mosaic Workshop — Sidi Bou Said",
     description:
       "Learn the ancient art of zellige tile-cutting in Karim's hilltop studio overlooking the Gulf of Tunis. Participants design and assemble a 30x30cm mosaic panel using traditional geometric patterns from Moroccan and Tunisian Islamic architecture. Karim provides historical context for each motif and its mathematical foundations. All materials provided; panels shipped home on request.",
@@ -624,6 +656,7 @@ const activitiesData = [
     capacity: 8,
     category: ActivityCategory.ARTISAN_WORKSHOP,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2015/11/09/21/38/gold-1036021_640.jpg"],
     tags: [
       "zellige",
       "mosaic",
@@ -635,7 +668,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 11,
+    creatorId: 4,
     title: "Open Studio — Contemporary Tunisian Painting",
     description:
       "Spend a full day in Karim's open studio in Sidi Bou Said exploring contemporary Tunisian painting. Karim introduces participants to the Tunis School of Fine Arts tradition, the influence of Paul Klee's visit to Tunisia in 1914, and current Tunisian contemporary artists. Participants work on their own canvas using acrylic and mixed media under Karim's mentorship.",
@@ -647,6 +680,7 @@ const activitiesData = [
     capacity: 10,
     category: ActivityCategory.ART_HERITAGE,
     status: ActivityStatus.APPROVED,
+    images: ["https://tse3.mm.bing.net/th/id/OIP.kzJcAWYR9tz8Z3SgJ3TibAHaE6?rs=1&pid=ImgDetMain&o=7&rm=3"],
     tags: [
       "painting",
       "open studio",
@@ -657,7 +691,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 11,
+    creatorId: 4,
     title: "Ceramics and Pottery Afternoon — North African Glazing Traditions",
     description:
       "A half-day ceramics session focusing on traditional North African hand-building and surface decoration. Karim demonstrates coiling, burnishing, and the application of copper and manganese oxides used in traditional Nabeul pottery. Participants create a small bowl or cup and apply their own glaze design. Kiln-fired pieces shipped within two weeks.",
@@ -669,6 +703,7 @@ const activitiesData = [
     capacity: 10,
     category: ActivityCategory.ARTISAN_WORKSHOP,
     status: ActivityStatus.APPROVED,
+    images: ["https://i0.wp.com/www.arabamerica.com/wp-content/uploads/2016/09/8344653-Colorful-Tunisian-pottery-in-front-of-the-souvenir-store-in-Nabeul-Tunisia-Stock-Photo.jpg?resize=1024%2C726&ssl=1"],
     tags: [
       "ceramics",
       "pottery",
@@ -681,7 +716,7 @@ const activitiesData = [
 
   // ── Nadia Khelifa (index 5) ── Wellness
   {
-    creatorId: 12,
+    creatorId: 5,
     title: "Traditional Tunisian Hammam Ritual — La Marsa",
     description:
       "A full traditional hammam experience at a historic neighborhood bathhouse in La Marsa, guided by Nadia. Includes a full-body kessa exfoliation with black soap, a rhassoul clay mask, and a rose water rinse. Nadia explains the social and spiritual significance of the hammam in Tunisian culture and shares the history of the specific bathhouse. Appropriate for all genders.",
@@ -693,6 +728,7 @@ const activitiesData = [
     capacity: 6,
     category: ActivityCategory.WELLNESS,
     status: ActivityStatus.APPROVED,
+    images: ["https://tse1.mm.bing.net/th/id/OIP.AT-C4ngn0KPMvnWEg6H7JwHaE7?rs=1&pid=ImgDetMain&o=7&rm=3"],
     tags: [
       "hammam",
       "wellness",
@@ -704,7 +740,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 12,
+    creatorId: 5,
     title: "Natural Beauty and Herbal Remedies Workshop",
     description:
       "Nadia shares the traditional Tunisian knowledge of medicinal plants and natural beauty ingredients found in local markets. Participants blend their own body oil using argan, prickly pear seed oil, and jasmine absolute, and prepare a harqous (kohl) eyeline mixture as practiced for centuries. A visit to the local herb market precedes the workshop.",
@@ -716,6 +752,7 @@ const activitiesData = [
     capacity: 10,
     category: ActivityCategory.WELLNESS,
     status: ActivityStatus.APPROVED,
+    images: ["https://images.stockcake.com/public/6/c/4/6c45c3c9-24fd-478b-8fdf-0fdcffd886de_large/herbal-craft-workshop-stockcake.jpg"],
     tags: [
       "natural beauty",
       "herbal remedies",
@@ -725,7 +762,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 12,
+    creatorId: 5,
     title: "Jasmine Harvest and Aromatherapy Morning — La Marsa",
     description:
       "Join Nadia on an early morning walk through La Marsa's jasmine gardens during peak bloom season. Learn to harvest flowers correctly, then distill your own small vial of jasmine hydrosol using a traditional copper alembic still. The session closes with a guided aromatherapy relaxation practice and a tasting of jasmine-infused tea and pastries.",
@@ -737,6 +774,7 @@ const activitiesData = [
     capacity: 8,
     category: ActivityCategory.WELLNESS,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2017/05/16/22/03/hammam-2319188_1280.jpg"],
     tags: [
       "jasmine",
       "aromatherapy",
@@ -749,7 +787,7 @@ const activitiesData = [
 
   // ── Omar Ben Youssef (index 6) ── History / Archaeology
   {
-    creatorId: 13,
+    creatorId: 6,
     title: "Carthage Beyond the Guidebook — Expert Archaeological Tour",
     description:
       "A 4-hour deep-dive archaeological tour of Carthage led by Omar, a professional archaeologist who has worked on-site excavations. Visitors access areas not open to general public, examine original Punic artifacts up close, and hear the unfiltered story of Carthage's rise, its conflict with Rome, and the myths that distort popular history. Includes Omar's own illustrated field notes.",
@@ -761,6 +799,7 @@ const activitiesData = [
     capacity: 8,
     category: ActivityCategory.HISTORICAL_TOUR,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2017/07/06/15/02/pompeii-2478267_1280.jpg"],
     tags: [
       "Carthage",
       "archaeology",
@@ -771,7 +810,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 13,
+    creatorId: 6,
     title: "Dougga Roman City — Full Day Archaeological Immersion",
     description:
       "A full-day visit to Dougga, Tunisia's best-preserved Roman city and a UNESCO World Heritage Site. Omar guides visitors through the Capitol, the theater, the thermal baths, and the Libyan-Punic mausoleum, decoding the Latin inscriptions, architectural evolution, and daily life of Roman North Africa. Includes a picnic lunch among the ruins and a sunset viewing from the hilltop theater.",
@@ -783,6 +822,7 @@ const activitiesData = [
     capacity: 10,
     category: ActivityCategory.HISTORICAL_TOUR,
     status: ActivityStatus.APPROVED,
+    images: ["https://tse1.mm.bing.net/th/id/OIP.qbsKv7JAQIDllpRtfccjdwHaEJ?rs=1&pid=ImgDetMain&o=7&rm=3"],
     tags: [
       "Dougga",
       "Roman ruins",
@@ -794,7 +834,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 13,
+    creatorId: 6,
     title: "El Jem Amphitheater — Behind-the-Scenes Archaeologist Visit",
     description:
       "Go beyond the standard tourist visit to El Jem's Roman amphitheater — the third largest in the world — with an archaeologist who knows every tunnel and chamber. Omar accesses underground galleries, explains gladiatorial combat culture, discusses the economic history of Roman Thysdrus, and shares ongoing excavation findings from the surrounding area. Ends with a visit to the El Jem archaeological museum.",
@@ -806,6 +846,7 @@ const activitiesData = [
     capacity: 8,
     category: ActivityCategory.HISTORICAL_TOUR,
     status: ActivityStatus.APPROVED,
+    images: ["https://tse1.mm.bing.net/th/id/OIP.qGuS6-RCte0P4T0KvG7ydgHaFi?rs=1&pid=ImgDetMain&o=7&rm=3"],
     tags: [
       "El Jem",
       "Roman amphitheater",
@@ -818,7 +859,7 @@ const activitiesData = [
 
   // ── Amira Bouzid (index 7) ── Textile / Berber crafts
   {
-    creatorId: 14,
+    creatorId: 7,
     title: "Berber Carpet Weaving Workshop — Gafsa",
     description:
       "Spend a full day learning traditional Berber carpet weaving at Amira's cooperative in Gafsa. Using a traditional horizontal loom, participants weave a 20x30cm kilim panel while Amira decodes the symbolic language of each geometric motif — triangles representing feminine power, diamonds signifying protection, and zigzag lines encoding migration routes. Natural wool is dyed with local plants on-site.",
@@ -830,6 +871,7 @@ const activitiesData = [
     capacity: 8,
     category: ActivityCategory.ARTISAN_WORKSHOP,
     status: ActivityStatus.APPROVED,
+    images: ["https://tse1.mm.bing.net/th/id/OIP.KTr5Z8Q4ugnHQgJEGjHYMQHaE8?rs=1&pid=ImgDetMain&o=7&rm=3"],
     tags: [
       "Berber weaving",
       "kilim",
@@ -842,7 +884,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 14,
+    creatorId: 7,
     title:
       "Natural Dye Workshop — Plants, Minerals, and Berber Color Knowledge",
     description:
@@ -855,6 +897,7 @@ const activitiesData = [
     capacity: 10,
     category: ActivityCategory.ARTISAN_WORKSHOP,
     status: ActivityStatus.APPROVED,
+    images: ["https://www.stalbansmuseums.org.uk/sites/default/files/styles/sa_banner/public/images/natuerliche-rohstoffe-fuer-faerbung.jpg?itok=mJxKQ-Lu"],
     tags: [
       "natural dye",
       "indigo",
@@ -866,7 +909,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 14,
+    creatorId: 7,
     title: "Embroidery and the Language of Tunisian Wedding Textiles",
     description:
       "Amira unfolds ceremonial wedding textiles from her private collection — garments embroidered with silver and gold thread from Gafsa, Nabeul, and Mahdia — and explains the story each one tells about the bride's family, region, and status. Participants then practice traditional Tunisian cross-stitch embroidery on a linen sampler, guided by Amira through each stitch and its symbolic meaning.",
@@ -878,6 +921,7 @@ const activitiesData = [
     capacity: 10,
     category: ActivityCategory.ART_HERITAGE,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2015/11/09/21/38/gold-1036021_640.jpg"],
     tags: [
       "embroidery",
       "wedding textiles",
@@ -890,7 +934,7 @@ const activitiesData = [
 
   // ── Mixed additional activities spread across creators ──
   {
-    creatorId: 7,
+    creatorId: 0,
     title: "Bardo Museum Deep Dive — Roman Mosaic Masterpieces",
     description:
       "A guided 3-hour expert tour of the Bardo National Museum's unparalleled Roman mosaic collection — the largest in the world. Sami connects each mosaic narrative to the literary works of Virgil, Ovid, and Homer, bringing mythological scenes alive with storytelling. Includes the rarely visited Byzantine gallery and a quiet session sketching mosaic details in the museum garden.",
@@ -902,6 +946,7 @@ const activitiesData = [
     capacity: 10,
     category: ActivityCategory.ART_HERITAGE,
     status: ActivityStatus.APPROVED,
+    images: ["https://tse3.mm.bing.net/th/id/OIP.woVP6BRfs8T7vZGyYxajrgHaE5?rs=1&pid=ImgDetMain&o=7&rm=3"],
     tags: [
       "Bardo Museum",
       "Roman mosaics",
@@ -913,7 +958,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 8,
+    creatorId: 1,
     title: "Farm-to-Table Olive Oil Experience — Cap Bon",
     description:
       "Visit an artisanal olive farm in Cap Bon during the autumn harvest, participate in hand-picking and cold-pressing olives, and taste oils ranging from delicate Chemlali to robust Chemchali varieties alongside Tunisian bread, tomatoes, and herbs. The farmer explains Tunisia's history as the olive breadbasket of Rome and the role of olive oil in modern Tunisian export economy.",
@@ -925,6 +970,7 @@ const activitiesData = [
     capacity: 12,
     category: ActivityCategory.GASTRONOMY,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2018/06/10/17/40/olives-3466908_1280.jpg"],
     tags: [
       "olive oil",
       "farm visit",
@@ -936,7 +982,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 9,
+    creatorId: 2,
     title: "Chott el-Djerid Salt Lake Sunrise Drive",
     description:
       "Drive across the vast Chott el-Djerid — the largest salt lake in the Sahara — at dawn when the surface becomes a mirror of the sky. Youssef stops at key vantage points, explains the lake's hydrology, the optical illusions that create mirages, and the traditional salt harvesting culture of the region. Includes a short walk on the lake's crust where safe and a desert breakfast.",
@@ -948,6 +994,7 @@ const activitiesData = [
     capacity: 8,
     category: ActivityCategory.NATURE_ADVENTURE,
     status: ActivityStatus.APPROVED,
+    images: ["https://img.freepik.com/premium-photo/beautiful-sunrise-salt-lake-chott-el-djerid-sahara-desert-t_652249-1540.jpg"],
     tags: [
       "Chott el-Djerid",
       "salt lake",
@@ -959,7 +1006,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 10,
+    creatorId: 3,
     title: "Kayaking the Ichkeul Lake — Wetland Birdwatching",
     description:
       "Paddle through the Ichkeul National Park, a UNESCO-listed wetland hosting tens of thousands of migratory birds each winter. Leila guides participants by kayak through reed beds and shallow lagoons, identifying flamingos, spoonbills, and marsh harriers. The morning ends at the Ichkeul mountain for a hike with panoramic views and a packed Tunisian picnic.",
@@ -971,6 +1018,7 @@ const activitiesData = [
     capacity: 10,
     category: ActivityCategory.NATURE_ADVENTURE,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2020/02/26/06/20/sunset-4880747_1280.jpg"],
     tags: [
       "kayaking",
       "Ichkeul",
@@ -982,7 +1030,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 11,
+    creatorId: 4,
     title: "Street Art and Graffiti Tour — Tunis City Walls",
     description:
       "Karim leads a walking tour of Tunis neighborhoods where street art has transformed crumbling walls into political and cultural statements. From El Menzah murals protesting social inequality to the Avenue Habib Bourguiba graffiti that documented the 2011 revolution, each work is placed in its historical and artistic context. Includes a live spray-paint demonstration and a discussion with a local graffiti artist.",
@@ -994,6 +1042,7 @@ const activitiesData = [
     capacity: 15,
     category: ActivityCategory.ART_HERITAGE,
     status: ActivityStatus.APPROVED,
+    images: ["https://tse3.mm.bing.net/th/id/OIP.yQG6ICaFbaXAt9n9BtohbwHaD-?rs=1&pid=ImgDetMain&o=7&rm=3"],
     tags: [
       "street art",
       "graffiti",
@@ -1005,7 +1054,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 12,
+    creatorId: 5,
     title: "Sunset Yoga and Meditation on Sidi Bou Said Cliff",
     description:
       "A 90-minute outdoor yoga and breathwork session on the whitewashed cliff-edge terrace overlooking the Gulf of Tunis, as the sun sets behind the island of Zembra. Nadia combines Hatha yoga sequences with traditional Tunisian breathing techniques from Sufi practice. Participants receive a small bottle of local jasmine oil and wild rosemary to take home.",
@@ -1017,6 +1066,7 @@ const activitiesData = [
     capacity: 12,
     category: ActivityCategory.WELLNESS,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2023/03/31/18/42/yoga-7890729_1280.jpg"],
     tags: [
       "yoga",
       "sunset",
@@ -1028,7 +1078,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 13,
+    creatorId: 6,
     title: "Numismatic Journey — Ancient Coins of Carthage and Roman Africa",
     description:
       "Omar presents his personal collection of authenticated Punic, Numidian, and Roman coins minted in ancient Tunisia, tracing the political economy from the silver Carthaginian shekel to the imperial Roman denarius. Participants use jeweler's loupes to examine coins, discuss minting techniques, and identify deities and rulers. A rare opportunity for history and numismatics enthusiasts.",
@@ -1040,6 +1090,7 @@ const activitiesData = [
     capacity: 8,
     category: ActivityCategory.HISTORICAL_TOUR,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2017/07/06/15/02/pompeii-2478267_1280.jpg"],
     tags: [
       "numismatics",
       "ancient coins",
@@ -1051,7 +1102,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 14,
+    creatorId: 7,
     title: "Nabeul Ceramics Market and Pottery Village Tour",
     description:
       "Visit the ceramics capital of Tunisia — Nabeul — with Amira as guide through family-run ateliers producing the region's signature cobalt-and-white patterns. Watch master potters throw on foot-pedal wheels, observe wood-fired kilns, and understand the difference between tourist imports and authentic Nabeul production. Includes a bargaining masterclass at the weekly Friday market.",
@@ -1063,6 +1114,7 @@ const activitiesData = [
     capacity: 12,
     category: ActivityCategory.ARTISAN_WORKSHOP,
     status: ActivityStatus.APPROVED,
+    images: ["https://images.musement.com/cover/0156/28/thumb_15527082_cover_header.jpg"],
     tags: [
       "Nabeul",
       "ceramics",
@@ -1074,7 +1126,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 7,
+    creatorId: 0,
     title: "Jewish Heritage Walk — La Goulette and the Hara",
     description:
       "A walking tour of the former Jewish Quarter of Tunis — the Hara — and the historic port town of La Goulette, tracing 2,500 years of Jewish presence in Tunisia. Sami visits synagogues, cemeteries, and family-run shops still operating under Jewish ownership, sharing personal stories from community elders and the Sephardic cultural legacy still alive in Tunisian cuisine and music.",
@@ -1086,6 +1138,7 @@ const activitiesData = [
     capacity: 10,
     category: ActivityCategory.HISTORICAL_TOUR,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2018/08/18/22/22/archway-3615590_640.jpg"],
     tags: [
       "Jewish heritage",
       "Sephardic culture",
@@ -1096,7 +1149,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 9,
+    creatorId: 2,
     title: "Tataouine Ksour Trek — Berber Fortified Granaries",
     description:
       "A one-day trekking tour through the dramatic landscape around Tataouine, visiting a series of ancient ksar (fortified Berber granary villages) perched on hilltops. Youssef leads the route through Ksar Ouled Soltane, Ksar Hadada, and lesser-known sites, explaining the architecture, clan history, and the reason Star Wars filmmakers chose this landscape for Tatooine.",
@@ -1108,6 +1161,7 @@ const activitiesData = [
     capacity: 10,
     category: ActivityCategory.NATURE_ADVENTURE,
     status: ActivityStatus.APPROVED,
+    images: ["https://thumbs.dreamstime.com/b/ksar-ouled-debbab-tataouine-tunisia-features-traditional-berber-architecture-scene-shows-row-adobe-structures-364622994.jpg?w=992"],
     tags: [
       "Tataouine",
       "ksar",
@@ -1119,7 +1173,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 10,
+    creatorId: 3,
     title: "Night Sailing and Phosphorescence — Tabarka Bay",
     description:
       "Sail out from Tabarka port at sunset on a traditional wooden fishing boat, then anchor in a quiet bay after dark. Leila leads participants into the water to experience bioluminescent plankton — a rare nighttime phenomenon that turns every movement into streaks of blue light. Includes safety briefing, cold drinks, and a midnight return to port under the stars.",
@@ -1131,6 +1185,7 @@ const activitiesData = [
     capacity: 8,
     category: ActivityCategory.COASTAL_ESCAPE,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.yate.co/img/blog/2024/23/-yp8.jpg"],
     tags: [
       "sailing",
       "bioluminescence",
@@ -1142,7 +1197,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 11,
+    creatorId: 4,
     title: "Henna Art and Body Decoration Workshop",
     description:
       "Karim invites a master henna artist to lead a workshop on the traditional art of henna body decoration as practiced in Tunisian weddings and celebrations. Participants learn the regional differences between northern and southern Tunisian patterns, the symbolism of specific motifs, and practice on each other's hands. Natural henna paste is prepared on-site from dried leaves.",
@@ -1154,6 +1209,7 @@ const activitiesData = [
     capacity: 12,
     category: ActivityCategory.ART_HERITAGE,
     status: ActivityStatus.APPROVED,
+    images: ["https://tse2.mm.bing.net/th/id/OIP.bQp49gouJfDPpy99MUcnlwHaJP?rs=1&pid=ImgDetMain&o=7&rm=3"],
     tags: [
       "henna",
       "body art",
@@ -1164,7 +1220,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 12,
+    creatorId: 5,
     title: "Thalassotherapy and Sea Salt Ritual — Hammamet",
     description:
       "A 3-hour therapeutic sea experience using thalassotherapy techniques rooted in Tunisian coastal healing traditions. Nadia combines warm seawater immersion with mineral-rich sea salt body scrubs, seaweed wraps, and a guided relaxation session on the beach. The program draws on the ancient Greek and Arab understanding of the sea as medicine.",
@@ -1176,6 +1232,7 @@ const activitiesData = [
     capacity: 6,
     category: ActivityCategory.WELLNESS,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2017/05/16/22/03/hammam-2319188_1280.jpg"],
     tags: [
       "thalassotherapy",
       "sea salt",
@@ -1186,7 +1243,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 13,
+    creatorId: 6,
     title: "Sbeitla Roman Temples — Forgotten City of Byzantine Africa",
     description:
       "An off-the-beaten-path full-day visit to Sbeitla, one of Tunisia's least-visited but most spectacular Roman sites, featuring three intact Capitol temples dedicated to Jupiter, Juno, and Minerva. Omar uncovers the site's pivotal role in the Arab conquest of North Africa in 647 AD — the moment ancient Rome gave way to the Islamic era. Includes a traditional lunch at a local farmhouse.",
@@ -1198,6 +1255,7 @@ const activitiesData = [
     capacity: 10,
     category: ActivityCategory.HISTORICAL_TOUR,
     status: ActivityStatus.APPROVED,
+    images: ["https://carthagemagazine.com/wp-content/uploads/2022/04/Roman-Ruins-of-Sbeitla-Sufetula-2-1-1536x1035.jpg"],
     tags: [
       "Sbeitla",
       "Roman temples",
@@ -1208,7 +1266,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 14,
+    creatorId: 7,
     title: "Visit a Women's Weaving Cooperative — Southern Tunisia",
     description:
       "Amira leads a visit to a women-run weaving cooperative in a village outside Gafsa, where traditional Berber carpet production sustains an entire community. Meet the weavers, see the wool spinning process from raw fleece to finished thread, and hear their stories about preserving craft traditions across generations. A portion of every purchase goes directly to cooperative funds.",
@@ -1220,6 +1278,7 @@ const activitiesData = [
     capacity: 12,
     category: ActivityCategory.CULTURAL_EVENT,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2015/11/09/21/38/gold-1036021_640.jpg"],
     tags: [
       "women's cooperative",
       "weaving",
@@ -1230,7 +1289,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 7,
+    creatorId: 0,
     title: "Tunisian Breakfast Ritual — A Morning Food Cultural Journey",
     description:
       "Fatma invites a small group to experience a traditional Tunisian breakfast in its full cultural context: slata mechouia, fricassee, lablebi soup, and fresh khoubz bread baked in a wood-fired oven. She explains the regional variations of breakfast across Tunisia — what people eat in Djerba versus Bizerte versus Tunis — and the role of the coffee shop in Tunisian social life.",
@@ -1242,6 +1301,7 @@ const activitiesData = [
     capacity: 10,
     category: ActivityCategory.GASTRONOMY,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2017/03/10/13/57/cooking-2132874_1280.jpg"],
     tags: [
       "breakfast",
       "Tunisian food",
@@ -1253,7 +1313,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 8,
+    creatorId: 1,
     title: "Djerba Seafood Trail — Island Flavors and Fishermen",
     description:
       "A guided half-day food tour through Houmt Souk's fish market and the fishing village of Ajim on the Djerba coast. Fatma leads the group through the morning catch inspection, explains how island residents prepare octopus in chermoula and salt-cured mullet roe (poutargue), and ends with a shared seafood lunch cooked over charcoal at a fisherman's courtyard. Djerba's cuisine is unlike anywhere else in Tunisia.",
@@ -1265,6 +1325,7 @@ const activitiesData = [
     capacity: 10,
     category: ActivityCategory.GASTRONOMY,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2018/06/10/17/40/olives-3466908_1280.jpg"],
     tags: [
       "Djerba",
       "seafood",
@@ -1276,7 +1337,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 9,
+    creatorId: 2,
     title: "Oasis Permaculture Walk — Date Palm Agriculture of Tozeur",
     description:
       "A guided morning walk through Tozeur's ancient oasis irrigation system, one of the most sophisticated in the Arab world. Youssef explains the 1,000-year-old foggara water channels, the three-layer agriculture system (date palms, fruit trees, vegetables), and the varieties of dates grown in the region — from Deglet Nour to Allig. Includes a date tasting session with 12 varieties and a visit to a traditional date press.",
@@ -1288,6 +1349,7 @@ const activitiesData = [
     capacity: 12,
     category: ActivityCategory.NATURE_ADVENTURE,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2019/04/17/17/58/desert-4134918_640.jpg"],
     tags: [
       "oasis",
       "Tozeur",
@@ -1299,7 +1361,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 10,
+    creatorId: 3,
     title: "Cap Blanc Coastal Hike — Northernmost Point of Africa",
     description:
       "A 12km guided coastal hike along the dramatic cliffs of Cap Blanc — the northernmost point of the African continent — with Leila providing ecological commentary on the Mediterranean scrubland, cliff-nesting seabirds, and endemic plants visible along the route. The trail ends at the cape lighthouse with a panoramic view across to Sicily on clear days. Swim stop at a hidden rocky cove included.",
@@ -1311,6 +1373,7 @@ const activitiesData = [
     capacity: 10,
     category: ActivityCategory.NATURE_ADVENTURE,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2017/08/29/18/25/coral-2694453_640.jpg"],
     tags: [
       "Cap Blanc",
       "coastal hike",
@@ -1322,7 +1385,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 11,
+    creatorId: 4,
     title: "Independent Bookshop Tour and Literary Tunis Walk",
     description:
       "A walking tour of Tunis's surviving independent bookshops, literary cafés, and the cultural institutions that make the capital a quietly vibrant book city. Karim visits four independent booksellers including the legendary Librairie Scriptorium on Rue de Rome, Fnac Tunis, and a used book market off Avenue Bourguiba. The tour ends with a reading from contemporary Tunisian authors at a cultural center.",
@@ -1334,6 +1397,7 @@ const activitiesData = [
     capacity: 15,
     category: ActivityCategory.CULTURAL_EVENT,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2015/11/09/21/38/gold-1036021_640.jpg"],
     tags: [
       "bookshops",
       "literary culture",
@@ -1345,7 +1409,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 12,
+    creatorId: 5,
     title: "Sound Bath and Sufi Breathing — Inner Silence Retreat",
     description:
       "A 2-hour inner silence session in a whitewashed riad in La Marsa, drawing on Tunisian Sufi breathing and vocal traditions alongside modern sound healing using Tibetan bowls and a frame drum. Nadia opens with a traditional hadra rhythm sequence before guiding participants into deep relaxation. Designed for travelers experiencing burnout or seeking genuine stillness. Limited to 6 people for intimacy.",
@@ -1357,6 +1421,7 @@ const activitiesData = [
     capacity: 6,
     category: ActivityCategory.WELLNESS,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2023/03/31/18/42/yoga-7890729_1280.jpg"],
     tags: [
       "sound bath",
       "Sufi breathing",
@@ -1368,7 +1433,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 13,
+    creatorId: 6,
     title: "Kairouan — Holy City Pilgrimage and Sacred Architecture",
     description:
       "A full-day expert visit to Kairouan, the fourth holiest city in Islam and a UNESCO World Heritage site. Omar leads an in-depth tour of the Great Mosque of Okba Ibn Nafaa (founded 670 AD), the Mosque of the Three Doors, the Aghlabid Basins, and the city's historic religious schools. Includes access to areas restricted to general visitors and a private briefing with the mosque's resident historian.",
@@ -1380,6 +1445,7 @@ const activitiesData = [
     capacity: 8,
     category: ActivityCategory.HISTORICAL_TOUR,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2018/08/18/22/22/archway-3615590_640.jpg"],
     tags: [
       "Kairouan",
       "Islamic architecture",
@@ -1391,7 +1457,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 14,
+    creatorId: 7,
     title: "Silver Jewelry and Berber Amulet Workshop — Tozeur",
     description:
       "A workshop led by a silversmith from Amira's cooperative network in Tozeur, specializing in traditional Berber protective amulets — the khamsa, the crescent and star, and the fish — worked in silver wire and embellished with coral and amber beads. Participants learn basic wire-wrapping techniques and create their own pendant necklace. The historical and spiritual meaning behind each symbol is explained throughout.",
@@ -1403,6 +1469,7 @@ const activitiesData = [
     capacity: 8,
     category: ActivityCategory.ARTISAN_WORKSHOP,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2019/04/17/17/58/desert-4134918_640.jpg"],
     tags: [
       "silver jewelry",
       "Berber amulet",
@@ -1414,7 +1481,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 10,
+    creatorId: 3,
     title: "Biological Marine Reserve — Galite Island Day Trip",
     description:
       "A full-day boat excursion to La Galite — a remote uninhabited island 60km off the Tabarka coast, one of Tunisia's few designated marine protected areas. Leila leads snorkeling sessions over pristine rocky reefs and explains the island's status as a critical habitat for Mediterranean monk seals. Includes a surface interval on the island's pebble beach, packed lunch, and a marine biology Q&A session on the return crossing.",
@@ -1426,6 +1493,7 @@ const activitiesData = [
     capacity: 8,
     category: ActivityCategory.COASTAL_ESCAPE,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2017/08/29/18/25/coral-2694453_640.jpg"],
     tags: [
       "La Galite",
       "marine reserve",
@@ -1437,7 +1505,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 9,
+    creatorId: 2,
     title: "Matmata Underground Troglodyte Village — Desert Architecture Walk",
     description:
       "A guided exploration of Matmata's extraordinary underground troglodyte dwellings — pit houses carved 10 meters into the earth to maintain constant temperature against the Saharan heat. Youssef visits both inhabited homes still used by Berber families today and the famous Hotel Sidi Driss (used as Luke Skywalker's home in Star Wars IV). Explains the spatial logic, social history, and engineering ingenuity behind this unique desert architecture.",
@@ -1449,6 +1517,7 @@ const activitiesData = [
     capacity: 12,
     category: ActivityCategory.HISTORICAL_TOUR,
     status: ActivityStatus.APPROVED,
+    images: ["https://cdn.pixabay.com/photo/2019/04/17/17/58/desert-4134918_640.jpg"],
     tags: [
       "Matmata",
       "troglodyte",
@@ -1460,7 +1529,7 @@ const activitiesData = [
     ],
   },
   {
-    creatorId: 7,
+    creatorId: 0,
     title: "Zitouna Mosque and Islamic Tunis — Architecture and Spirituality",
     description:
       "A morning focused on the spiritual heart of Tunis — the Great Mosque of Zitouna, founded in 698 AD. Sami walks participants through the mosque's architectural evolution over 13 centuries, its role as the Arab world's oldest university, and the Quranic schools still operating in the surrounding medina. Respectful visits to active zaouias (Sufi lodges) are included for those interested.",
@@ -1472,6 +1541,7 @@ const activitiesData = [
     capacity: 10,
     category: ActivityCategory.ART_HERITAGE,
     status: ActivityStatus.APPROVED,
+    images: ["https://th.bing.com/th/id/OIP.QxuCyReOvsmGJeNnx18eMwHaE2?w=306&h=201&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"],
     tags: [
       "Zitouna Mosque",
       "Islamic architecture",
@@ -1486,605 +1556,605 @@ const activitiesData = [
 
 // ─── PLACES (30) ─────────────────────────────────────────────────────────────
 
-const placesData = [
-  // ── RESTAURANTS ──
-  {
-    name: "Dar El Jeld",
-    category: PlaceCategory.RESTAURANT,
-    address: "5 Rue Dar El Jeld, Medina",
-    city: "Tunis",
-    latitude: 36.799,
-    longitude: 10.17,
-    rating: 4.8,
-    reviewCount: 1243,
-    tags: [
-      "traditional Tunisian",
-      "fine dining",
-      "Medina",
-      "couscous",
-      "tajine",
-      "historic riad",
-    ],
-    description:
-      "One of Tunis's most celebrated traditional restaurants, housed in a magnificently restored 18th-century palace in the heart of the Medina. The menu showcases the full range of classical Tunisian cuisine — brik, couscous with lamb and dried vegetables, and slow-cooked tajines — in an atmosphere of carved plaster and mosaic tile.",
-  },
-  {
-    name: "Essaada Restaurant",
-    category: PlaceCategory.RESTAURANT,
-    address: "Avenue Bourguiba, Sfax Centre",
-    city: "Sfax",
-    latitude: 34.739,
-    longitude: 10.76,
-    rating: 4.5,
-    reviewCount: 678,
-    tags: [
-      "Sfax cuisine",
-      "fish couscous",
-      "octopus",
-      "local institution",
-      "Tunisian seafood",
-    ],
-    description:
-      "An unpretentious local institution in central Sfax, famous for its definitive fish couscous and grilled octopus. Frequented exclusively by Sfaxians who know it as the most honest representation of the city's distinct culinary identity — simpler, spicier, and more sea-forward than Tunis cuisine.",
-  },
-  {
-    name: "Le Fondouk",
-    category: PlaceCategory.RESTAURANT,
-    address: "Sidi Bou Said Village, Route de la Corniche",
-    city: "Sidi Bou Said",
-    latitude: 36.8695,
-    longitude: 10.3425,
-    rating: 4.6,
-    reviewCount: 892,
-    tags: [
-      "Mediterranean",
-      "seafood",
-      "rooftop",
-      "Sidi Bou Said",
-      "Gulf of Tunis view",
-      "romantic",
-    ],
-    description:
-      "A rooftop terrace restaurant perched above the blue-and-white village of Sidi Bou Said, with sweeping views over the Gulf of Tunis. Serves a contemporary Mediterranean menu drawing on Tunisian, French, and Italian influences, with a focus on fresh daily-caught fish and seasonal vegetables from nearby farms.",
-  },
-  {
-    name: "Restaurant Chez Slah",
-    category: PlaceCategory.RESTAURANT,
-    address: "Rue Pierre Coubertin, La Marsa",
-    city: "La Marsa",
-    latitude: 36.888,
-    longitude: 10.323,
-    rating: 4.4,
-    reviewCount: 540,
-    tags: [
-      "family restaurant",
-      "La Marsa",
-      "grilled fish",
-      "brik",
-      "budget friendly",
-      "locals favorite",
-    ],
-    description:
-      "A beloved family-run restaurant in La Marsa, operating for over 40 years. The menu is short, the quality consistent, and the prices reasonable — grilled sea bass, tuna brik, and hearty chorba soup remain the perennial favourites. Often full by 1pm on weekdays — arrive early.",
-  },
-  {
-    name: "Nomad Desert Kitchen",
-    category: PlaceCategory.RESTAURANT,
-    address: "Route de Tozeur, Douz",
-    city: "Douz",
-    latitude: 33.459,
-    longitude: 9.02,
-    rating: 4.3,
-    reviewCount: 312,
-    tags: [
-      "desert food",
-      "Berber cuisine",
-      "Douz",
-      "lamb",
-      "tagine",
-      "oasis cooking",
-    ],
-    description:
-      "A small open-air restaurant in Douz run by a Bedouin family, serving traditional southern Tunisian dishes cooked over charcoal and wood. Specialties include slow-roasted lamb in an underground earth oven, Berber-style vegetable tagine, and date pastries. Meals are served on low cushions around communal tables.",
-  },
+// const placesData = [
+//   // ── RESTAURANTS ──
+//   {
+//     name: "Dar El Jeld",
+//     category: PlaceCategory.RESTAURANT,
+//     address: "5 Rue Dar El Jeld, Medina",
+//     city: "Tunis",
+//     latitude: 36.799,
+//     longitude: 10.17,
+//     rating: 4.8,
+//     reviewCount: 1243,
+//     tags: [
+//       "traditional Tunisian",
+//       "fine dining",
+//       "Medina",
+//       "couscous",
+//       "tajine",
+//       "historic riad",
+//     ],
+//     description:
+//       "One of Tunis's most celebrated traditional restaurants, housed in a magnificently restored 18th-century palace in the heart of the Medina. The menu showcases the full range of classical Tunisian cuisine — brik, couscous with lamb and dried vegetables, and slow-cooked tajines — in an atmosphere of carved plaster and mosaic tile.",
+//   },
+//   {
+//     name: "Essaada Restaurant",
+//     category: PlaceCategory.RESTAURANT,
+//     address: "Avenue Bourguiba, Sfax Centre",
+//     city: "Sfax",
+//     latitude: 34.739,
+//     longitude: 10.76,
+//     rating: 4.5,
+//     reviewCount: 678,
+//     tags: [
+//       "Sfax cuisine",
+//       "fish couscous",
+//       "octopus",
+//       "local institution",
+//       "Tunisian seafood",
+//     ],
+//     description:
+//       "An unpretentious local institution in central Sfax, famous for its definitive fish couscous and grilled octopus. Frequented exclusively by Sfaxians who know it as the most honest representation of the city's distinct culinary identity — simpler, spicier, and more sea-forward than Tunis cuisine.",
+//   },
+//   {
+//     name: "Le Fondouk",
+//     category: PlaceCategory.RESTAURANT,
+//     address: "Sidi Bou Said Village, Route de la Corniche",
+//     city: "Sidi Bou Said",
+//     latitude: 36.8695,
+//     longitude: 10.3425,
+//     rating: 4.6,
+//     reviewCount: 892,
+//     tags: [
+//       "Mediterranean",
+//       "seafood",
+//       "rooftop",
+//       "Sidi Bou Said",
+//       "Gulf of Tunis view",
+//       "romantic",
+//     ],
+//     description:
+//       "A rooftop terrace restaurant perched above the blue-and-white village of Sidi Bou Said, with sweeping views over the Gulf of Tunis. Serves a contemporary Mediterranean menu drawing on Tunisian, French, and Italian influences, with a focus on fresh daily-caught fish and seasonal vegetables from nearby farms.",
+//   },
+//   {
+//     name: "Restaurant Chez Slah",
+//     category: PlaceCategory.RESTAURANT,
+//     address: "Rue Pierre Coubertin, La Marsa",
+//     city: "La Marsa",
+//     latitude: 36.888,
+//     longitude: 10.323,
+//     rating: 4.4,
+//     reviewCount: 540,
+//     tags: [
+//       "family restaurant",
+//       "La Marsa",
+//       "grilled fish",
+//       "brik",
+//       "budget friendly",
+//       "locals favorite",
+//     ],
+//     description:
+//       "A beloved family-run restaurant in La Marsa, operating for over 40 years. The menu is short, the quality consistent, and the prices reasonable — grilled sea bass, tuna brik, and hearty chorba soup remain the perennial favourites. Often full by 1pm on weekdays — arrive early.",
+//   },
+//   {
+//     name: "Nomad Desert Kitchen",
+//     category: PlaceCategory.RESTAURANT,
+//     address: "Route de Tozeur, Douz",
+//     city: "Douz",
+//     latitude: 33.459,
+//     longitude: 9.02,
+//     rating: 4.3,
+//     reviewCount: 312,
+//     tags: [
+//       "desert food",
+//       "Berber cuisine",
+//       "Douz",
+//       "lamb",
+//       "tagine",
+//       "oasis cooking",
+//     ],
+//     description:
+//       "A small open-air restaurant in Douz run by a Bedouin family, serving traditional southern Tunisian dishes cooked over charcoal and wood. Specialties include slow-roasted lamb in an underground earth oven, Berber-style vegetable tagine, and date pastries. Meals are served on low cushions around communal tables.",
+//   },
 
-  // ── CAFES ──
-  {
-    name: "Café Sidi Chabaane",
-    category: PlaceCategory.CAFE,
-    address: "Sidi Bou Said Cliff, Route de la Corniche",
-    city: "Sidi Bou Said",
-    latitude: 36.87,
-    longitude: 10.344,
-    rating: 4.7,
-    reviewCount: 2105,
-    tags: [
-      "iconic cafe",
-      "Gulf of Tunis view",
-      "pine nuts coffee",
-      "sunset",
-      "Sidi Bou Said",
-      "historic",
-    ],
-    description:
-      "Arguably the most famous café in Tunisia, perched on the cliff edge of Sidi Bou Said with an unobstructed view across the Gulf of Tunis to the Cap Bon peninsula. The café's signature drink — qahwa au pignons, dark Arabic coffee topped with toasted pine nuts — has been served here since 1914. Arrive at sunset for one of the Mediterranean's most celebrated views.",
-  },
-  {
-    name: "M'rabet Café",
-    category: PlaceCategory.CAFE,
-    address: "Souk Et-Trouk, Medina",
-    city: "Tunis",
-    latitude: 36.7985,
-    longitude: 10.169,
-    rating: 4.5,
-    reviewCount: 879,
-    tags: [
-      "Medina",
-      "traditional café",
-      "hookah",
-      "mint tea",
-      "live music",
-      "historic building",
-    ],
-    description:
-      "A centuries-old café built above an ancient mosque in the heart of the Tunis Medina souk. One of the few remaining traditional Tunisian cafés where old men play dominoes, hookah smoke drifts through arched colonnades, and mint tea is served in small glasses with a cube of sugar. Occasional live Malouf music on Thursday evenings.",
-  },
-  {
-    name: "Café de Paris",
-    category: PlaceCategory.CAFE,
-    address: "Place de l'Indépendance, Avenue Bourguiba",
-    city: "Tunis",
-    latitude: 36.7992,
-    longitude: 10.1826,
-    rating: 4.2,
-    reviewCount: 1456,
-    tags: [
-      "colonial architecture",
-      "Avenue Bourguiba",
-      "espresso",
-      "people watching",
-      "historic",
-      "terrace",
-    ],
-    description:
-      "An elegant French-colonial era café on the main artery of Avenue Bourguiba, with marble tables and a wide terrace perfect for watching Tunisian city life. Serves Italian espresso, fresh-squeezed juices, and a light menu of pastries and sandwiches. A historic landmark that has hosted journalists, artists, and politicians since the 1920s.",
-  },
-  {
-    name: "Diar Lemdina Café",
-    category: PlaceCategory.CAFE,
-    address: "Rue de la Kasbah, Medina",
-    city: "Tunis",
-    latitude: 36.7998,
-    longitude: 10.168,
-    rating: 4.4,
-    reviewCount: 445,
-    tags: [
-      "riad café",
-      "medina",
-      "courtyard",
-      "artisanal coffee",
-      "quiet",
-      "boutique",
-    ],
-    description:
-      "A small boutique café in a restored Medina courtyard riad, serving artisanal coffee, local herbal infusions, and home-baked pastries. The atmosphere is quiet and unhurried, popular with writers, artists, and travelers seeking refuge from the souk's energy. Walls are hung with rotating exhibitions by Tunisian contemporary artists.",
-  },
+//   // ── CAFES ──
+//   {
+//     name: "Café Sidi Chabaane",
+//     category: PlaceCategory.CAFE,
+//     address: "Sidi Bou Said Cliff, Route de la Corniche",
+//     city: "Sidi Bou Said",
+//     latitude: 36.87,
+//     longitude: 10.344,
+//     rating: 4.7,
+//     reviewCount: 2105,
+//     tags: [
+//       "iconic cafe",
+//       "Gulf of Tunis view",
+//       "pine nuts coffee",
+//       "sunset",
+//       "Sidi Bou Said",
+//       "historic",
+//     ],
+//     description:
+//       "Arguably the most famous café in Tunisia, perched on the cliff edge of Sidi Bou Said with an unobstructed view across the Gulf of Tunis to the Cap Bon peninsula. The café's signature drink — qahwa au pignons, dark Arabic coffee topped with toasted pine nuts — has been served here since 1914. Arrive at sunset for one of the Mediterranean's most celebrated views.",
+//   },
+//   {
+//     name: "M'rabet Café",
+//     category: PlaceCategory.CAFE,
+//     address: "Souk Et-Trouk, Medina",
+//     city: "Tunis",
+//     latitude: 36.7985,
+//     longitude: 10.169,
+//     rating: 4.5,
+//     reviewCount: 879,
+//     tags: [
+//       "Medina",
+//       "traditional café",
+//       "hookah",
+//       "mint tea",
+//       "live music",
+//       "historic building",
+//     ],
+//     description:
+//       "A centuries-old café built above an ancient mosque in the heart of the Tunis Medina souk. One of the few remaining traditional Tunisian cafés where old men play dominoes, hookah smoke drifts through arched colonnades, and mint tea is served in small glasses with a cube of sugar. Occasional live Malouf music on Thursday evenings.",
+//   },
+//   {
+//     name: "Café de Paris",
+//     category: PlaceCategory.CAFE,
+//     address: "Place de l'Indépendance, Avenue Bourguiba",
+//     city: "Tunis",
+//     latitude: 36.7992,
+//     longitude: 10.1826,
+//     rating: 4.2,
+//     reviewCount: 1456,
+//     tags: [
+//       "colonial architecture",
+//       "Avenue Bourguiba",
+//       "espresso",
+//       "people watching",
+//       "historic",
+//       "terrace",
+//     ],
+//     description:
+//       "An elegant French-colonial era café on the main artery of Avenue Bourguiba, with marble tables and a wide terrace perfect for watching Tunisian city life. Serves Italian espresso, fresh-squeezed juices, and a light menu of pastries and sandwiches. A historic landmark that has hosted journalists, artists, and politicians since the 1920s.",
+//   },
+//   {
+//     name: "Diar Lemdina Café",
+//     category: PlaceCategory.CAFE,
+//     address: "Rue de la Kasbah, Medina",
+//     city: "Tunis",
+//     latitude: 36.7998,
+//     longitude: 10.168,
+//     rating: 4.4,
+//     reviewCount: 445,
+//     tags: [
+//       "riad café",
+//       "medina",
+//       "courtyard",
+//       "artisanal coffee",
+//       "quiet",
+//       "boutique",
+//     ],
+//     description:
+//       "A small boutique café in a restored Medina courtyard riad, serving artisanal coffee, local herbal infusions, and home-baked pastries. The atmosphere is quiet and unhurried, popular with writers, artists, and travelers seeking refuge from the souk's energy. Walls are hung with rotating exhibitions by Tunisian contemporary artists.",
+//   },
 
-  // ── TEA HOUSES ──
-  {
-    name: "Dar Zarrouk Tea House",
-    category: PlaceCategory.TEA_HOUSE,
-    address: "Sidi Bou Said Village, Main Street",
-    city: "Sidi Bou Said",
-    latitude: 36.8688,
-    longitude: 10.342,
-    rating: 4.6,
-    reviewCount: 715,
-    tags: [
-      "mint tea",
-      "Tunisian pastries",
-      "riad",
-      "traditional",
-      "jasmine tea",
-      "peaceful",
-    ],
-    description:
-      "A peaceful tea house in a whitewashed riad in Sidi Bou Said, specializing in North African tea culture. The menu spans mint green tea with wormwood (thé à la menthe absinthe), jasmine-scented tea, and sage infusions, all served with traditional Tunisian pastries: baklava, kaak, and almond fingers dusted with sugar.",
-  },
-  {
-    name: "Tozeur Oasis Tea Room",
-    category: PlaceCategory.TEA_HOUSE,
-    address: "Oasis District, Route des Palmerais",
-    city: "Tozeur",
-    latitude: 33.9197,
-    longitude: 8.134,
-    rating: 4.5,
-    reviewCount: 298,
-    tags: ["oasis", "date tea", "Tozeur", "desert", "palm grove", "relaxation"],
-    description:
-      "Hidden among the towering date palm groves of Tozeur's ancient oasis, this atmospheric tea room serves teas made from fresh dates, dried hibiscus, and local desert herbs. Sitting on cushions under palm canopy, surrounded by irrigation channels and birdsong, it is one of the most restorative experiences in southern Tunisia.",
-  },
+//   // ── TEA HOUSES ──
+//   {
+//     name: "Dar Zarrouk Tea House",
+//     category: PlaceCategory.TEA_HOUSE,
+//     address: "Sidi Bou Said Village, Main Street",
+//     city: "Sidi Bou Said",
+//     latitude: 36.8688,
+//     longitude: 10.342,
+//     rating: 4.6,
+//     reviewCount: 715,
+//     tags: [
+//       "mint tea",
+//       "Tunisian pastries",
+//       "riad",
+//       "traditional",
+//       "jasmine tea",
+//       "peaceful",
+//     ],
+//     description:
+//       "A peaceful tea house in a whitewashed riad in Sidi Bou Said, specializing in North African tea culture. The menu spans mint green tea with wormwood (thé à la menthe absinthe), jasmine-scented tea, and sage infusions, all served with traditional Tunisian pastries: baklava, kaak, and almond fingers dusted with sugar.",
+//   },
+//   {
+//     name: "Tozeur Oasis Tea Room",
+//     category: PlaceCategory.TEA_HOUSE,
+//     address: "Oasis District, Route des Palmerais",
+//     city: "Tozeur",
+//     latitude: 33.9197,
+//     longitude: 8.134,
+//     rating: 4.5,
+//     reviewCount: 298,
+//     tags: ["oasis", "date tea", "Tozeur", "desert", "palm grove", "relaxation"],
+//     description:
+//       "Hidden among the towering date palm groves of Tozeur's ancient oasis, this atmospheric tea room serves teas made from fresh dates, dried hibiscus, and local desert herbs. Sitting on cushions under palm canopy, surrounded by irrigation channels and birdsong, it is one of the most restorative experiences in southern Tunisia.",
+//   },
 
-  // ── SHOPS ──
-  {
-    name: "Souk El Attarine — Spice and Perfume Market",
-    category: PlaceCategory.SHOP,
-    address: "Souk El Attarine, Medina",
-    city: "Tunis",
-    latitude: 36.798,
-    longitude: 10.1692,
-    rating: 4.5,
-    reviewCount: 634,
-    tags: [
-      "spices",
-      "perfumes",
-      "Medina",
-      "essential oils",
-      "traditional",
-      "shopping",
-    ],
-    description:
-      "The historic perfumers' and spice merchants' souk in the heart of the Tunis Medina, where the air is permanently saturated with cumin, rose water, oud, and dried jasmine. Dozens of family-run stalls sell handmade essential oils, traditional kohl, orange blossom water, and spice blends impossible to find elsewhere.",
-  },
-  {
-    name: "Atelier Damous — Handwoven Carpet Gallery",
-    category: PlaceCategory.SHOP,
-    address: "Rue de la Commission, Kairouan Medina",
-    city: "Kairouan",
-    latitude: 35.6833,
-    longitude: 10.096,
-    rating: 4.8,
-    reviewCount: 412,
-    tags: [
-      "Kairouan carpet",
-      "handwoven",
-      "Berber kilim",
-      "certified",
-      "craft gallery",
-      "artisan",
-    ],
-    description:
-      "A certified artisan carpet gallery in the Kairouan Medina — the carpet capital of Tunisia — offering handwoven Berber kilims, traditional knotted rugs, and contemporary minimalist pieces. Each carpet carries an official ONAT certification guaranteeing authentic Tunisian production. The owner provides documentation of the weaver, region, and materials used.",
-  },
-  {
-    name: "Nabeul Céramiques Artistiques",
-    category: PlaceCategory.SHOP,
-    address: "Avenue Habib Bourguiba, Nabeul",
-    city: "Nabeul",
-    latitude: 36.457,
-    longitude: 10.738,
-    rating: 4.4,
-    reviewCount: 562,
-    tags: [
-      "ceramics",
-      "Nabeul",
-      "pottery",
-      "cobalt blue",
-      "handpainted",
-      "artisan",
-    ],
-    description:
-      "A working atelier and showroom in Nabeul selling exclusively handpainted ceramics produced on-site by a family of third-generation potters. The signature cobalt-and-white patterns draw on centuries of Nabeul tradition, with modern forms including espresso cups, tagine sets, and decorative tile panels. Custom commissions accepted.",
-  },
-  {
-    name: "Mains de Femmes — Berber Textile Collective",
-    category: PlaceCategory.SHOP,
-    address: "Zone Artisanale, Gafsa",
-    city: "Gafsa",
-    latitude: 34.425,
-    longitude: 8.784,
-    rating: 4.7,
-    reviewCount: 189,
-    tags: [
-      "women's cooperative",
-      "Berber textiles",
-      "kilim",
-      "fair trade",
-      "embroidery",
-      "Gafsa",
-    ],
-    description:
-      "A social enterprise shop operated by a women's weaving cooperative in Gafsa, selling Berber kilims, embroidered cushions, hand-spun wool garments, and natural-dyed textiles directly from the weavers. Each piece carries the maker's name and village. Fair trade certified and supported by international development organizations.",
-  },
+//   // ── SHOPS ──
+//   {
+//     name: "Souk El Attarine — Spice and Perfume Market",
+//     category: PlaceCategory.SHOP,
+//     address: "Souk El Attarine, Medina",
+//     city: "Tunis",
+//     latitude: 36.798,
+//     longitude: 10.1692,
+//     rating: 4.5,
+//     reviewCount: 634,
+//     tags: [
+//       "spices",
+//       "perfumes",
+//       "Medina",
+//       "essential oils",
+//       "traditional",
+//       "shopping",
+//     ],
+//     description:
+//       "The historic perfumers' and spice merchants' souk in the heart of the Tunis Medina, where the air is permanently saturated with cumin, rose water, oud, and dried jasmine. Dozens of family-run stalls sell handmade essential oils, traditional kohl, orange blossom water, and spice blends impossible to find elsewhere.",
+//   },
+//   {
+//     name: "Atelier Damous — Handwoven Carpet Gallery",
+//     category: PlaceCategory.SHOP,
+//     address: "Rue de la Commission, Kairouan Medina",
+//     city: "Kairouan",
+//     latitude: 35.6833,
+//     longitude: 10.096,
+//     rating: 4.8,
+//     reviewCount: 412,
+//     tags: [
+//       "Kairouan carpet",
+//       "handwoven",
+//       "Berber kilim",
+//       "certified",
+//       "craft gallery",
+//       "artisan",
+//     ],
+//     description:
+//       "A certified artisan carpet gallery in the Kairouan Medina — the carpet capital of Tunisia — offering handwoven Berber kilims, traditional knotted rugs, and contemporary minimalist pieces. Each carpet carries an official ONAT certification guaranteeing authentic Tunisian production. The owner provides documentation of the weaver, region, and materials used.",
+//   },
+//   {
+//     name: "Nabeul Céramiques Artistiques",
+//     category: PlaceCategory.SHOP,
+//     address: "Avenue Habib Bourguiba, Nabeul",
+//     city: "Nabeul",
+//     latitude: 36.457,
+//     longitude: 10.738,
+//     rating: 4.4,
+//     reviewCount: 562,
+//     tags: [
+//       "ceramics",
+//       "Nabeul",
+//       "pottery",
+//       "cobalt blue",
+//       "handpainted",
+//       "artisan",
+//     ],
+//     description:
+//       "A working atelier and showroom in Nabeul selling exclusively handpainted ceramics produced on-site by a family of third-generation potters. The signature cobalt-and-white patterns draw on centuries of Nabeul tradition, with modern forms including espresso cups, tagine sets, and decorative tile panels. Custom commissions accepted.",
+//   },
+//   {
+//     name: "Mains de Femmes — Berber Textile Collective",
+//     category: PlaceCategory.SHOP,
+//     address: "Zone Artisanale, Gafsa",
+//     city: "Gafsa",
+//     latitude: 34.425,
+//     longitude: 8.784,
+//     rating: 4.7,
+//     reviewCount: 189,
+//     tags: [
+//       "women's cooperative",
+//       "Berber textiles",
+//       "kilim",
+//       "fair trade",
+//       "embroidery",
+//       "Gafsa",
+//     ],
+//     description:
+//       "A social enterprise shop operated by a women's weaving cooperative in Gafsa, selling Berber kilims, embroidered cushions, hand-spun wool garments, and natural-dyed textiles directly from the weavers. Each piece carries the maker's name and village. Fair trade certified and supported by international development organizations.",
+//   },
 
-  // ── BAKERIES ──
-  {
-    name: "Boulangerie Ben Younes",
-    category: PlaceCategory.BAKERY,
-    address: "Rue Ibn Khaldoun, Tunis Centre",
-    city: "Tunis",
-    latitude: 36.8,
-    longitude: 10.182,
-    rating: 4.6,
-    reviewCount: 833,
-    tags: [
-      "bread",
-      "traditional bakery",
-      "khoubz",
-      "Tunisian pastry",
-      "morning",
-      "local",
-    ],
-    description:
-      "A legendary neighborhood bakery in central Tunis, operating since 1961, known for its wood-fired khoubz taboun flatbread and traditional Tunisian morning pastries: bambalouni (fried doughnuts), ftayer (spinach pastry), and ghriba biscuits. Queue begins forming before dawn on weekends.",
-  },
-  {
-    name: "Pâtisserie Masmoudi",
-    category: PlaceCategory.BAKERY,
-    address: "Avenue Bourguiba, Sfax",
-    city: "Sfax",
-    latitude: 34.741,
-    longitude: 10.7615,
-    rating: 4.8,
-    reviewCount: 1456,
-    tags: [
-      "Tunisian sweets",
-      "makroud",
-      "baklava",
-      "Sfax specialty",
-      "pastry",
-      "wedding sweets",
-    ],
-    description:
-      "The most celebrated pastry house in Tunisia, founded in Sfax and now a national institution. Masmoudi's makroud — date-filled semolina pastry soaked in honey — is considered the definitive version. The Sfax flagship store also produces exclusive sweets for Ramadan and wedding ceremonies that are shipped across North Africa.",
-  },
+//   // ── BAKERIES ──
+//   {
+//     name: "Boulangerie Ben Younes",
+//     category: PlaceCategory.BAKERY,
+//     address: "Rue Ibn Khaldoun, Tunis Centre",
+//     city: "Tunis",
+//     latitude: 36.8,
+//     longitude: 10.182,
+//     rating: 4.6,
+//     reviewCount: 833,
+//     tags: [
+//       "bread",
+//       "traditional bakery",
+//       "khoubz",
+//       "Tunisian pastry",
+//       "morning",
+//       "local",
+//     ],
+//     description:
+//       "A legendary neighborhood bakery in central Tunis, operating since 1961, known for its wood-fired khoubz taboun flatbread and traditional Tunisian morning pastries: bambalouni (fried doughnuts), ftayer (spinach pastry), and ghriba biscuits. Queue begins forming before dawn on weekends.",
+//   },
+//   {
+//     name: "Pâtisserie Masmoudi",
+//     category: PlaceCategory.BAKERY,
+//     address: "Avenue Bourguiba, Sfax",
+//     city: "Sfax",
+//     latitude: 34.741,
+//     longitude: 10.7615,
+//     rating: 4.8,
+//     reviewCount: 1456,
+//     tags: [
+//       "Tunisian sweets",
+//       "makroud",
+//       "baklava",
+//       "Sfax specialty",
+//       "pastry",
+//       "wedding sweets",
+//     ],
+//     description:
+//       "The most celebrated pastry house in Tunisia, founded in Sfax and now a national institution. Masmoudi's makroud — date-filled semolina pastry soaked in honey — is considered the definitive version. The Sfax flagship store also produces exclusive sweets for Ramadan and wedding ceremonies that are shipped across North Africa.",
+//   },
 
-  // ── MARKETS ──
-  {
-    name: "Marché Central de Tunis",
-    category: PlaceCategory.MARKET,
-    address: "Rue Charles de Gaulle, Tunis",
-    city: "Tunis",
-    latitude: 36.7985,
-    longitude: 10.1835,
-    rating: 4.4,
-    reviewCount: 2312,
-    tags: [
-      "covered market",
-      "fresh produce",
-      "fish",
-      "meat",
-      "spices",
-      "local life",
-    ],
-    description:
-      "Tunis's historic covered municipal market, a French colonial structure from 1891 still serving as the city's primary fresh food market. Stalls sell seasonal Tunisian vegetables, fresh Mediterranean fish landed that morning in La Goulette, wild herbs, charcuterie, and Tunisian honey. The best place to observe daily Tunisian market culture and buy picnic provisions.",
-  },
-  {
-    name: "Douz Thursday Market",
-    category: PlaceCategory.MARKET,
-    address: "Market Square, Douz",
-    city: "Douz",
-    latitude: 33.457,
-    longitude: 9.018,
-    rating: 4.5,
-    reviewCount: 387,
-    tags: [
-      "weekly market",
-      "Douz",
-      "desert market",
-      "camel",
-      "Berber",
-      "spices",
-      "dates",
-    ],
-    description:
-      "A traditional Saharan weekly market held every Thursday in Douz, drawing nomadic Berber communities from surrounding oases and villages. The market sells desert truffles, dates, dried herbs, handwoven baskets, camel equipment, and silver Berber jewelry. One of the most authentic and unchanged market experiences in Tunisia.",
-  },
-  {
-    name: "Nabeul Friday Souk",
-    category: PlaceCategory.MARKET,
-    address: "Town Centre, Nabeul",
-    city: "Nabeul",
-    latitude: 36.455,
-    longitude: 10.736,
-    rating: 4.3,
-    reviewCount: 754,
-    tags: [
-      "weekly souk",
-      "Nabeul",
-      "ceramics",
-      "produce",
-      "Cap Bon",
-      "textiles",
-      "traditional",
-    ],
-    description:
-      "The biggest weekly traditional market in Cap Bon, held every Friday across several blocks of central Nabeul. Farmers from surrounding villages sell citrus, jasmine, and seasonal produce alongside rows of ceramic vendors, fabric merchants, and spice sellers. The atmosphere peaks between 8am and 11am when locals do their weekly shopping.",
-  },
+//   // ── MARKETS ──
+//   {
+//     name: "Marché Central de Tunis",
+//     category: PlaceCategory.MARKET,
+//     address: "Rue Charles de Gaulle, Tunis",
+//     city: "Tunis",
+//     latitude: 36.7985,
+//     longitude: 10.1835,
+//     rating: 4.4,
+//     reviewCount: 2312,
+//     tags: [
+//       "covered market",
+//       "fresh produce",
+//       "fish",
+//       "meat",
+//       "spices",
+//       "local life",
+//     ],
+//     description:
+//       "Tunis's historic covered municipal market, a French colonial structure from 1891 still serving as the city's primary fresh food market. Stalls sell seasonal Tunisian vegetables, fresh Mediterranean fish landed that morning in La Goulette, wild herbs, charcuterie, and Tunisian honey. The best place to observe daily Tunisian market culture and buy picnic provisions.",
+//   },
+//   {
+//     name: "Douz Thursday Market",
+//     category: PlaceCategory.MARKET,
+//     address: "Market Square, Douz",
+//     city: "Douz",
+//     latitude: 33.457,
+//     longitude: 9.018,
+//     rating: 4.5,
+//     reviewCount: 387,
+//     tags: [
+//       "weekly market",
+//       "Douz",
+//       "desert market",
+//       "camel",
+//       "Berber",
+//       "spices",
+//       "dates",
+//     ],
+//     description:
+//       "A traditional Saharan weekly market held every Thursday in Douz, drawing nomadic Berber communities from surrounding oases and villages. The market sells desert truffles, dates, dried herbs, handwoven baskets, camel equipment, and silver Berber jewelry. One of the most authentic and unchanged market experiences in Tunisia.",
+//   },
+//   {
+//     name: "Nabeul Friday Souk",
+//     category: PlaceCategory.MARKET,
+//     address: "Town Centre, Nabeul",
+//     city: "Nabeul",
+//     latitude: 36.455,
+//     longitude: 10.736,
+//     rating: 4.3,
+//     reviewCount: 754,
+//     tags: [
+//       "weekly souk",
+//       "Nabeul",
+//       "ceramics",
+//       "produce",
+//       "Cap Bon",
+//       "textiles",
+//       "traditional",
+//     ],
+//     description:
+//       "The biggest weekly traditional market in Cap Bon, held every Friday across several blocks of central Nabeul. Farmers from surrounding villages sell citrus, jasmine, and seasonal produce alongside rows of ceramic vendors, fabric merchants, and spice sellers. The atmosphere peaks between 8am and 11am when locals do their weekly shopping.",
+//   },
 
-  // ── BEAUTY SALONS ──
-  {
-    name: "Hammam El Kachachine",
-    category: PlaceCategory.BEAUTY_SALON,
-    address: "Rue El Kachachine, Medina",
-    city: "Tunis",
-    latitude: 36.7992,
-    longitude: 10.1705,
-    rating: 4.6,
-    reviewCount: 547,
-    tags: [
-      "traditional hammam",
-      "kessa",
-      "black soap",
-      "Medina",
-      "authentic",
-      "wellness",
-    ],
-    description:
-      "One of the oldest surviving traditional hammams in the Tunis Medina, dating to the 17th century. The hammam operates on a public bathing schedule for men and women and offers a full traditional treatment: steam room, kessa exfoliation with savon beldi, rhassoul clay mask, and a cool-down room for rest and mint tea. A genuinely local, non-touristy experience.",
-  },
-  {
-    name: "Nour Wellness Studio",
-    category: PlaceCategory.BEAUTY_SALON,
-    address: "Rue Hannibal, La Marsa",
-    city: "La Marsa",
-    latitude: 36.8875,
-    longitude: 10.321,
-    rating: 4.7,
-    reviewCount: 321,
-    tags: [
-      "wellness",
-      "aromatherapy",
-      "hammam ritual",
-      "La Marsa",
-      "modern",
-      "spa",
-    ],
-    description:
-      "A contemporary wellness studio in La Marsa blending traditional Tunisian hammam rituals with modern spa practices. Offers full-body hammam packages using local argan oil and dried rose petals, alongside aromatherapy massages, reflexology, and facial treatments using indigenous Tunisian botanical extracts. Requires advance booking.",
-  },
+//   // ── BEAUTY SALONS ──
+//   {
+//     name: "Hammam El Kachachine",
+//     category: PlaceCategory.BEAUTY_SALON,
+//     address: "Rue El Kachachine, Medina",
+//     city: "Tunis",
+//     latitude: 36.7992,
+//     longitude: 10.1705,
+//     rating: 4.6,
+//     reviewCount: 547,
+//     tags: [
+//       "traditional hammam",
+//       "kessa",
+//       "black soap",
+//       "Medina",
+//       "authentic",
+//       "wellness",
+//     ],
+//     description:
+//       "One of the oldest surviving traditional hammams in the Tunis Medina, dating to the 17th century. The hammam operates on a public bathing schedule for men and women and offers a full traditional treatment: steam room, kessa exfoliation with savon beldi, rhassoul clay mask, and a cool-down room for rest and mint tea. A genuinely local, non-touristy experience.",
+//   },
+//   {
+//     name: "Nour Wellness Studio",
+//     category: PlaceCategory.BEAUTY_SALON,
+//     address: "Rue Hannibal, La Marsa",
+//     city: "La Marsa",
+//     latitude: 36.8875,
+//     longitude: 10.321,
+//     rating: 4.7,
+//     reviewCount: 321,
+//     tags: [
+//       "wellness",
+//       "aromatherapy",
+//       "hammam ritual",
+//       "La Marsa",
+//       "modern",
+//       "spa",
+//     ],
+//     description:
+//       "A contemporary wellness studio in La Marsa blending traditional Tunisian hammam rituals with modern spa practices. Offers full-body hammam packages using local argan oil and dried rose petals, alongside aromatherapy massages, reflexology, and facial treatments using indigenous Tunisian botanical extracts. Requires advance booking.",
+//   },
 
-  // ── PHARMACIES ──
-  {
-    name: "Pharmacie el Andalous",
-    category: PlaceCategory.PHARMACY,
-    address: "Avenue Habib Bourguiba 45",
-    city: "Tunis",
-    latitude: 36.7998,
-    longitude: 10.18,
-    rating: 4.3,
-    reviewCount: 234,
-    tags: ["pharmacy", "central Tunis", "medical", "open late"],
-    description:
-      "A well-stocked central Tunis pharmacy on the main boulevard, with English and French-speaking staff. Carries a full range of prescription and over-the-counter medications, travel health supplies, and a selection of Tunisian medicinal plant products including dried herbs, argan oil, and prickly pear seed oil.",
-  },
-  {
-    name: "Pharmacie du Golfe",
-    category: PlaceCategory.PHARMACY,
-    address: "Rue Principale, Tabarka",
-    city: "Tabarka",
-    latitude: 36.954,
-    longitude: 8.759,
-    rating: 4.2,
-    reviewCount: 112,
-    tags: ["pharmacy", "Tabarka", "medical", "coastal"],
-    description:
-      "The main pharmacy serving Tabarka and surrounding areas, stocking a broad range of medications, suncare, and first aid supplies appropriate for coastal activities and outdoor pursuits. The pharmacist speaks French and some English and can provide basic medical orientation for travelers.",
-  },
+//   // ── PHARMACIES ──
+//   {
+//     name: "Pharmacie el Andalous",
+//     category: PlaceCategory.PHARMACY,
+//     address: "Avenue Habib Bourguiba 45",
+//     city: "Tunis",
+//     latitude: 36.7998,
+//     longitude: 10.18,
+//     rating: 4.3,
+//     reviewCount: 234,
+//     tags: ["pharmacy", "central Tunis", "medical", "open late"],
+//     description:
+//       "A well-stocked central Tunis pharmacy on the main boulevard, with English and French-speaking staff. Carries a full range of prescription and over-the-counter medications, travel health supplies, and a selection of Tunisian medicinal plant products including dried herbs, argan oil, and prickly pear seed oil.",
+//   },
+//   {
+//     name: "Pharmacie du Golfe",
+//     category: PlaceCategory.PHARMACY,
+//     address: "Rue Principale, Tabarka",
+//     city: "Tabarka",
+//     latitude: 36.954,
+//     longitude: 8.759,
+//     rating: 4.2,
+//     reviewCount: 112,
+//     tags: ["pharmacy", "Tabarka", "medical", "coastal"],
+//     description:
+//       "The main pharmacy serving Tabarka and surrounding areas, stocking a broad range of medications, suncare, and first aid supplies appropriate for coastal activities and outdoor pursuits. The pharmacist speaks French and some English and can provide basic medical orientation for travelers.",
+//   },
 
-  // ── Additional RESTAURANTS / CAFES ──
-  {
-    name: "Restaurant El Hana",
-    category: PlaceCategory.RESTAURANT,
-    address: "Corniche, Bizerte",
-    city: "Bizerte",
-    latitude: 37.2731,
-    longitude: 9.8728,
-    rating: 4.5,
-    reviewCount: 478,
-    tags: [
-      "seafood",
-      "Bizerte",
-      "port",
-      "grilled fish",
-      "outdoor seating",
-      "Mediterranean",
-    ],
-    description:
-      "A waterfront seafood restaurant on the Bizerte corniche, famous throughout the region for freshly grilled Mediterranean fish and the city's signature recipe — Bizerte-style salade tunisienne with preserved lemon. The terrace overlooks the old port channel where fishing boats return each morning with the day's catch.",
-  },
-  {
-    name: "Kasbah Café",
-    category: PlaceCategory.CAFE,
-    address: "Place de la Kasbah, Medina",
-    city: "Tunis",
-    latitude: 36.8,
-    longitude: 10.169,
-    rating: 4.3,
-    reviewCount: 587,
-    tags: [
-      "Kasbah",
-      "medina",
-      "coffee",
-      "outdoor terrace",
-      "government square",
-      "historic",
-    ],
-    description:
-      "An open-air café on Place de la Kasbah facing the government palace and the Hafsid-era mosque. One of the few places in Tunis to drink coffee in the presence of living medieval architecture. A historic political gathering place that became famous worldwide during the 2011 revolution sit-ins.",
-  },
-  {
-    name: "Chez Nous Tabarka",
-    category: PlaceCategory.RESTAURANT,
-    address: "Rue du Corail, Tabarka",
-    city: "Tabarka",
-    latitude: 36.9535,
-    longitude: 8.758,
-    rating: 4.4,
-    reviewCount: 395,
-    tags: [
-      "Tabarka",
-      "coral",
-      "seafood",
-      "Berber cooking",
-      "local restaurant",
-      "northern Tunisia",
-    ],
-    description:
-      "A small family restaurant in Tabarka known for blending Tunisian coastal cooking with northern Berber mountain food traditions. Dishes include grilled red mullet with chermoula, stuffed peppers in harissa tomato sauce, and a distinctive house couscous with fresh herbs from the Kroumirie forest.",
-  },
-  {
-    name: "Djerba Heritage Café",
-    category: PlaceCategory.CAFE,
-    address: "Houmt Souk Medina, Djerba",
-    city: "Djerba",
-    latitude: 33.8755,
-    longitude: 10.8597,
-    rating: 4.6,
-    reviewCount: 632,
-    tags: [
-      "Djerba",
-      "island café",
-      "traditional",
-      "mint tea",
-      "Jewish quarter",
-      "relaxed",
-    ],
-    description:
-      "A shaded courtyard café in the Houmt Souk medina of Djerba, a short walk from the El Ghriba synagogue. Serves traditional Djerbian mint tea with dried figs and a menu of light island dishes reflecting the unique Judeo-Berber-Arab cultural synthesis that defines Djerba's identity. Favored by intellectuals and artists who visit the island.",
-  },
-  {
-    name: "La Galite Boat Hire — Tabarka Harbour",
-    category: PlaceCategory.SHOP,
-    address: "Port de Pêche, Tabarka",
-    city: "Tabarka",
-    latitude: 36.9547,
-    longitude: 8.7565,
-    rating: 4.5,
-    reviewCount: 143,
-    tags: [
-      "boat hire",
-      "Tabarka",
-      "fishing boat",
-      "marine",
-      "island trips",
-      "coastal excursion",
-    ],
-    description:
-      "A family-run boat hire and fishing excursion service operating out of Tabarka's fishing port. Offers day trips to La Galite island, sunset sailing along the Kroumirie coastline, and traditional line-fishing sessions with local captains. The fleet of wooden vessels is used both for guided marine tours and private charter. Advance booking essential for La Galite trips.",
-  },
-  {
-    name: "Corniche Seafood Restaurants",
-    category: PlaceCategory.RESTAURANT,
-    address: "Corniche de La Goulette",
-    city: "La Goulette",
-    latitude: 36.82,
-    longitude: 10.305,
-    rating: 4.5,
-    reviewCount: 892,
-    tags: [
-      "La Goulette",
-      "port",
-      "harissa tuna",
-      "brik",
-      "seafood",
-      "weekend outing",
-    ],
-    description:
-      "One of a row of beloved seafood restaurants along the La Goulette corniche — Tunis's port suburb and traditional destination for weekend fish lunches. Famous for the iconic Tunisian brik filled with tuna, capers, and egg, and a grilled fish selection that changes with the daily catch. Tables fill by noon on Fridays.",
-  },
-];
+//   // ── Additional RESTAURANTS / CAFES ──
+//   {
+//     name: "Restaurant El Hana",
+//     category: PlaceCategory.RESTAURANT,
+//     address: "Corniche, Bizerte",
+//     city: "Bizerte",
+//     latitude: 37.2731,
+//     longitude: 9.8728,
+//     rating: 4.5,
+//     reviewCount: 478,
+//     tags: [
+//       "seafood",
+//       "Bizerte",
+//       "port",
+//       "grilled fish",
+//       "outdoor seating",
+//       "Mediterranean",
+//     ],
+//     description:
+//       "A waterfront seafood restaurant on the Bizerte corniche, famous throughout the region for freshly grilled Mediterranean fish and the city's signature recipe — Bizerte-style salade tunisienne with preserved lemon. The terrace overlooks the old port channel where fishing boats return each morning with the day's catch.",
+//   },
+//   {
+//     name: "Kasbah Café",
+//     category: PlaceCategory.CAFE,
+//     address: "Place de la Kasbah, Medina",
+//     city: "Tunis",
+//     latitude: 36.8,
+//     longitude: 10.169,
+//     rating: 4.3,
+//     reviewCount: 587,
+//     tags: [
+//       "Kasbah",
+//       "medina",
+//       "coffee",
+//       "outdoor terrace",
+//       "government square",
+//       "historic",
+//     ],
+//     description:
+//       "An open-air café on Place de la Kasbah facing the government palace and the Hafsid-era mosque. One of the few places in Tunis to drink coffee in the presence of living medieval architecture. A historic political gathering place that became famous worldwide during the 2011 revolution sit-ins.",
+//   },
+//   {
+//     name: "Chez Nous Tabarka",
+//     category: PlaceCategory.RESTAURANT,
+//     address: "Rue du Corail, Tabarka",
+//     city: "Tabarka",
+//     latitude: 36.9535,
+//     longitude: 8.758,
+//     rating: 4.4,
+//     reviewCount: 395,
+//     tags: [
+//       "Tabarka",
+//       "coral",
+//       "seafood",
+//       "Berber cooking",
+//       "local restaurant",
+//       "northern Tunisia",
+//     ],
+//     description:
+//       "A small family restaurant in Tabarka known for blending Tunisian coastal cooking with northern Berber mountain food traditions. Dishes include grilled red mullet with chermoula, stuffed peppers in harissa tomato sauce, and a distinctive house couscous with fresh herbs from the Kroumirie forest.",
+//   },
+//   {
+//     name: "Djerba Heritage Café",
+//     category: PlaceCategory.CAFE,
+//     address: "Houmt Souk Medina, Djerba",
+//     city: "Djerba",
+//     latitude: 33.8755,
+//     longitude: 10.8597,
+//     rating: 4.6,
+//     reviewCount: 632,
+//     tags: [
+//       "Djerba",
+//       "island café",
+//       "traditional",
+//       "mint tea",
+//       "Jewish quarter",
+//       "relaxed",
+//     ],
+//     description:
+//       "A shaded courtyard café in the Houmt Souk medina of Djerba, a short walk from the El Ghriba synagogue. Serves traditional Djerbian mint tea with dried figs and a menu of light island dishes reflecting the unique Judeo-Berber-Arab cultural synthesis that defines Djerba's identity. Favored by intellectuals and artists who visit the island.",
+//   },
+//   {
+//     name: "La Galite Boat Hire — Tabarka Harbour",
+//     category: PlaceCategory.SHOP,
+//     address: "Port de Pêche, Tabarka",
+//     city: "Tabarka",
+//     latitude: 36.9547,
+//     longitude: 8.7565,
+//     rating: 4.5,
+//     reviewCount: 143,
+//     tags: [
+//       "boat hire",
+//       "Tabarka",
+//       "fishing boat",
+//       "marine",
+//       "island trips",
+//       "coastal excursion",
+//     ],
+//     description:
+//       "A family-run boat hire and fishing excursion service operating out of Tabarka's fishing port. Offers day trips to La Galite island, sunset sailing along the Kroumirie coastline, and traditional line-fishing sessions with local captains. The fleet of wooden vessels is used both for guided marine tours and private charter. Advance booking essential for La Galite trips.",
+//   },
+//   {
+//     name: "Corniche Seafood Restaurants",
+//     category: PlaceCategory.RESTAURANT,
+//     address: "Corniche de La Goulette",
+//     city: "La Goulette",
+//     latitude: 36.82,
+//     longitude: 10.305,
+//     rating: 4.5,
+//     reviewCount: 892,
+//     tags: [
+//       "La Goulette",
+//       "port",
+//       "harissa tuna",
+//       "brik",
+//       "seafood",
+//       "weekend outing",
+//     ],
+//     description:
+//       "One of a row of beloved seafood restaurants along the La Goulette corniche — Tunis's port suburb and traditional destination for weekend fish lunches. Famous for the iconic Tunisian brik filled with tuna, capers, and egg, and a grilled fish selection that changes with the daily catch. Tables fill by noon on Fridays.",
+//   },
+// ];
 
 // ─── SEED FUNCTION ────────────────────────────────────────────────────────────
 
@@ -2092,7 +2162,8 @@ async function main() {
   console.log("🌱 Starting seed...");
 
   // Clear existing data in correct order
-  // await prisma.booking.deleteMany();
+  // await prisma.activityReservation.deleteMany();
+  // await prisma.reservation.deleteMany();
   // await prisma.activity.deleteMany();
   // await prisma.place.deleteMany();
   // await prisma.housing.deleteMany();
@@ -2115,6 +2186,7 @@ async function main() {
           role: u.role,
           bio: u.bio,
           interests: u.interests,
+          image: u.image,
           embeddingText,
         },
         create: {
@@ -2124,6 +2196,7 @@ async function main() {
           role: u.role,
           bio: u.bio,
           interests: u.interests,
+          image: u.image,
           embeddingText,
         },
       });
@@ -2152,7 +2225,7 @@ async function main() {
           capacity: a.capacity,
           category: a.category,
           status: a.status,
-          images: [],
+          images: a.images,
           tags: a.tags,
           embeddingText,
           creatorId: creator.id,
@@ -2168,7 +2241,7 @@ async function main() {
           capacity: a.capacity,
           category: a.category,
           status: a.status,
-          images: [],
+          images: a.images,
           tags: a.tags,
           embeddingText,
           creatorId: creator.id,
@@ -2179,51 +2252,51 @@ async function main() {
   console.log(`✅ Created ${createdActivities.length} activities`);
 
   // ── Create Places ──
-  const createdPlaces = await Promise.all(
-    placesData.map((p) => {
-      const embeddingText = buildPlaceEmbeddingText(
-        p.name,
-        p.description,
-        p.tags,
-      );
-      return prisma.place.upsert({
-        where: { name_city: { name: p.name, city: p.city } },
-        update: {
-          category: p.category,
-          address: p.address,
-          city: p.city,
-          latitude: p.latitude,
-          longitude: p.longitude,
-          rating: p.rating ?? null,
-          reviewCount: p.reviewCount ?? null,
-          tags: p.tags,
-          description: p.description,
-          images: [],
-          embeddingText,
-        },
-        create: {
-          name: p.name,
-          category: p.category,
-          address: p.address,
-          city: p.city,
-          latitude: p.latitude,
-          longitude: p.longitude,
-          rating: p.rating ?? null,
-          reviewCount: p.reviewCount ?? null,
-          tags: p.tags,
-          description: p.description,
-          images: [],
-          embeddingText,
-        },
-      });
-    }),
-  );
-  console.log(`✅ Created ${createdPlaces.length} places`);
+  // const createdPlaces = await Promise.all(
+  //   placesData.map((p) => {
+  //     const embeddingText = buildPlaceEmbeddingText(
+  //       p.name,
+  //       p.description,
+  //       p.tags,
+  //     );
+  //     return prisma.place.upsert({
+  //       where: { name_city: { name: p.name, city: p.city } },
+  //       update: {
+  //         category: p.category,
+  //         address: p.address,
+  //         city: p.city,
+  //         latitude: p.latitude,
+  //         longitude: p.longitude,
+  //         rating: p.rating ?? null,
+  //         reviewCount: p.reviewCount ?? null,
+  //         tags: p.tags,
+  //         description: p.description,
+  //         images: [],
+  //         embeddingText,
+  //       },
+  //       create: {
+  //         name: p.name,
+  //         category: p.category,
+  //         address: p.address,
+  //         city: p.city,
+  //         latitude: p.latitude,
+  //         longitude: p.longitude,
+  //         rating: p.rating ?? null,
+  //         reviewCount: p.reviewCount ?? null,
+  //         tags: p.tags,
+  //         description: p.description,
+  //         images: [],
+  //         embeddingText,
+  //       },
+  //     });
+  //   }),
+  // );
+  // console.log(`✅ Created ${createdPlaces.length} places`);
 
   console.log("\n🎉 Seed complete!");
   console.log(`   Users:      ${createdUsers.length}`);
   console.log(`   Activities: ${createdActivities.length}`);
-  console.log(`   Places:     ${createdPlaces.length}`);
+  // console.log(`   Places:     ${createdPlaces.length}`);
 }
 
 main()

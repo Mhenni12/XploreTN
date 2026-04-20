@@ -74,7 +74,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",   # React dev server
         "http://localhost:5000",   # Node.js Express (adjust if different)
-        # In production, replace with your actual domain(s)
+        # In production, replace with actual domain(s)
     ],
     allow_credentials=True,
     allow_methods=["*"],
