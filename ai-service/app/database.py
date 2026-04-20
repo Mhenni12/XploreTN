@@ -35,6 +35,7 @@ async def connect() -> None:
         min_size=2,        # keep at least 2 connections warm
         max_size=10,       # cap to avoid overwhelming Postgres
         command_timeout=30,
+        statement_cache_size=0, # Disable cache to avoid InvalidCachedStatementError on schema change
     )
 
     # Register the pgvector codec so asyncpg can encode/decode vector columns

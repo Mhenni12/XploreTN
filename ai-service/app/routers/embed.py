@@ -56,7 +56,7 @@ async def embed_activity(body: EmbedActivityRequest):
             """
             UPDATE "Activity"
             SET    "embeddingText" = $1,
-                   "embedding"    = $2::vector
+                   "embedding"    = $2
             WHERE  id = $3
             RETURNING id
             """,
@@ -92,7 +92,7 @@ async def embed_place(body: EmbedPlaceRequest):
             """
             UPDATE "Place"
             SET    "embeddingText" = $1,
-                   "embedding"    = $2::vector
+                   "embedding"    = $2
             WHERE  id = $3
             RETURNING id
             """,
@@ -125,7 +125,7 @@ async def embed_user(body: EmbedUserRequest):
             """
             UPDATE "User"
             SET    "embeddingText" = $1,
-                   "embedding"    = $2::vector
+                   "embedding"    = $2
             WHERE  id = $3
             RETURNING id
             """,
@@ -161,7 +161,7 @@ async def backfill_activities():
 
     texts = [
         build_activity_embedding_text(
-            r["title"], r["description"], r["category"], list(r["tags"])
+            r["title"] or "", r["description"] or "", r["category"] or "", list(r["tags"] or [])
         )
         for r in rows
     ]
@@ -172,7 +172,7 @@ async def backfill_activities():
         await conn.executemany(
             """
             UPDATE "Activity"
-            SET "embeddingText" = $1, "embedding" = $2::vector
+            SET "embeddingText" = $1, "embedding" = $2
             WHERE id = $3
             """,
             [
@@ -197,7 +197,7 @@ async def backfill_places():
 
     texts = [
         build_place_embedding_text(
-            r["name"], r["category"], r["city"], r["description"] or "", list(r["tags"])
+            r["name"] or "", r["category"] or "", r["city"] or "", r["description"] or "", list(r["tags"] or [])
         )
         for r in rows
     ]
@@ -205,7 +205,7 @@ async def backfill_places():
 
     async with acquire() as conn:
         await conn.executemany(
-            'UPDATE "Place" SET "embeddingText"=$1, "embedding"=$2::vector WHERE id=$3',
+            'UPDATE "Place" SET "embeddingText" = $1, "embedding" = $2 WHERE id = $3',
             [(texts[i], vector_to_list(vecs[i]), rows[i]["id"]) for i in range(len(rows))],
         )
 
@@ -222,14 +222,14 @@ async def backfill_users():
         return {"backfilled": 0}
 
     texts = [
-        build_user_embedding_text(r["bio"] or "", list(r["interests"]))
+        build_user_embedding_text(r["bio"] or "", list(r["interests"] or []))
         for r in rows
     ]
     vecs = encode_passages(texts)
 
     async with acquire() as conn:
         await conn.executemany(
-            'UPDATE "User" SET "embeddingText"=$1, "embedding"=$2::vector WHERE id=$3',
+            'UPDATE "User" SET "embeddingText" = $1, "embedding" = $2 WHERE id = $3',
             [(texts[i], vector_to_list(vecs[i]), rows[i]["id"]) for i in range(len(rows))],
         )
 
